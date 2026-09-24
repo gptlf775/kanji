@@ -1,1 +1,1 @@
-window.KANJI_AVAILABLE=[1, 2, 3, 4, 5, 6];window.KANJI_VER={"1": "f67cb0b8", "2": "3bb61107", "3": "3de5c412", "4": "8fff4029", "5": "bcdf528e", "6": "438409cc"};
+window.KANJI_AVAILABLE=[1, 2, 3, 4, 5, 6];window.KANJI_VER={"1": "fccd74ee", "2": "d964326d", "3": "0196e2bb", "4": "477650e7", "5": "63fc8da1", "6": "42b28088"};

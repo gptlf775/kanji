@@ -824,7 +824,8 @@ function renderSheet(id) {
 function soundFamilies() {
   const fam = {};
   D.items.forEach(it => {
-    const m = it.p.match(/([^\s+()（）—·,])\((?:[^()]*?[,，]\s*)?소리\s*([ァ-ヶー]+)/);
+    // 소리 부품은 한자만 인정 (예: "売 모양(원래 …, 소리 ゾク)"의 '양' 같은 한글이 잡히지 않게)
+    const m = it.p.match(/(\p{Script=Han})\((?:[^()]*?[,，]\s*)?소리\s*([ァ-ヶー]+)/u);
     if (!m) return;
     const part = m[1], on = it.rd.filter(r => r.on).map(r => r.stem);
     (fam[part] = fam[part] || { part, snd: m[2], ks: [] }).ks.push({ k: it.k, on: on[0] || '', g: it.g });
