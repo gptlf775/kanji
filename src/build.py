@@ -10,7 +10,7 @@
   - src/verify_gN.txt        : 검증 보고서
 사용: python build.py 1   (학년 번호)
 """
-import json, os, re, sys
+import hashlib, json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -185,7 +185,10 @@ def main(grade):
     open(os.path.join(ROOT, 'data', f'g{grade}.js'), 'w', encoding='utf-8').write(js)
     # 준비된 학년 목록 (앱이 없는 파일을 요청하지 않도록)
     avail = sorted(int(f[1:-3]) for f in os.listdir(os.path.join(ROOT, 'data')) if re.match(r'^g\d\.js$', f))
-    open(os.path.join(ROOT, 'data', 'index.js'), 'w', encoding='utf-8').write(f'window.KANJI_AVAILABLE={json.dumps(avail)};\n')
+    # 학년별 내용 해시 = 버전. 앱이 파일 주소에 붙여서 서버 캐시(최대 10분)에 걸린 옛 파일을 피함
+    ver = {str(g): hashlib.md5(open(os.path.join(ROOT, 'data', f'g{g}.js'), 'rb').read()).hexdigest()[:8] for g in avail}
+    open(os.path.join(ROOT, 'data', 'index.js'), 'w', encoding='utf-8').write(
+        f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};\n')
 
     report.append(f'[{grade}학년] 공식 {len(official)}자 / 작성 {len(authored)}자 / 예시 {n_ex}개 (소리 변화 {n_changed}개)')
     report.append(f'오류 {len(errors)}건, 경고 {len(warns)}건, 참고 {len(infos)}건(예시 없는 읽기)')

@@ -269,9 +269,10 @@ const loadScript = src => new Promise(res => {
 });
 function loadGrades() {
   // data/index.js 에 준비된 학년 목록이 있음 → 그 학년만 불러오기
-  return loadScript('data/index.js').then(() => {
-    const avail = window.KANJI_AVAILABLE || [1];
-    return Promise.all(avail.map(g => loadScript(`data/g${g}.js`)));
+  // index.js는 매번 새로 받고(아주 작은 파일), 학년 파일은 내용 버전을 주소에 붙여 서버 캐시를 피함
+  return loadScript('data/index.js?t=' + Date.now()).then(() => {
+    const avail = window.KANJI_AVAILABLE || [1], ver = window.KANJI_VER || {};
+    return Promise.all(avail.map(g => loadScript(`data/g${g}.js` + (ver[g] ? `?v=${ver[g]}` : ''))));
   }).then(() => {
     const G = window.KANJI_GRADES || {};
     Object.keys(G).map(Number).sort().forEach(g => {
