@@ -1,0 +1,1 @@
+window.KANJI_AVAILABLE=[1];

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>초등 한자 1026</title>
+<meta name="description" content="일본 초등학교 1026자 한자를 반복 학습하는 앱">
+<meta name="theme-color" content="#FF8A65">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="한자 1026">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+/* ───────── 색·크기 설정 (편안한 파스텔) ───────── */
+:root{
+  --bg:#FFF8EF; --card:#FFFFFF; --ink:#3E3A36; --sub:#8A8178; --line:#EFE4D6;
+  --accent:#FF8A65; --accent-dk:#E86F4A; --accent-soft:#FFE6DA;
+  --ok:#4FAF7E; --ok-soft:#DDF2E5; --ng:#E07070; --ng-soft:#FBE4E4;
+  --on:#4F7FE0; --on-soft:#E4ECFC;     /* 음독 = 파랑 */
+  --kun:#E07B2E; --kun-soft:#FDEBDB;   /* 훈독 = 주황 */
+  --g1:#FFB4A2; --g2:#FFD59E; --g3:#B9E4C9; --g4:#A9D6F5; --g5:#CDB9F0; --g6:#F6BCD6;
+  --r:18px; --jp:'Hiragino Kaku Gothic ProN','Hiragino Sans','Yu Gothic','Meiryo',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html,body{background:var(--bg);color:var(--ink);}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;font-size:17px;line-height:1.6;
+  padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 80px);touch-action:manipulation;}
+.jp{font-family:var(--jp);}
+button{font-family:inherit;font-size:inherit;color:inherit;border:none;background:none;cursor:pointer;}
+.wrap{max-width:560px;margin:0 auto;padding:12px 16px;}
+.screen{display:none;} .screen.on{display:block;}
+.card{background:var(--card);border-radius:var(--r);padding:18px;margin:14px 0;box-shadow:0 2px 10px rgba(120,90,60,.07);}
+h2{font-size:1.15rem;margin-bottom:8px;} h3{font-size:1rem;margin:4px 0 8px;color:var(--sub);}
+.muted{color:var(--sub);font-size:.9rem;}
+.btn{display:block;width:100%;padding:16px;border-radius:14px;font-size:1.1rem;font-weight:bold;text-align:center;}
+.btn.main{background:var(--accent);color:#fff;box-shadow:0 4px 0 var(--accent-dk);}
+.btn.main:active{transform:translateY(3px);box-shadow:0 1px 0 var(--accent-dk);}
+.btn.sub{background:var(--accent-soft);color:var(--accent-dk);}
+.btn.ghost{background:#fff;border:2px solid var(--line);color:var(--ink);}
+.btn+.btn{margin-top:10px;}
+.row{display:flex;gap:10px;align-items:center;}
+.grow{flex:1;}
+/* 상단바 */
+.topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;max-width:560px;margin:0 auto;}
+.topbar .title{font-weight:bold;font-size:1.05rem;flex:1;}
+.pill{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.82rem;font-weight:bold;}
+.pill.kid{background:var(--g3);} .pill.adult{background:var(--g4);}
+.iconbtn{width:44px;height:44px;border-radius:12px;background:#fff;font-size:1.3rem;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+/* 홈 */
+.today{text-align:center;}
+.today .big{font-size:2.6rem;font-weight:bold;line-height:1.2;}
+.today .stat{display:flex;justify-content:center;gap:26px;margin:10px 0 16px;}
+.today .stat b{display:block;font-size:1.9rem;}
+.gbar{margin:10px 0;}
+.gbar .lab{display:flex;justify-content:space-between;font-size:.9rem;}
+.bar{height:12px;border-radius:99px;background:#F3EBE1;overflow:hidden;position:relative;}
+.bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;}
+.bar i.seen{background:var(--accent-soft);} .bar i.mast{background:var(--ok);}
+.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.menu button{background:#fff;border-radius:16px;padding:16px 8px;font-weight:bold;box-shadow:0 2px 8px rgba(120,90,60,.07);}
+.menu button span{display:block;font-size:1.8rem;}
+.stickers{font-size:1.8rem;letter-spacing:4px;word-break:break-all;}
+.banner{background:#FFF3C4;border-radius:14px;padding:12px 14px;font-size:.92rem;margin:12px 0;}
+/* 목록 */
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;}
+.tabs button{padding:8px 14px;border-radius:99px;background:#fff;font-weight:bold;white-space:nowrap;border:2px solid transparent;}
+.tabs button.on{border-color:var(--accent);background:var(--accent-soft);}
+.tabs button.off{opacity:.45;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:8px;}
+.tile{background:#fff;border-radius:14px;padding:6px 2px;text-align:center;border:2px solid var(--line);position:relative;}
+.tile .c{font-size:2.1rem;line-height:1.25;}
+.tile .h{font-size:.68rem;color:var(--sub);white-space:nowrap;overflow:hidden;}
+.tile.learn{background:var(--accent-soft);border-color:#FFD2BF;}
+.tile.mast{background:var(--ok-soft);border-color:#B7E2C8;}
+.tile.due::after{content:'';position:absolute;top:5px;right:5px;width:9px;height:9px;border-radius:50%;background:var(--accent);}
+.legend{display:flex;gap:12px;font-size:.8rem;color:var(--sub);flex-wrap:wrap;margin:6px 0;}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;vertical-align:-1px;margin-right:4px;border:2px solid var(--line);}
+/* 한자 카드 */
+.hero{text-align:center;}
+.kbox{width:min(72vw,300px);margin:6px auto;background:#FFFDF8;border-radius:22px;border:3px solid var(--line);}
+.ksvg{width:100%;display:block;}
+.ksvg .grid line{stroke:#F0C9B8;stroke-width:.5;stroke-dasharray:2 2;}
+.ksvg path{fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.ksvg .ghost path{stroke:#EDE6DD;stroke-width:4;}
+.ksvg .strokes path{stroke:var(--ink);stroke-width:4;}
+.ksvg .strokes path.cur{stroke:var(--accent);}
+.ksvg .nums text{font-size:6px;fill:var(--accent-dk);font-weight:bold;font-family:sans-serif;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:8px 0;}
+.chip{background:#F5EEE5;border-radius:99px;padding:3px 12px;font-size:.85rem;}
+.hun{font-size:1.9rem;font-weight:bold;}
+.mean{color:var(--sub);}
+.ctrls{display:flex;gap:8px;justify-content:center;margin:8px 0;flex-wrap:wrap;}
+.ctrls button{background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px 14px;font-weight:bold;font-size:.95rem;}
+.ctrls button.on{border-color:var(--accent);background:var(--accent-soft);}
+.rdgrp{margin:6px 0 12px;}
+.rdgrp .lab{font-size:.85rem;font-weight:bold;margin-bottom:4px;}
+.rd{display:inline-flex;flex-direction:column;align-items:center;border-radius:14px;padding:6px 14px;margin:3px;font-size:1.3rem;min-width:62px;}
+.rd.on{background:var(--on-soft);color:var(--on);} .rd.kun{background:var(--kun-soft);color:var(--kun);}
+.rd .ok{color:#B9A99A;} .rd small{font-size:.7rem;color:var(--sub);font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
+.rd.rare{opacity:.55;}
+.exg{border-top:2px dashed var(--line);padding:10px 0;}
+.exg:first-child{border-top:none;}
+.exg .head{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.tag{border-radius:8px;padding:1px 10px;font-weight:bold;font-size:1.05rem;}
+.tag.on{background:var(--on-soft);color:var(--on);} .tag.kun{background:var(--kun-soft);color:var(--kun);}
+.ex{display:flex;align-items:center;gap:10px;padding:8px 6px;border-radius:12px;width:100%;text-align:left;}
+.ex:active{background:#F8F1E8;}
+.ex .w{font-size:1.5rem;min-width:88px;}
+.ex .y{font-size:1rem;} .ex .y small{display:block;font-size:.72rem;color:var(--sub);font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
+.ex .m{font-size:.88rem;color:var(--sub);flex:1;text-align:right;}
+.hl-on{color:var(--on);font-weight:bold;} .hl-kun{color:var(--kun);font-weight:bold;}
+.chg{font-size:.65rem;background:#F1E8FF;color:#7A58C0;border-radius:6px;padding:0 5px;margin-left:4px;vertical-align:2px;}
+.tip{background:#FFF6D6;border-radius:12px;padding:10px 12px;font-size:.95rem;margin-top:8px;}
+.box-o,.box-m{border-radius:14px;padding:12px 14px;margin:8px 0;font-size:.97rem;}
+.box-o{background:#EEF6F0;} .box-m{background:#FFF0F4;}
+.badge{display:inline-block;font-size:.75rem;font-weight:bold;border-radius:6px;padding:1px 8px;margin-bottom:4px;}
+.b-o{background:#CFEAD9;color:#2F7A52;} .b-m{background:#FFD3DF;color:#B04468;}
+details.adult{background:#EEF3FB;border-radius:14px;padding:10px 14px;margin-top:8px;font-size:.95rem;}
+details.adult summary{font-weight:bold;cursor:pointer;}
+.sp{display:flex;gap:10px;align-items:center;padding:6px 0;}
+.sp .w{font-size:1.3rem;min-width:70px;}
+.sticky{position:fixed;left:0;right:0;bottom:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(transparent,var(--bg) 30%);}
+.sticky .in{max-width:560px;margin:0 auto;}
+.navlr{display:flex;gap:10px;}
+/* 퀴즈 */
+.qtop{display:flex;align-items:center;gap:10px;}
+.qprog{flex:1;height:14px;border-radius:99px;background:#F1E8DD;overflow:hidden;}
+.qprog i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .3s;}
+.qask{text-align:center;color:var(--sub);margin:14px 0 6px;font-weight:bold;}
+.qbig{text-align:center;font-size:7rem;line-height:1.15;}
+.qword{text-align:center;font-size:3.4rem;line-height:1.3;}
+.qhun{text-align:center;font-size:2.4rem;font-weight:bold;}
+.qsub{text-align:center;color:var(--sub);}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px;}
+.choice{background:#fff;border:3px solid var(--line);border-radius:18px;padding:16px 6px;font-size:1.35rem;font-weight:bold;min-height:78px;text-align:center;}
+.choice.kan{font-size:2.6rem;padding:8px 6px;}
+.choice small{display:block;font-size:.72rem;color:var(--sub);font-weight:normal;}
+.choice.right{background:var(--ok-soft);border-color:var(--ok);}
+.choice.wrong{background:var(--ng-soft);border-color:var(--ng);}
+.speaker{display:block;margin:10px auto;width:120px;height:120px;border-radius:50%;background:var(--accent-soft);font-size:3.2rem;}
+.fb{text-align:center;font-size:1.3rem;font-weight:bold;margin:14px 0 4px;min-height:1.6em;}
+.fb.ok{color:var(--ok);} .fb.ng{color:var(--ng);}
+.done{text-align:center;}
+.done .st{font-size:5rem;animation:pop .6s;}
+@keyframes pop{0%{transform:scale(.2)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+/* 표 */
+table.t{width:100%;border-collapse:collapse;font-size:.92rem;}
+table.t td,table.t th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;}
+table.t th{color:var(--sub);font-size:.8rem;}
+input[type=text],textarea{width:100%;font-size:16px;padding:10px;border-radius:12px;border:2px solid var(--line);background:#FFFDF9;font-family:inherit;}
+textarea{height:90px;font-size:12px;}
+.set{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);gap:10px;}
+.stepper{display:flex;align-items:center;gap:8px;}
+.stepper button{width:40px;height:40px;border-radius:12px;background:var(--accent-soft);font-size:1.3rem;font-weight:bold;}
+.stepper b{min-width:30px;text-align:center;font-size:1.2rem;}
+.seg{display:flex;background:#F3EBE1;border-radius:12px;padding:3px;}
+.seg button{padding:8px 14px;border-radius:10px;font-weight:bold;}
+.seg button.on{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.modal{position:fixed;inset:0;background:rgba(60,45,30,.35);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
+.modal .card{width:100%;max-width:420px;}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#3E3A36;color:#fff;
+  padding:10px 18px;border-radius:99px;font-size:.92rem;z-index:60;opacity:0;transition:opacity .3s;pointer-events:none;}
+.toast.on{opacity:1;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <button class="iconbtn" id="btnHome" aria-label="홈">🏠</button>
+  <div class="title" id="topTitle">초등 한자 1026</div>
+  <span id="topMode"></span>
+  <span id="topStreak" style="font-weight:bold"></span>
+</div>
+
+<main class="wrap">
+  <section class="screen" id="scrHome"></section>
+  <section class="screen" id="scrList"></section>
+  <section class="screen" id="scrCard"></section>
+  <section class="screen" id="scrQuiz"></section>
+  <section class="screen" id="scrDone"></section>
+  <section class="screen" id="scrRules"></section>
+  <section class="screen" id="scrSet"></section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+/* ═══════════════ 설정값 (하드코딩 금지 — 여기서만 조정) ═══════════════ */
+const CFG = {
+  STORE_KEY: 'kanji1026-v1',
+  // 박스별 다음 복습까지 일수: 1→3→7→14→30→60→120일 (틀리면 박스 1로)
+  INTERVALS: [0, 1, 3, 7, 14, 30, 60, 120],
+  MASTER_BOX: 5,            // 박스 5 이상(30일 간격 통과) = '익힘'
+  REVIEW_CAP: 60,           // 하루 최대 복습 수
+  RETRY_GAP: 3,             // 틀린 문제를 몇 문제 뒤에 다시 낼지
+  DEFAULT_NEW: { kid: 4, adult: 10 },
+  GRADE_COUNTS: { 1: 80, 2: 160, 3: 200, 4: 202, 5: 193, 6: 191 },
+  STICKERS: '🌟🍓🐣🌈🍀🐬🦊🍩🚀🌻🐼🎈🍉🦄🐢🍒🎀🐙🌙🍭🐨🌷⚽🐤🍪🦋🐳🍊🎨🐰',
+  DATES: [['1','ついたち',1],['2','ふつか',1],['3','みっか',0],['4','よっか',0],['5','いつか',0],['6','むいか',0],['7','なのか',0],['8','ようか',0],['9','ここのか',0],['10','とおか',0],['14','じゅうよっか',0],['20','はつか',1],['24','にじゅうよっか',0]]
+};
+
+/* ═══════════════ 공용 도구 ═══════════════ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pick = a => a[Math.random() * a.length | 0];
+// 오늘 날짜를 '일 번호'로 (현지 시간 기준, 자정에 바뀜)
+function dayNum(d = new Date()) { return Math.floor(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) / 86400000); }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('on'), 1800); }
+const kata2hira = s => s.replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+
+/* 가나 → 한글 발음(참고용 근사치). か=카, が=가 로 청음/탁음을 구분해 표기 */
+const KH = (() => {
+  const base = {あ:'아',い:'이',う:'우',え:'에',お:'오',か:'카',き:'키',く:'쿠',け:'케',こ:'코',が:'가',ぎ:'기',ぐ:'구',げ:'게',ご:'고',
+    さ:'사',し:'시',す:'스',せ:'세',そ:'소',ざ:'자',じ:'지',ず:'즈',ぜ:'제',ぞ:'조',た:'타',ち:'치',つ:'츠',て:'테',と:'토',
+    だ:'다',ぢ:'지',づ:'즈',で:'데',ど:'도',な:'나',に:'니',ぬ:'누',ね:'네',の:'노',は:'하',ひ:'히',ふ:'후',へ:'헤',ほ:'호',
+    ば:'바',び:'비',ぶ:'부',べ:'베',ぼ:'보',ぱ:'파',ぴ:'피',ぷ:'푸',ぺ:'페',ぽ:'포',ま:'마',み:'미',む:'무',め:'메',も:'모',
+    や:'야',ゆ:'유',よ:'요',ら:'라',り:'리',る:'루',れ:'레',ろ:'로',わ:'와',を:'오',ー:'-'};
+  const yo = {きゃ:'캬',きゅ:'큐',きょ:'쿄',ぎゃ:'갸',ぎゅ:'규',ぎょ:'교',しゃ:'샤',しゅ:'슈',しょ:'쇼',じゃ:'자',じゅ:'주',じょ:'조',
+    ちゃ:'차',ちゅ:'추',ちょ:'초',にゃ:'냐',にゅ:'뉴',にょ:'뇨',ひゃ:'햐',ひゅ:'휴',ひょ:'효',びゃ:'뱌',びゅ:'뷰',びょ:'뵤',
+    ぴゃ:'퍄',ぴゅ:'퓨',ぴょ:'표',みゃ:'먀',みゅ:'뮤',みょ:'묘',りゃ:'랴',りゅ:'류',りょ:'료'};
+  // 앞 글자에 받침 붙이기 (ㄴ=4, ㅅ=19)
+  const addJong = (s, j) => { if (!s) return s; const c = s.charCodeAt(s.length - 1); if (c < 0xAC00 || c > 0xD7A3 || (c - 0xAC00) % 28) return s; return s.slice(0, -1) + String.fromCharCode(c + j); };
+  return str => {
+    const s = kata2hira(str); let out = '';
+    for (let i = 0; i < s.length; i++) {
+      const two = s.substr(i, 2);
+      if (yo[two]) { out += yo[two]; i++; continue; }
+      const c = s[i];
+      if (c === 'ん') { out = addJong(out, 4); continue; }
+      if (c === 'っ') { out = addJong(out, 19); continue; }
+      out += base[c] ?? c;
+    }
+    return out;
+  };
+})();
+
+/* ═══════════════ 저장소 ═══════════════ */
+function defaultState() {
+  return { v: 1, mode: null, name: '', newPerDay: CFG.DEFAULT_NEW.kid, hangul: true, rate: 0.8,
+    srs: {}, streak: { n: 0, last: 0 }, stickers: '', today: { day: 0, newDone: 0, revDone: 0 } };
+}
+let S;
+function load() {
+  try { S = Object.assign(defaultState(), JSON.parse(localStorage.getItem(CFG.STORE_KEY) || '{}')); }
+  catch (e) {
+    // 깨진 원본은 지우지 않고 따로 보관 (복구 가능성 유지)
+    try { localStorage.setItem(CFG.STORE_KEY + '-broken', localStorage.getItem(CFG.STORE_KEY)); } catch (e2) {}
+    S = defaultState(); toast('저장된 진도를 읽지 못해 새로 시작해요');
+  }
+  const d = dayNum();
+  if (S.today.day !== d) S.today = { day: d, newDone: 0, revDone: 0, bonus: 0 };
+}
+function save() {
+  try { localStorage.setItem(CFG.STORE_KEY, JSON.stringify(S)); }
+  catch (e) { toast('⚠ 저장 공간이 부족해 진도를 저장하지 못했어요'); }
+}
+
+/* ═══════════════ 데이터 불러오기 (data/g1.js ~ g6.js, 없는 학년은 '준비 중') ═══════════════ */
+const D = { items: [], byK: {}, grades: {}, themes: {} };
+const loadScript = src => new Promise(res => {
+  const sc = document.createElement('script');
+  sc.src = src; sc.onload = () => res(true); sc.onerror = () => res(false);
+  document.head.appendChild(sc);
+});
+function loadGrades() {
+  // data/index.js 에 준비된 학년 목록이 있음 → 그 학년만 불러오기
+  return loadScript('data/index.js').then(() => {
+    const avail = window.KANJI_AVAILABLE || [1];
+    return Promise.all(avail.map(g => loadScript(`data/g${g}.js`)));
+  }).then(() => {
+    const G = window.KANJI_GRADES || {};
+    Object.keys(G).map(Number).sort().forEach(g => {
+      D.grades[g] = G[g].items; D.themes[g] = G[g].themes;
+      G[g].items.forEach(it => { D.items.push(it); D.byK[it.k] = it; });
+    });
+  });
+}
+
+/* ═══════════════ 음성 (아이폰 기본 일본어 음성) ═══════════════ */
+let jaVoice = null;
+function pickVoice() {
+  if (!('speechSynthesis' in window)) return;
+  const vs = speechSynthesis.getVoices().filter(v => /^ja/i.test(v.lang));
+  jaVoice = vs.find(v => /Kyoko|O-ren|Otoya|Hattori/i.test(v.name)) || vs[0] || null;
+}
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+const canSpeak = () => 'speechSynthesis' in window;
+function speak(text) {
+  if (!canSpeak() || !text) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP'; u.rate = S.rate; if (jaVoice) u.voice = jaVoice;
+    speechSynthesis.speak(u);
+  } catch (e) { toast('발음을 재생하지 못했어요'); }
+}
+
+/* ═══════════════ 화면 전환 ═══════════════ */
+let cur = 'Home';
+function show(name, title) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
+  $('#scr' + name).classList.add('on'); cur = name;
+  $('#topTitle').textContent = title || '초등 한자 1026';
+  window.scrollTo(0, 0);
+  stopAnim();
+}
+function topbar() {
+  $('#topMode').innerHTML = S.mode ? `<span class="pill ${S.mode}">${S.mode === 'kid' ? '🧒 어린이' : '🧑 어른'}</span>` : '';
+  $('#topStreak').textContent = S.streak.n ? `🔥${S.streak.n}` : '';
+}
+
+/* ═══════════════ 복습 일정 계산 ═══════════════ */
+const st = k => S.srs[k];
+const isMast = k => st(k) && st(k).b >= CFG.MASTER_BOX;
+const isDue = k => st(k) && st(k).b >= 1 && st(k).d <= dayNum();
+function dueList() { return D.items.filter(it => isDue(it.k)).sort((a, b) => st(a.k).d - st(b.k).d); }
+function freshList() { return D.items.filter(it => !st(it.k)); }
+function todayPlan() {
+  const due = dueList().slice(0, CFG.REVIEW_CAP);
+  const nNew = Math.max(0, S.newPerDay + (S.today.bonus || 0) - S.today.newDone);
+  return { due, fresh: freshList().slice(0, nNew) };
+}
+
+/* ═══════════════ 홈 ═══════════════ */
+function renderHome() {
+  topbar();
+  const { due, fresh } = todayPlan();
+  const total = Object.values(CFG.GRADE_COUNTS).reduce((a, b) => a + b, 0);
+  const seen = Object.keys(S.srs).length, mast = Object.keys(S.srs).filter(isMast).length;
+  const iosTip = /iP(hone|ad|od)/.test(navigator.userAgent) && !navigator.standalone;
+  let gb = '';
+  for (let g = 1; g <= 6; g++) {
+    const cnt = CFG.GRADE_COUNTS[g], items = D.grades[g];
+    if (!items) { gb += `<div class="gbar"><div class="lab"><span>${g}학년</span><span class="muted">준비 중</span></div><div class="bar"></div></div>`; continue; }
+    const s1 = items.filter(i => st(i.k)).length, m1 = items.filter(i => isMast(i.k)).length;
+    gb += `<div class="gbar"><div class="lab"><span>${g}학년</span><span>${s1}/${cnt}자 · 익힘 ${m1}</span></div>
+      <div class="bar"><i class="seen" style="width:${s1 / cnt * 100}%"></i><i class="mast" style="width:${m1 / cnt * 100}%"></i></div></div>`;
+  }
+  const nothing = !due.length && !fresh.length;
+  $('#scrHome').innerHTML = `
+    ${iosTip ? `<div class="banner">📲 <b>홈 화면에 추가하면 앱처럼 쓸 수 있어요!</b><br>아래 공유 버튼 <b>⬆︎</b> → <b>'홈 화면에 추가'</b>. 인터넷 없이도 열리고 진도도 안전하게 저장돼요.</div>` : ''}
+    <div class="card today">
+      <div class="muted">${S.name ? esc(S.name) + '의 ' : ''}오늘의 공부</div>
+      ${nothing ? `<div class="big">🎉</div><p style="margin:8px 0 14px">오늘 할 공부를 다 했어요!<br><span class="muted">내일 또 만나요. 더 하고 싶으면 아래 버튼!</span></p>
+        <button class="btn sub" id="goExtra">🔁 헷갈린 한자 더 연습</button>
+        <button class="btn ghost" id="goMore">➕ 새 한자 ${S.mode === 'kid' ? 3 : 5}자 더 배우기</button>`
+      : `<div class="stat"><div><b>${due.length}</b><span class="muted">복습</span></div><div><b>${fresh.length}</b><span class="muted">새 한자</span></div></div>
+        <button class="btn main" id="goStudy">▶ 공부 시작!</button>`}
+    </div>
+    <div class="card">
+      <h2>📊 나의 진도</h2>
+      <div class="gbar"><div class="lab"><b>전체</b><b>${seen} / ${total}자</b></div>
+        <div class="bar"><i class="seen" style="width:${seen / total * 100}%"></i><i class="mast" style="width:${mast / total * 100}%"></i></div></div>
+      <div class="legend"><span><i style="background:var(--accent-soft)"></i>배운 한자</span><span><i style="background:var(--ok)"></i>익힌 한자(30일 복습 통과)</span></div>
+      ${gb}
+    </div>
+    <div class="menu">
+      <button id="goList"><span>📚</span>한자 목록</button>
+      <button id="goRules"><span>🧩</span>읽기 규칙</button>
+      <button id="goWeak"><span>🔁</span>헷갈린 한자</button>
+      <button id="goSet"><span>⚙️</span>설정</button>
+    </div>
+    ${S.mode === 'kid' && S.stickers ? `<div class="card"><h2>🏅 스티커 모음 (${(S.stickers.match(/\p{Extended_Pictographic}/gu) || []).length}개)</h2><div class="stickers">${S.stickers}</div></div>` : ''}`;
+  const on = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };
+  on('goStudy', () => startSession());
+  on('goMore', () => { S.today.bonus = (S.today.bonus || 0) + (S.mode === 'kid' ? 3 : 5); save(); startSession(); });  // 오늘만 추가
+  on('goExtra', () => startExtra());
+  on('goList', () => renderList(listGrade));
+  on('goRules', () => renderRules());
+  on('goWeak', () => startExtra());
+  on('goSet', () => renderSet());
+  show('Home');
+}
+
+/* ═══════════════ 한자 목록 ═══════════════ */
+let listGrade = 1;
+function renderList(g) {
+  listGrade = g;
+  let tabs = '';
+  for (let i = 1; i <= 6; i++) tabs += `<button class="${i === g ? 'on' : ''} ${D.grades[i] ? '' : 'off'}" data-g="${i}">${i}학년</button>`;
+  let body = '';
+  if (!D.grades[g]) body = `<div class="card muted" style="text-align:center">${g}학년 한자는 준비 중이에요 🛠️</div>`;
+  else D.themes[g].forEach(t => {
+    body += `<h3>${t.e} ${esc(t.name)}</h3><div class="grid">` + [...t.ks].map(k => {
+      const it = D.byK[k], s = st(k);
+      const cls = !s ? '' : isMast(k) ? 'mast' : 'learn';
+      return `<button class="tile ${cls} ${isDue(k) ? 'due' : ''}" data-k="${k}"><div class="c jp" lang="ja">${k}</div><div class="h">${esc(it.hun)}</div></button>`;
+    }).join('') + '</div>';
+  });
+  $('#scrList').innerHTML = `<div class="tabs">${tabs}</div>
+    <div class="legend"><span><i></i>아직</span><span><i style="background:var(--accent-soft)"></i>배우는 중</span><span><i style="background:var(--ok-soft)"></i>익힘</span><span>🟠 오늘 복습</span></div>${body}`;
+  $('#scrList').querySelectorAll('.tabs button').forEach(b => b.onclick = () => renderList(+b.dataset.g));
+  $('#scrList').querySelectorAll('.tile').forEach(b => b.onclick = () => renderCard(b.dataset.k, 'browse'));
+  show('List', '📚 한자 목록');
+}
+
+/* ═══════════════ 한자 카드 (획순 · 읽기 · 쓰임 · 구성) ═══════════════ */
+function kanjiSVG(it) {
+  const p = it.st.map(d => `<path d="${d}"/>`).join('');
+  return `<svg class="ksvg" viewBox="0 0 109 109" aria-label="${it.k}"><g class="grid"><line x1="54.5" y1="2" x2="54.5" y2="107"/><line x1="2" y1="54.5" x2="107" y2="54.5"/></g>
+    <g class="ghost">${p}</g><g class="strokes">${p}</g><g class="nums"></g></svg>`;
+}
+let animTok = 0, stepIdx = -1;
+function stopAnim() { animTok++; }
+function strokeEls() { return [...document.querySelectorAll('#scrCard .strokes path')]; }
+function resetStrokes(showAll) {
+  strokeEls().forEach(p => { const L = p.getTotalLength(); p.style.transition = 'none'; p.style.strokeDasharray = L; p.style.strokeDashoffset = showAll ? 0 : L; p.classList.remove('cur'); });
+}
+// 획순 애니메이션: 한 획씩 순서대로 그리기
+function playStrokes() {
+  stopAnim(); const tok = animTok; resetStrokes(false); stepIdx = -1;
+  const ps = strokeEls(); let i = 0;
+  const next = () => {
+    if (tok !== animTok) return;
+    if (i > 0) ps[i - 1].classList.remove('cur');
+    if (i >= ps.length) return;
+    const p = ps[i], L = p.getTotalLength(), dur = Math.max(350, L * 9);
+    p.classList.add('cur'); p.getBoundingClientRect();
+    p.style.transition = `stroke-dashoffset ${dur}ms linear`; p.style.strokeDashoffset = 0;
+    i++; setTimeout(next, dur + 180);
+  };
+  setTimeout(next, 200);
+}
+// 한 획씩 넘기기
+function stepStroke() {
+  stopAnim(); const ps = strokeEls();
+  if (stepIdx < 0 || stepIdx >= ps.length - 1) { resetStrokes(false); stepIdx = -1; }
+  stepIdx++;
+  ps.forEach((p, j) => { p.classList.toggle('cur', j === stepIdx); if (j < stepIdx) { p.style.transition = 'none'; p.style.strokeDashoffset = 0; } });
+  const p = ps[stepIdx], L = p.getTotalLength(); p.getBoundingClientRect();
+  p.style.transition = `stroke-dashoffset ${Math.max(350, L * 9)}ms linear`; p.style.strokeDashoffset = 0;
+  $('#stepInfo').textContent = `${stepIdx + 1} / ${ps.length} 획`;
+}
+function toggleNums(on) {
+  const g = document.querySelector('#scrCard .nums'); if (!g) return;
+  if (!on) { g.innerHTML = ''; return; }
+  g.innerHTML = strokeEls().map((p, i) => { const pt = p.getPointAtLength(0); return `<text x="${pt.x - 4}" y="${pt.y - 2}">${i + 1}</text>`; }).join('');
+}
+function readingChip(r) {
+  const cls = r.on ? 'on' : 'kun';
+  const kana = r.on ? r.stem : r.stem + (r.okuri ? `<span class="ok">${r.okuri}</span>` : '');
+  const say = kata2hira(r.stem + r.okuri);
+  return `<button class="rd ${cls} ${r.rare ? 'rare' : ''} jp" lang="ja" data-say="${say}">${kana}${S.hangul ? `<small>${KH(say)}</small>` : ''}</button>`;
+}
+function exWord(it, e) {
+  const hc = e.r.match(/^[ァ-ヶ]/) ? 'hl-on' : 'hl-kun';
+  const w = esc(e.w).replace(it.k, `<span class="${hc}">${it.k}</span>`);
+  const y = esc(e.y.slice(0, e.hs)) + `<span class="${hc}">${esc(e.y.substr(e.hs, e.hl))}</span>` + esc(e.y.slice(e.hs + e.hl));
+  return { w, y };
+}
+let cardCtx = { k: null, mode: 'browse' };
+function renderCard(k, mode, onDone) {
+  const it = D.byK[k]; cardCtx = { k, mode, onDone };
+  // 읽기를 음독/훈독으로 나누고, 예시를 읽기별로 묶기 ('이럴 땐 이 발음')
+  const ons = it.rd.filter(r => r.on), kuns = it.rd.filter(r => !r.on);
+  const groups = [];
+  it.rd.forEach(r => { const ex = it.ex.filter(e => e.r === r.r); if (ex.length) groups.push({ r, ex }); });
+  const exHTML = groups.map(({ r, ex }) => `<div class="exg"><div class="head"><span class="tag ${r.on ? 'on' : 'kun'} jp" lang="ja">${esc(r.r.replace('-', '·'))}</span>
+      <span class="muted">${r.on ? '음독' : '훈독'}${r.rare ? ' · 드문 읽기' : ''}</span></div>` +
+    ex.map(e => { const { w, y } = exWord(it, e);
+      return `<button class="ex" data-say="${esc(e.y)}"><span class="w jp" lang="ja">${w}</span><span class="y jp" lang="ja">${y}${e.ch ? '<span class="chg">소리 변화</span>' : ''}${S.hangul ? `<small>${KH(e.y)}</small>` : ''}</span><span class="m">${esc(e.m)} 🔊</span></button>`; }).join('') + '</div>').join('');
+  const spHTML = it.sp.length ? `<div class="card"><h2>⭐ 특별한 읽기</h2><p class="muted" style="margin-bottom:6px">한 글자씩이 아니라 단어 통째로 외우는 읽기예요.</p>` +
+    it.sp.map(s => `<button class="sp ex" data-say="${esc(s.y)}"><span class="w jp" lang="ja">${esc(s.w)}</span><span class="y jp" lang="ja">${esc(s.y)}${S.hangul ? `<small>${KH(s.y)}</small>` : ''}</span><span class="m">${esc(s.m)}<br><small>${esc(s.n)}</small></span></button>`).join('') + '</div>' : '';
+  const adult = `<details class="adult" ${S.mode === 'adult' ? 'open' : ''}><summary>🎓 어른을 위한 더 깊은 설명</summary><p style="margin-top:6px">${esc(it.ad)}</p></details>`;
+  const list = mode === 'browse' ? D.grades[it.g] : null;
+  const idx = list ? list.findIndex(x => x.k === k) : -1;
+  $('#scrCard').innerHTML = `
+    <div class="card hero">
+      <div class="chips"><span class="chip" style="background:var(--g${it.g})">${it.g}학년</span><span class="chip">${it.sc}획</span><span class="chip">부수 <span class="jp" lang="ja">${esc(it.rad)}</span></span><span class="chip">${esc(it.theme)}</span></div>
+      <div class="kbox">${kanjiSVG(it)}</div>
+      <div class="ctrls"><button id="bPlay">▶ 획순 보기</button><button id="bStep">✍️ 한 획씩</button><button id="bNum">🔢 번호</button></div>
+      <div class="muted" id="stepInfo" style="min-height:1.4em"></div>
+      <div style="font-size:2rem">${it.e}</div>
+      <div class="hun">${esc(it.hun)}</div><div class="mean">${esc(it.m)}</div>
+    </div>
+    <div class="card">
+      <h2>🔊 읽는 법 <span class="muted" style="font-weight:normal;font-size:.8rem">(눌러서 듣기)</span></h2>
+      ${ons.length ? `<div class="rdgrp"><div class="lab" style="color:var(--on)">음독 (중국에서 온 소리)</div>${ons.map(readingChip).join('')}</div>` : ''}
+      ${kuns.length ? `<div class="rdgrp"><div class="lab" style="color:var(--kun)">훈독 (일본 고유의 말)</div>${kuns.map(readingChip).join('')}</div>` : ''}
+      ${it.tip ? `<div class="tip">💡 ${esc(it.tip)}</div>` : ''}
+    </div>
+    <div class="card"><h2>🗣️ 이럴 땐 이 발음!</h2><p class="muted" style="margin-bottom:4px"><span class="hl-on">파랑</span>=음독, <span class="hl-kun">주황</span>=훈독. 단어를 누르면 읽어줘요.</p>${exHTML}</div>
+    ${spHTML}
+    <div class="card">
+      <h2>🧩 어떻게 만들어졌을까?</h2>
+      <p><span class="chip">${esc(it.t)}</span> <span class="jp" lang="ja">${esc(it.p)}</span></p>
+      <div class="box-o"><span class="badge b-o">📜 진짜 유래</span><br>${esc(it.o)}</div>
+      <div class="box-m"><span class="badge b-m">🧠 외우기 이야기</span><br>${esc(it.mm)}</div>
+      ${adult}
+      ${it.k === '日' ? `<button class="btn sub" style="margin-top:10px" id="bDates">📅 날짜 읽는 법 표 보기</button>` : ''}
+    </div>
+    <div style="height:70px"></div>
+    <div class="sticky"><div class="in">${mode === 'learn'
+      ? `<button class="btn main" id="bLearnDone">다 봤어요! 문제 풀기 ▶</button>`
+      : `<div class="navlr"><button class="btn ghost" id="bPrev" ${idx <= 0 ? 'disabled style="opacity:.4"' : ''}>◀ 이전</button><button class="btn ghost" id="bBack">목록</button><button class="btn ghost" id="bNext" ${idx < 0 || idx >= list.length - 1 ? 'disabled style="opacity:.4"' : ''}>다음 ▶</button></div>`}</div></div>`;
+  const sc = $('#scrCard');
+  sc.querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+  $('#bPlay').onclick = () => { $('#stepInfo').textContent = ''; playStrokes(); };
+  $('#bStep').onclick = stepStroke;
+  let nums = false; $('#bNum').onclick = e => { nums = !nums; e.currentTarget.classList.toggle('on', nums); toggleNums(nums); };
+  if ($('#bDates')) $('#bDates').onclick = () => renderRules('dates');
+  if (mode === 'learn') $('#bLearnDone').onclick = () => onDone && onDone();
+  else {
+    $('#bBack').onclick = () => renderList(it.g);
+    if (idx > 0) $('#bPrev').onclick = () => renderCard(list[idx - 1].k, 'browse');
+    if (idx >= 0 && idx < list.length - 1) $('#bNext').onclick = () => renderCard(list[idx + 1].k, 'browse');
+  }
+  show('Card', mode === 'learn' ? '✨ 새 한자' : `${it.g}학년 한자`);
+  resetStrokes(true);
+  if (mode === 'learn') setTimeout(playStrokes, 500);  // 새 한자는 획순부터 자동 재생
+}
+
+/* ═══════════════ 문제 만들기 ═══════════════ */
+// 보기 후보: 불러온 한자 중 같은 학년 이하
+const poolFor = it => D.items.filter(x => x.g <= Math.max(it.g, 1) && x.k !== it.k);
+function distinct(list, keyFn, n, exclude) {
+  const seen = new Set(exclude), out = [];
+  for (const x of shuffle(list.slice())) { const key = keyFn(x); if (!seen.has(key)) { seen.add(key); out.push(x); } if (out.length >= n) break; }
+  return out;
+}
+function makeQuiz(it) {
+  const types = ['meaning', 'reverse', 'reading'];
+  if (canSpeak()) types.push('listen');
+  if (S.mode === 'adult') types.push('fill', 'reading');  // 어른은 읽기 문제 비중↑
+  // 읽기 문제 후보: 소리 변화 없음 + 드문 읽기 아님 + 두 글자 이상 단어(한 글자 단독은 읽기가 여럿이라 정답이 모호함)
+  const readEx = it.ex.filter(e => !e.ch && !e.rare && [...e.w].length > 1 && !e.amb);
+  let t = pick(types);
+  if (t === 'reading' && !readEx.length) t = 'meaning';
+  const pool = poolFor(it);
+  if (t === 'meaning') {   // 한자 → 뜻(훈음)
+    const ds = distinct(pool, x => x.hun, 3, [it.hun]);
+    return { t, ask: '이 한자의 뜻과 소리는?', body: `<div class="qbig jp" lang="ja">${it.k}</div>`,
+      choices: shuffle([{ html: esc(it.hun), ok: true }, ...ds.map(x => ({ html: esc(x.hun) }))]), cls: '', say: null };
+  }
+  if (t === 'reverse') {   // 뜻 → 한자
+    const ds = distinct(pool, x => x.k, 3, [it.k]);
+    return { t, ask: '이 뜻의 한자는?', body: `<div class="qhun">${esc(it.hun)}</div><div class="qsub">${esc(it.m)}</div>`,
+      choices: shuffle([{ html: it.k, ok: true }, ...ds.map(x => ({ html: x.k }))]), cls: 'kan', say: null };
+  }
+  if (t === 'reading') {   // 단어 속 한자의 읽기 — '이럴 땐 이 발음' 훈련
+    const e = pick(readEx), right = kata2hira(it.rd.find(r => r.r === e.r).stem);
+    const own = it.rd.map(r => kata2hira(r.stem)).filter(x => x !== right);
+    const other = pool.flatMap(x => x.rd.filter(r => !r.rare).map(r => kata2hira(r.stem)));
+    const opts = [...new Set(shuffle(own))].slice(0, 2);
+    for (const o of shuffle(other)) { if (opts.length >= 3) break; if (o !== right && !opts.includes(o)) opts.push(o); }
+    const w = esc(e.w).replace(it.k, `<span class="hl-kun" style="text-decoration:underline">${it.k}</span>`);
+    return { t, ask: '밑줄 친 한자는 이 단어에서 어떻게 읽을까요?', body: `<div class="qword jp" lang="ja">${w}</div><div class="qsub">${esc(e.m)}</div>`,
+      choices: shuffle([{ html: right, ok: true }, ...opts.map(x => ({ html: x }))]).map(c => ({ ...c, html: `<span class="jp" lang="ja">${c.html}</span>${S.hangul ? `<small>${KH(c.html)}</small>` : ''}` })),
+      cls: '', say: e.y, sayAfter: true };
+  }
+  if (t === 'listen') {    // 소리 듣고 단어 고르기
+    const e = pick(it.ex);
+    const others = distinct(pool.flatMap(x => x.ex.map(ex => ({ ...ex, k: x.k }))), x => x.y, 3, [e.y]);
+    return { t, ask: '잘 듣고 알맞은 단어를 고르세요', body: `<button class="speaker" id="qSpk">🔊</button><div class="qsub">${esc(e.m)}</div>`,
+      choices: shuffle([{ html: esc(e.w), ok: true }, ...others.map(x => ({ html: esc(x.w) }))]).map(c => ({ ...c, html: `<span class="jp" lang="ja">${c.html}</span>` })),
+      cls: '', say: e.y, sayFirst: true };
+  }
+  // fill (어른): 빈칸에 들어갈 한자
+  const e = pick(it.ex);
+  const ds = distinct(pool, x => x.k, 3, [it.k]);
+  return { t, ask: '빈칸에 들어갈 한자는?', body: `<div class="qword jp" lang="ja">${esc(e.w).replace(it.k, '<span style="color:var(--accent)">□</span>')}</div><div class="qsub jp" lang="ja">${esc(e.y)} · ${esc(e.m)}</div>`,
+    choices: shuffle([{ html: it.k, ok: true }, ...ds.map(x => ({ html: x.k }))]), cls: 'kan', say: e.y, sayAfter: true };
+}
+
+/* ═══════════════ 공부 세션 (새 한자 + 복습 + 틀린 문제 반복) ═══════════════ */
+let SES = null;
+function startSession() {
+  const { due, fresh } = todayPlan();
+  if (!due.length && !fresh.length) { renderHome(); return; }
+  const q = []; let ri = 0;
+  // 새 한자 카드 → 바로 문제 → 복습 2개씩 끼워 넣기 (간격을 두고 다시 떠올리기)
+  fresh.forEach(it => {
+    q.push({ t: 'learn', k: it.k }); q.push({ t: 'quiz', k: it.k, isNew: true });
+    for (let j = 0; j < 2 && ri < due.length; j++) q.push({ t: 'quiz', k: due[ri++].k });
+  });
+  while (ri < due.length) q.push({ t: 'quiz', k: due[ri++].k });
+  // 마무리: 오늘 배운 새 한자 한 번 더 (섞어서)
+  shuffle(fresh.slice()).forEach(it => q.push({ t: 'quiz', k: it.k, roundup: true }));
+  SES = { q, pos: 0, ok: 0, ng: 0, newKs: fresh.map(i => i.k), revN: due.length, extra: false };
+  stepSession();
+}
+function startExtra() {   // 헷갈린 한자 자유 연습 (복습 일정은 바꾸지 않음)
+  const weak = D.items.filter(it => st(it.k) && st(it.k).w > 0).sort((a, b) => (st(b.k).w / (st(b.k).c + 1)) - (st(a.k).w / (st(a.k).c + 1))).slice(0, 12);
+  const pool = weak.length ? weak : D.items.filter(it => st(it.k)).slice(-12);
+  if (!pool.length) { toast('먼저 오늘의 공부로 한자를 배워 보세요!'); return; }
+  SES = { q: shuffle(pool.slice()).map(it => ({ t: 'quiz', k: it.k, practice: true })), pos: 0, ok: 0, ng: 0, newKs: [], revN: 0, extra: true };
+  stepSession();
+}
+function stepSession() {
+  if (SES.pos >= SES.q.length) return finishSession();
+  const item = SES.q[SES.pos];
+  if (item.t === 'learn') renderCard(item.k, 'learn', () => { SES.pos++; stepSession(); });
+  else renderQuiz(item);
+}
+function grade(item, ok) {
+  const today = dayNum();
+  const s = S.srs[item.k] || (S.srs[item.k] = { b: 0, d: 0, c: 0, w: 0, f: today });
+  ok ? s.c++ : s.w++;
+  if (!item.retry && !item.roundup && !item.practice) {   // 첫 시도만 복습 일정에 반영
+    if (item.isNew) { s.b = 1; s.d = today + 1; S.today.newDone++; }
+    else if (ok) { s.b = Math.min(s.b + 1, CFG.INTERVALS.length - 1); s.d = today + CFG.INTERVALS[s.b]; S.today.revDone++; }
+    else { s.b = 1; s.d = today + 1; S.today.revDone++; }
+  }
+  if (!ok && !item.practice) {  // 틀리면 몇 문제 뒤 다시 — 맞힐 때까지 반복
+    SES.q.splice(Math.min(SES.pos + 1 + CFG.RETRY_GAP, SES.q.length), 0, { t: 'quiz', k: item.k, retry: true });
+  }
+  ok ? SES.ok++ : SES.ng++;
+  save();
+}
+function renderQuiz(item) {
+  const it = D.byK[item.k], Q = makeQuiz(it);
+  window.__lastQ = Q;   // 자동 테스트용 확인 지점
+  const tag = item.isNew ? '✨ 새 한자' : item.retry ? '🔁 다시 한 번' : item.roundup ? '🌙 오늘 배운 한자 복습' : item.practice ? '🔁 연습' : '📅 복습';
+  $('#scrQuiz').innerHTML = `
+    <div class="qtop"><div class="qprog"><i style="width:${SES.pos / SES.q.length * 100}%"></i></div><span class="muted">${SES.pos + 1}/${SES.q.length}</span></div>
+    <div class="qask">${tag} · ${esc(Q.ask)}</div>
+    ${Q.body}
+    <div class="choices">${Q.choices.map((c, i) => `<button class="choice ${Q.cls} ${Q.cls === 'kan' ? 'jp' : ''}" ${Q.cls === 'kan' ? 'lang="ja"' : ''} data-i="${i}">${c.html}</button>`).join('')}</div>
+    <div class="fb" id="qfb"></div>
+    <div id="qafter"></div>`;
+  if (Q.sayFirst) { $('#qSpk').onclick = () => speak(Q.say); speak(Q.say); }
+  let answered = false;
+  $('#scrQuiz').querySelectorAll('.choice').forEach(b => b.onclick = () => {
+    if (answered) return; answered = true;          // 연타 방지
+    const c = Q.choices[+b.dataset.i], ok = !!c.ok;
+    $('#scrQuiz').querySelectorAll('.choice').forEach(x => { if (Q.choices[+x.dataset.i].ok) x.classList.add('right'); });
+    if (!ok) b.classList.add('wrong');
+    $('#qfb').className = 'fb ' + (ok ? 'ok' : 'ng');
+    $('#qfb').textContent = ok ? pick(['⭕ 정답!', '⭕ 잘했어요!', '⭕ 맞았어요!']) : '❌ 아쉬워요! 조금 뒤에 다시 나와요';
+    if (Q.sayAfter && Q.say) speak(Q.say);
+    grade(item, ok);
+    $('#qafter').innerHTML = `${ok ? '' : `<button class="btn ghost" id="qCard" style="margin-bottom:10px"><span class="jp" lang="ja">${it.k}</span> 카드 다시 보기</button>`}<button class="btn main" id="qNext">다음 ▶</button>`;
+    if (!ok) $('#qCard').onclick = () => renderCard(it.k, 'learn', () => { SES.pos++; stepSession(); });
+    $('#qNext').onclick = () => { SES.pos++; stepSession(); };
+  });
+  show('Quiz', '✏️ 문제 풀기');
+}
+function finishSession() {
+  const today = dayNum();
+  if (!SES.extra) {   // 연속 학습 일수
+    if (S.streak.last !== today) { S.streak.n = S.streak.last === today - 1 ? S.streak.n + 1 : 1; S.streak.last = today; }
+  }
+  let stk = '';
+  if (S.mode === 'kid' && !SES.extra) { stk = pick([...CFG.STICKERS.match(/\p{Extended_Pictographic}/gu)]); S.stickers += stk; }
+  save(); topbar();
+  const rate = SES.ok + SES.ng ? Math.round(SES.ok / (SES.ok + SES.ng) * 100) : 0;
+  $('#scrDone').innerHTML = `<div class="card done">
+    <div class="st">${stk || '🎉'}</div>
+    <h2 style="margin-top:6px">${SES.extra ? '연습 끝!' : '오늘 공부 완료!'}</h2>
+    ${stk ? '<p>스티커를 받았어요!</p>' : ''}
+    <p class="muted" style="margin:8px 0">맞힌 문제 ${SES.ok} · 다시 푼 문제 ${SES.ng} · 정답률 ${rate}%</p>
+    ${SES.newKs.length ? `<p>오늘 새로 배운 한자</p><div class="jp" lang="ja" style="font-size:2.4rem;letter-spacing:6px">${SES.newKs.join('')}</div>` : ''}
+    <p class="muted" style="margin-top:10px">🔥 연속 ${S.streak.n}일째 공부 중!</p>
+    <p class="muted">새로 배운 한자는 <b>내일</b> 다시 나와요. 잊을 때쯤 또 만나요 😊</p>
+    <button class="btn main" style="margin-top:14px" id="dHome">홈으로</button></div>`;
+  $('#dHome').onclick = renderHome;
+  show('Done', '🎉 완료');
+}
+
+/* ═══════════════ 읽기 규칙 (한국음 ↔ 음독, 날짜, 소리 부품) ═══════════════ */
+function renderRules(focus) {
+  const kh = (y) => S.hangul ? ` <span class="muted">(${KH(y)})</span>` : '';
+  $('#scrRules').innerHTML = `
+    <div class="card" id="rDates"><h2>📅 날짜 읽는 법</h2><p class="muted">1~10일, 14·20·24일은 특별해요. ⭐는 단어 통째로 외우는 특별한 읽기.</p>
+      <table class="t"><tr><th>날짜</th><th>읽기</th></tr>${CFG.DATES.map(([d, y, s]) => `<tr><td>${d}일</td><td><button class="jp ex" lang="ja" data-say="${y}" style="padding:2px">${y}${kh(y)} ${s ? '⭐' : ''} 🔊</button></td></tr>`).join('')}</table></div>
+    <div class="card"><h2>🇰🇷 한국 한자음으로 음독 맞히기</h2>
+      <p class="muted">한국어를 쓰는 우리만의 비밀 무기! 한국 음의 <b>받침</b>을 보면 일본 음독의 끝소리를 짐작할 수 있어요. (대부분 맞지만 예외도 있어요)</p>
+      <table class="t"><tr><th>한국 받침</th><th>일본 음독 끝</th><th>예</th></tr>
+      <tr><td>ㄱ</td><td>く·き</td><td class="jp" lang="ja">学 학→ガク, 木 목→モク, 石 석→セキ</td></tr>
+      <tr><td>ㄹ</td><td>つ·ち</td><td class="jp" lang="ja">月 월→ゲツ, 日 일→ニチ, 出 출→シュツ</td></tr>
+      <tr><td>ㅂ</td><td>う (길게)</td><td class="jp" lang="ja">入 입→ニュウ, 十 십→ジュウ<br><span class="muted">예외: 立 립→リツ</span></td></tr>
+      <tr><td>ㅇ</td><td>う·い (길게)</td><td class="jp" lang="ja">生 생→セイ, 王 왕→オウ, 上 상→ジョウ</td></tr>
+      <tr><td>ㄴ·ㅁ</td><td>ん</td><td class="jp" lang="ja">山 산→サン, 人 인→ジン, 音 음→オン</td></tr>
+      <tr><td>받침 없음</td><td>대체로 그대로</td><td class="jp" lang="ja">火 화→カ, 水 수→スイ, 子 자→シ</td></tr></table></div>
+    <div class="card"><h2>🧩 소리 부품 — 모양이 소리를 알려줘요</h2>
+      <p class="muted">한자의 절반 넘게는 '뜻 부분 + 소리 부분'으로 되어 있어요(형성자). 소리 부분이 같으면 음독도 비슷해요!</p>
+      <table class="t"><tr><th>소리 부품</th><th>같은 소리 한자</th></tr>
+      <tr><td class="jp" lang="ja">青 セイ</td><td class="jp" lang="ja">晴·清·静·精 → 모두 セイ</td></tr>
+      <tr><td class="jp" lang="ja">交 コウ</td><td class="jp" lang="ja">校·効·郊 → コウ</td></tr>
+      <tr><td class="jp" lang="ja">早 ソウ</td><td class="jp" lang="ja">草 → ソウ</td></tr>
+      <tr><td class="jp" lang="ja">化 カ</td><td class="jp" lang="ja">花·貨 → カ</td></tr>
+      <tr><td class="jp" lang="ja">白 ハク</td><td class="jp" lang="ja">百 ヒャク · 泊·拍 ハク</td></tr></table>
+      <p class="muted" style="margin-top:6px">학년이 올라갈수록 이 표가 늘어나요.</p></div>
+    <div class="card"><h2>🥢 세는 말의 소리 변화 (~本)</h2>
+      <table class="t"><tr><th>개수</th><th>읽기</th></tr>${[['1','いっぽん'],['2','にほん'],['3','さんぼん'],['4','よんほん'],['5','ごほん'],['6','ろっぽん'],['8','はっぽん'],['10','じゅっぽん']].map(([n, y]) => `<tr><td>${n}</td><td><button class="jp ex" lang="ja" data-say="${y}" style="padding:2px">${y}${kh(y)} 🔊</button></td></tr>`).join('')}</table></div>`;
+  $('#scrRules').querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+  show('Rules', '🧩 읽기 규칙');
+  if (focus === 'dates') $('#rDates').scrollIntoView();
+}
+
+/* ═══════════════ 설정 · 백업 ═══════════════ */
+function renderSet() {
+  $('#scrSet').innerHTML = `<div class="card">
+    <div class="set"><span>이름</span><input type="text" id="sName" value="${esc(S.name)}" placeholder="(선택)" style="max-width:170px"></div>
+    <div class="set"><span>모드</span><div class="seg"><button data-m="kid" class="${S.mode === 'kid' ? 'on' : ''}">🧒 어린이</button><button data-m="adult" class="${S.mode === 'adult' ? 'on' : ''}">🧑 어른</button></div></div>
+    <div class="set"><span>하루 새 한자</span><div class="stepper"><button id="nMinus">−</button><b id="nVal">${S.newPerDay}</b><button id="nPlus">+</button></div></div>
+    <div class="set"><span>한글 발음 표시<br><small class="muted">참고용 근사치</small></span><div class="seg"><button data-h="1" class="${S.hangul ? 'on' : ''}">켜기</button><button data-h="0" class="${!S.hangul ? 'on' : ''}">끄기</button></div></div>
+    <div class="set"><span>말하기 속도</span><div class="seg">${[0.6, 0.8, 1.0].map(v => `<button data-r="${v}" class="${S.rate === v ? 'on' : ''}">${v === 0.6 ? '느리게' : v === 0.8 ? '보통' : '빠르게'}</button>`).join('')}</div></div>
+    <button class="btn sub" style="margin-top:14px" id="sTest">🔊 목소리 확인 (こんにちは)</button>
+    <p class="muted" id="sVoice" style="margin-top:6px"></p></div>
+    <div class="card"><h2>💾 진도 백업</h2>
+      <p class="muted">폰을 바꾸거나 데이터가 지워질 때를 대비해 가끔 백업 코드를 메모 앱에 저장해 두세요.</p>
+      <button class="btn ghost" id="bExp" style="margin-top:8px">백업 코드 만들기 (복사)</button>
+      <textarea id="bTxt" placeholder="여기에 백업 코드를 붙여 넣고 '불러오기'를 누르세요" style="margin-top:10px"></textarea>
+      <button class="btn ghost" id="bImp" style="margin-top:8px">불러오기</button>
+      <button class="btn ghost" id="bReset" style="margin-top:18px;color:var(--ng)">진도 모두 지우기</button></div>
+    <div class="card muted" style="font-size:.82rem">
+      <h2 style="color:var(--ink)">📖 출처</h2>
+      한자 목록·학년: 文部科学省 「学年別漢字配当表」(2020 시행) · 음훈: 文化庁 「常用漢字表」(2010)<br>
+      획순: <b>KanjiVG</b> © Ulrich Apel, CC BY-SA 3.0 · 한국 한자음 대조: <b>KANJIDIC2</b> © EDRDG, CC BY-SA 4.0<br>
+      이 앱의 한자 데이터도 같은 조건(CC BY-SA)으로 공개됩니다.<br><br>
+      <b>한계</b>: 한글 발음은 참고용 근사치 · 음성은 기기의 음성 합성 · 글자 풀이의 '외우기 이야기'는 학습용 이야기이며 실제 어원은 '진짜 유래'를 보세요.</div>`;
+  const s = $('#scrSet');
+  $('#sName').onchange = e => { S.name = e.target.value.trim().slice(0, 20); save(); };
+  s.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { setMode(b.dataset.m, false); renderSet(); });
+  $('#nMinus').onclick = () => { S.newPerDay = Math.max(1, S.newPerDay - 1); save(); $('#nVal').textContent = S.newPerDay; };
+  $('#nPlus').onclick = () => { S.newPerDay = Math.min(30, S.newPerDay + 1); save(); $('#nVal').textContent = S.newPerDay; };
+  s.querySelectorAll('[data-h]').forEach(b => b.onclick = () => { S.hangul = b.dataset.h === '1'; save(); renderSet(); });
+  s.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { S.rate = +b.dataset.r; save(); renderSet(); });
+  $('#sTest').onclick = () => { speak('こんにちは'); $('#sVoice').textContent = !canSpeak() ? '이 기기는 음성 합성을 지원하지 않아요' : jaVoice ? `목소리: ${jaVoice.name}` : '일본어 목소리를 찾지 못했어요. 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성에서 일본어를 받아 주세요.'; };
+  $('#bExp').onclick = async () => {
+    const code = btoa(unescape(encodeURIComponent(JSON.stringify(S))));
+    $('#bTxt').value = code;
+    try { await navigator.clipboard.writeText(code); toast('복사했어요! 메모 앱에 붙여 넣어 두세요'); } catch (e) { $('#bTxt').select(); toast('코드를 길게 눌러 복사해 주세요'); }
+  };
+  $('#bImp').onclick = () => {
+    try {
+      const obj = JSON.parse(decodeURIComponent(escape(atob($('#bTxt').value.trim()))));
+      if (!obj || typeof obj.srs !== 'object') throw new Error('형식');
+      if (!confirm(`백업을 불러올까요? (배운 한자 ${Object.keys(obj.srs).length}자) 지금 진도는 덮어써져요.`)) return;
+      S = Object.assign(defaultState(), obj); save(); load(); toast('불러왔어요!'); renderHome();
+    } catch (e) { toast('⚠ 백업 코드가 올바르지 않아요'); }
+  };
+  $('#bReset').onclick = () => {
+    if (!confirm('정말 모든 진도를 지울까요?')) return;
+    if (!confirm('한 번 더 확인해요. 되돌릴 수 없어요!')) return;
+    const m = S.mode, n = S.name; S = defaultState(); S.mode = m; S.name = n; S.newPerDay = CFG.DEFAULT_NEW[m] || 4; save(); toast('초기화했어요'); renderHome();
+  };
+  show('Set', '⚙️ 설정');
+}
+function setMode(m, first) {
+  S.mode = m;
+  if (first) { S.newPerDay = CFG.DEFAULT_NEW[m]; S.hangul = true; S.rate = m === 'kid' ? 0.8 : 1.0; }
+  save(); topbar();
+}
+
+/* ═══════════════ 첫 실행 안내 ═══════════════ */
+function onboarding() {
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="card" style="text-align:center">
+    <div style="font-size:3rem">🈶</div><h2>반가워요!</h2>
+    <p class="muted" style="margin-bottom:14px">일본 초등학교 한자 1026자를<br>잊을 때쯤 다시 만나며 익혀요.</p>
+    <input type="text" id="oName" placeholder="이름 (선택)" style="margin-bottom:12px">
+    <button class="btn main" data-m="kid">🧒 어린이 모드<br><small style="font-weight:normal">하루 4자 · 쉬운 설명</small></button>
+    <button class="btn sub" data-m="adult">🧑 어른 모드<br><small style="font-weight:normal">하루 10자 · 깊은 설명 펼침</small></button></div>`;
+  document.body.appendChild(m);
+  m.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { S.name = $('#oName').value.trim().slice(0, 20); setMode(b.dataset.m, true); m.remove(); renderHome(); });
+}
+
+/* ═══════════════ 시작 ═══════════════ */
+$('#btnHome').onclick = () => { if (cur === 'Quiz' && !confirm('공부를 그만하고 홈으로 갈까요? (푼 문제는 저장돼요)')) return; renderHome(); };
+load();
+loadGrades().then(() => {
+  if (!D.items.length) { $('#scrHome').innerHTML = '<div class="card">⚠ 한자 데이터를 불러오지 못했어요. 새로고침 해 주세요.</div>'; show('Home'); return; }
+  renderHome();
+  if (!S.mode) onboarding();
+});
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
