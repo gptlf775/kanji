@@ -1,1 +1,1 @@
-window.KANJI_AVAILABLE=[1,2,4,6];
+window.KANJI_AVAILABLE=[1,2,4,5,6];
