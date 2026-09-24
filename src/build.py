@@ -14,7 +14,22 @@ import json, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-REF_DIR = os.environ.get('KANJI_REF', '')  # 원천데이터 폴더 (환경변수로 지정)
+# 원천데이터 폴더: 환경변수 KANJI_REF, 없으면 앱 폴더 옆 '일본어한자_원천데이터'
+REF_DIR = os.environ.get('KANJI_REF') or os.path.join(os.path.dirname(ROOT), '일본어한자_원천데이터')
+TYPES = {'상형', '지사', '회의', '형성', '가차', '회의 겸 형성', '국자'}  # 글자 구성 유형 허용값
+
+def load_content(grade):
+    """content_gN.json 한 파일, 또는 content_gN_themes.json + content_gN_p*.json 여러 파일을 합침"""
+    one = os.path.join(HERE, f'content_g{grade}.json')
+    if os.path.exists(one):
+        return json.load(open(one, encoding='utf-8'))
+    th = json.load(open(os.path.join(HERE, f'content_g{grade}_themes.json'), encoding='utf-8'))
+    parts = sorted((f for f in os.listdir(HERE) if re.match(rf'^content_g{grade}_p\d+\.json$', f)),
+                   key=lambda f: int(re.findall(r'_p(\d+)', f)[0]))
+    items = []
+    for f in parts:
+        items += json.load(open(os.path.join(HERE, f), encoding='utf-8'))['items']
+    return dict(grade=grade, themes=th['themes'], items=items)
 
 def kata2hira(s):
     # 가타카나 → 히라가나 (U+30A1~30F6 → -0x60)
@@ -61,8 +76,13 @@ def kvg_paths(ch):
 def main(grade):
     J = json.load(open(os.path.join(REF_DIR, 'jouyou.json'), encoding='utf-8'))
     KD = json.load(open(os.path.join(REF_DIR, 'kd_grades.json'), encoding='utf-8'))
-    C = json.load(open(os.path.join(HERE, f'content_g{grade}.json'), encoding='utf-8'))
-    report, errors, warns = [], [], []
+    C = load_content(grade)
+    extra = os.path.join(HERE, 'ko_extra.json')   # 한국음 보정 (근거는 파일 안에)
+    if os.path.exists(extra):
+        for kk, v in json.load(open(extra, encoding='utf-8')).items():
+            if kk in KD and isinstance(v, list):
+                KD[kk]['ko'] = KD[kk]['ko'] + [v[0]]
+    report, errors, warns, infos = [], [], [], []
 
     official = [k for k, v in J.items() if v['g'] == str(grade)]
     authored = [it['k'] for it in C['items']]
@@ -79,8 +99,30 @@ def main(grade):
     out_items = []
     n_ex = n_changed = 0
     for k in theme_ks:  # 학습 순서 = 주제 묶음 순서
-        it = by_k[k]
+        it = by_k.get(k)
+        if not it:
+            continue  # 누락은 ①에서 이미 오류로 보고됨
+        # ⓪ 필수 항목·형식 검증
+        for f in ('hun', 'm', 'e', 't', 'p', 'o', 'mm', 'ad', 'tip', 'ex'):
+            if not it.get(f):
+                errors.append(f'{k}: 필수 항목 "{f}" 비어 있음')
+        if it.get('t') not in TYPES:
+            errors.append(f'{k}: 구성 유형 "{it.get("t")}" 은 허용값 {sorted(TYPES)} 이 아님')
+        if '형성' in (it.get('t') or '') and '소리' not in (it.get('p') or ''):
+            warns.append(f'{k}: 형성자인데 구성(p)에 "소리 ○○" 표시가 없음')
+        if len((it.get('hun') or '').split()) < 2:
+            warns.append(f'{k}: 훈음 "{it.get("hun")}" 이 "뜻 음" 형식이 아님')
+        if len(it.get('ex', [])) < 2 and len(parse_readings(J[k]['rd'])) > 1:
+            warns.append(f'{k}: 예시 단어가 {len(it.get("ex", []))}개뿐 (2개 이상 권장)')
+        for e in it.get('ex', []):
+            if re.search(r'[ァ-ヶ\s]', e[1]):
+                errors.append(f'{k}: 예시 "{e[0]}" 의 읽기 "{e[1]}" 에 가타카나/공백 포함 (히라가나만)')
         rds = parse_readings(J[k]['rd'])
+        # 주요(드물지 않은) 읽기 중 예시가 하나도 없는 것 → 경고
+        used = {e[2] for e in it.get('ex', [])}
+        for r in rds:
+            if not r['rare'] and r['r'] not in used and not any(u.split('-')[0] == r['stem'] for u in used):
+                infos.append(f'{k}: 읽기 "{r["r"]}" 의 예시 없음')
         rmap = {r['r']: r for r in rds}
         # ② 한국 음 검증: 훈음의 마지막 음절(들)이 KANJIDIC2 한국음에 포함되는가
         ko_sounds = it['hun'].split()[-1].split('/')
@@ -98,12 +140,20 @@ def main(grade):
                 errors.append(f'{k}: 예시 "{w}" 의 읽기 "{tgt}" 가 상용한자표 음훈 {[x["r"] for x in rds]} 에 없음')
                 continue
             stem_h = kata2hira(r['stem'])
-            hit = None
+            # 후보: 모든 변형 × 모든 위치. 단어 속 한자의 상대 위치에 가장 가까운 것 선택
+            # (예: 皇后 こうごう — 后는 앞의 こう가 아니라 뒤의 ごう)
+            idx = w.find(k)
+            expect = (idx / max(1, len(w))) * len(yomi)
+            cands = []
             for form, changed in variants(stem_h):
-                pos = yomi.find(form)
-                if pos >= 0:
-                    hit = (pos, len(form), changed)
-                    break
+                start = 0
+                while True:
+                    pos = yomi.find(form, start)
+                    if pos < 0:
+                        break
+                    cands.append((abs(pos - expect) + (0.5 if changed else 0), pos, len(form), changed))
+                    start = pos + 1
+            hit = min(cands)[1:] if cands else None
             if not hit:
                 errors.append(f'{k}: 예시 "{w}({yomi})" 안에서 읽기 "{stem_h}" 를 찾지 못함')
                 continue
@@ -138,8 +188,8 @@ def main(grade):
     open(os.path.join(ROOT, 'data', 'index.js'), 'w', encoding='utf-8').write(f'window.KANJI_AVAILABLE={json.dumps(avail)};\n')
 
     report.append(f'[{grade}학년] 공식 {len(official)}자 / 작성 {len(authored)}자 / 예시 {n_ex}개 (소리 변화 {n_changed}개)')
-    report.append(f'오류 {len(errors)}건, 경고 {len(warns)}건')
-    report += ['ERR ' + e for e in errors] + ['WARN ' + w for w in warns]
+    report.append(f'오류 {len(errors)}건, 경고 {len(warns)}건, 참고 {len(infos)}건(예시 없는 읽기)')
+    report += ['ERR ' + e for e in errors] + ['WARN ' + w for w in warns] + ['INFO ' + i for i in infos]
     txt = '\n'.join(report)
     open(os.path.join(HERE, f'verify_g{grade}.txt'), 'w', encoding='utf-8').write(txt + '\n')
     print(txt)
