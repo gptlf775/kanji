@@ -73,8 +73,84 @@ def kvg_paths(ch):
     paths.sort(key=lambda p: int(p[0]))
     return [re.sub(r'\s+', ' ', d).strip() for _, d in paths]
 
+OC_VALUES = {'확실', '통설', '불확실'}   # 유래 신뢰도
+
+def _tagger():
+    """예문 읽기 대조용 형태소 분석기 (없으면 None — 검사 생략)"""
+    try:
+        import fugashi
+        return fugashi.Tagger()
+    except Exception:
+        return None
+
+def analyzer_reading(tagger, sent):
+    """형태소 분석기가 본 문장 읽기(히라가나). 숫자+月·日本 등은 틀리게 읽으므로 '참고용'으로만 사용"""
+    out = []
+    for w in tagger(sent):
+        kana = getattr(w.feature, 'kana', None)
+        out.append(kata2hira(kana) if kana and kana != '*' else w.surface)
+    return ''.join(out)
+
+def check_v2(k, it, rds, exs, J, common, tagger, errors, warns, infos):
+    """2차 설계 항목 검증 — core·caution·sent·confuse·oc·kr"""
+    rset = {r['r'] for r in rds}
+    core = it.get('core', [])
+    if not (1 <= len(core) <= 3):
+        errors.append(f'{k}: 핵심 읽기(core)는 1~3개여야 함 (현재 {len(core)})')
+    for c in core:
+        if c not in rset:
+            errors.append(f'{k}: 핵심 읽기 "{c}" 가 상용한자표 음훈 {sorted(rset)} 에 없음')
+    n = len(it.get('ex', []))
+    avail = sum(1 for x in common if k in x.split('|')[0])   # 이 한자가 든 흔한 말 수
+    if n < 3 and n >= 1 and avail < 3:
+        infos.append(f'{k}: 대표 단어 {n}개 — 흔한 말이 {avail}개뿐이라 억지로 채우지 않음')
+    elif not (3 <= n <= 7):
+        warns.append(f'{k}: 대표 단어 {n}개 (3~7개 권장)')
+    for e in exs:
+        if not e['cm']:
+            infos.append(f'{k}: 대표 단어 "{e["w"]}({e["y"]})" 는 JMdict 흔한 말 표시 없음')
+    words = {e['w'] for e in exs}
+    for w, note in it.get('kr', []):
+        if w not in words:
+            errors.append(f'{k}: 한국어 뜻 차이(kr) 단어 "{w}" 가 대표 단어에 없음')
+        if not note:
+            errors.append(f'{k}: 한국어 뜻 차이(kr) "{w}" 설명 비어 있음')
+    for c in it.get('caution', []):
+        if len(c) != 3 or k not in c[0] or re.search(r'[ァ-ヶ\s]', c[1]):
+            errors.append(f'{k}: 주의할 읽기 형식 오류 {c} ([단어, 히라가나 읽기, 한 줄 설명])')
+    sents = it.get('sent', [])
+    if not sents:
+        errors.append(f'{k}: 예문(sent) 없음')
+    for s in sents:
+        if len(s) != 4:
+            errors.append(f'{k}: 예문 형식 오류 (필요: [문장, 히라가나 읽기, 한국어 번역, 대상 단어])'); continue
+        jp, yomi, ko, tw = s
+        if tw not in jp:
+            errors.append(f'{k}: 예문 "{jp}" 에 대상 단어 "{tw}" 없음')
+        ex = next((e for e in exs if e['w'] == tw), None)
+        if not ex:
+            errors.append(f'{k}: 예문 대상 단어 "{tw}" 가 대표 단어(ex)에 없음')
+        elif ex['y'] not in yomi.replace(' ', ''):
+            errors.append(f'{k}: 예문 읽기에 대상 단어 읽기 "{ex["y"]}" 가 없음')
+        if re.search(r'[ァ-ヶ]', yomi) and not re.search(r'[ァ-ヶ]', jp):
+            errors.append(f'{k}: 예문 읽기에 가타카나 (원문이 가타카나가 아니면 히라가나로)')
+        if tagger:
+            ar = analyzer_reading(tagger, jp)
+            mine = yomi.replace(' ', '')
+            if kata2hira(ar) != kata2hira(mine):
+                infos.append(f'{k}: 예문 읽기 확인 필요 — 작성 "{mine}" / 분석기 "{ar}"')
+    for c in it.get('confuse', []):
+        if len(c) != 2 or c[0] == k or not c[1]:
+            errors.append(f'{k}: 혼동 한자 형식 오류 {c} ([한자, 한 줄 차이])')
+    if it.get('oc') not in OC_VALUES:
+        errors.append(f'{k}: 유래 신뢰도(oc)는 {sorted(OC_VALUES)} 중 하나')
+
 def main(grade):
     J = json.load(open(os.path.join(REF_DIR, 'jouyou.json'), encoding='utf-8'))
+    cw_path = os.path.join(REF_DIR, 'freq', 'common_words.json')
+    common = json.load(open(cw_path, encoding='utf-8')) if os.path.exists(cw_path) else {}
+    tagger = _tagger()
+    v2_count = 0
     KD = json.load(open(os.path.join(REF_DIR, 'kd_grades.json'), encoding='utf-8'))
     C = load_content(grade)
     extra = os.path.join(HERE, 'ko_extra.json')   # 한국음 보정 (근거는 파일 안에)
@@ -159,9 +235,13 @@ def main(grade):
                 continue
             if hit[2]:
                 n_changed += 1
-            ex = dict(w=w, y=yomi, r=tgt, m=mean, hs=hit[0], hl=hit[1], ch=hit[2], rare=r['rare'])
+            ex = dict(w=w, y=yomi, r=tgt, m=mean, hs=hit[0], hl=hit[1], ch=hit[2], rare=r['rare'],
+                      cm=f'{w}|{yomi}' in common)   # cm = JMdict '흔한 말' 여부
             if amb:
                 ex['amb'] = True
+            kr = next((n for ww, n in it.get('kr', []) if ww == w), None)   # 한국어와 뜻이 다른 한자어
+            if kr:
+                ex['kr'] = kr
             exs.append(ex)
         for w, yomi, mean, note in it.get('sp', []):
             if k not in w:
@@ -171,13 +251,23 @@ def main(grade):
         if len(paths) != J[k]['sc']:
             errors.append(f'{k}: 획순 데이터 {len(paths)}획 ≠ 상용한자표 {J[k]["sc"]}획')
         theme = next(t['name'] for t in C['themes'] if k in t['ks'])
-        out_items.append(dict(
+        v2 = 'core' in it   # 2차 설계 항목이 작성된 글자만 검증
+        if v2:
+            v2_count += 1
+            check_v2(k, it, rds, exs, J, common, tagger, errors, warns, infos)
+        out = dict(
             k=k, g=grade, sc=J[k]['sc'], rad=J[k]['rad'], theme=theme,
             hun=it['hun'], m=it['m'], e=it.get('e', ''), t=it['t'], p=it['p'],
             o=it['o'], mm=it['mm'], ad=it['ad'], tip=it.get('tip', ''),
             rd=rds, ex=exs,
             sp=[dict(w=a, y=b, m=c, n=d) for a, b, c, d in it.get('sp', [])],
-            st=paths))
+            st=paths)
+        if v2:
+            out.update(core=it['core'], oc=it['oc'],
+                       caution=[dict(w=a, y=b, n=c) for a, b, c in it.get('caution', [])],
+                       sent=[dict(j=a, y=b, ko=c, w=d) for a, b, c, d in it.get('sent', [])],
+                       confuse=[dict(k=a, n=b) for a, b in it.get('confuse', [])])
+        out_items.append(out)
 
     data = dict(grade=grade, themes=C['themes'], items=out_items)
     js = f'window.KANJI_GRADES=window.KANJI_GRADES||{{}};window.KANJI_GRADES[{grade}]=' + \
@@ -190,7 +280,7 @@ def main(grade):
     open(os.path.join(ROOT, 'data', 'index.js'), 'w', encoding='utf-8').write(
         f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};\n')
 
-    report.append(f'[{grade}학년] 공식 {len(official)}자 / 작성 {len(authored)}자 / 예시 {n_ex}개 (소리 변화 {n_changed}개)')
+    report.append(f'[{grade}학년] 공식 {len(official)}자 / 작성 {len(authored)}자 / 예시 {n_ex}개 (소리 변화 {n_changed}개) / 2차 항목 작성 {v2_count}자')
     report.append(f'오류 {len(errors)}건, 경고 {len(warns)}건, 참고 {len(infos)}건(예시 없는 읽기)')
     report += ['ERR ' + e for e in errors] + ['WARN ' + w for w in warns] + ['INFO ' + i for i in infos]
     txt = '\n'.join(report)
