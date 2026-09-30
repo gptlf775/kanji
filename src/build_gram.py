@@ -110,10 +110,19 @@ def main():
             if ar != mine: infos.append(f'예문 읽기 확인 — "{j}" 작성 {mine} / 분석기 {ar}')
     vmap = {r[0]: r for r in verbs}
     demo = []
+    VKEYS = ['dict', 'masu', 'nai', 'ta', 'nakatta', 'te', 'tai', 'pot', 'vol', 'ba', 'imp', 'pass', 'caus', 'causp']
     for w in G.DEMO:
-        if w not in vmap: errors.append(f'DEMO 동사 {w} 가 목록에 없음')
-        else: demo.append(vmap[w][:4])
-    data = dict(tabs=G.TABS, demo=demo, verbs=verbs, adjs=adjs, pat=pats)
+        if w not in vmap: errors.append(f'DEMO 동사 {w} 가 목록에 없음'); continue
+        ko = G.DEMO_KO.get(w, '').split('|')
+        if len(ko) != len(VKEYS): errors.append(f'DEMO_KO {w}: 한국어 {len(ko)}개 (활용형 {len(VKEYS)}개와 같아야 함)'); ko = []
+        demo.append(vmap[w][:4] + [dict(zip(VKEYS, ko))])
+    if set(G.FORM_KO['v']) != set(VKEYS): errors.append('FORM_KO 동사 활용형 목록 불일치')
+    # 용어 사전: 기초 탭 본문에 실제로 나오는 용어인지
+    txt_all = json.dumps(G.TABS, ensure_ascii=False) + json.dumps(pats, ensure_ascii=False)
+    for t, d, inline in G.GLOSS:
+        if not d: errors.append(f'용어 "{t}" 풀이 없음')
+        if inline and t not in txt_all: infos.append(f'용어 "{t}" 는 본문에 나오지 않음 (사전에만 표시)')
+    data = dict(tabs=G.TABS, demo=demo, verbs=verbs, adjs=adjs, pat=pats, formKo=G.FORM_KO, gloss=G.GLOSS)
     js = 'window.GRAM=' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n'
     open(os.path.join(ROOT, 'data', 'gram.js'), 'w', encoding='utf-8').write(js)
     write_index()

@@ -201,7 +201,8 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .gpat .pt{font-size:1.25rem;font-weight:bold;} .gpat .cn{font-size:.85rem;color:var(--on);background:var(--on-soft);border-radius:8px;padding:1px 8px;display:inline-block;margin:2px 0;}
 .lvb{font-size:.72rem;border-radius:6px;padding:0 6px;margin-left:4px;vertical-align:2px;font-weight:bold;}
 .lvb.n5{background:#DDF2E5;color:#2F7A52;} .lvb.n4{background:#E4ECFC;color:#3A63B8;}
-table.cj td{vertical-align:top;} .gform{display:block;text-align:left;padding:2px;} table.cj .f{font-size:1.1rem;} table.cj small{display:block;color:var(--sub);font-size:.75rem;}
+table.cj td{vertical-align:top;} .gform{display:block;text-align:left;padding:2px;} table.cj small.kx{color:#B4541F;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
+.gl{border-bottom:1.5px dotted var(--on);cursor:pointer;} table.cj .f{font-size:1.1rem;} table.cj small{display:block;color:var(--sub);font-size:.75rem;}
 .vrow{display:flex;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px dashed var(--line);width:100%;text-align:left;}
 .vrow .w{font-size:1.3rem;min-width:84px;} .vrow .m{flex:1;font-size:.88rem;} .vrow .g{font-size:.75rem;border-radius:6px;padding:1px 6px;background:#F5EEE5;white-space:nowrap;}
 input[type=text],textarea{width:100%;font-size:16px;padding:10px;border-radius:12px;border:2px solid var(--line);background:#FFFDF9;font-family:inherit;}
@@ -1316,8 +1317,8 @@ function nextKprac() {
 // 그룹: 1=5단(1그룹) 1k=行く 1a=いらっしゃる류(ます·명령 불규칙) 1r=ある 2=1단(2그룹) 3s=する(○○する) 3k=来る
 const GROW = { u: 'うくぐすつぬぶむる', a: 'わかがさたなばまら', i: 'いきぎしちにびみり', e: 'えけげせてねべめれ', o: 'おこごそとのぼもろ' };
 const gsh = (c, to) => GROW[to][GROW.u.indexOf(c)];
-const VFORMS = [['dict', '사전형'], ['masu', 'ます형 (정중)'], ['nai', 'ない형 (부정)'], ['ta', 'た형 (과거)'], ['nakatta', 'なかった (과거 부정)'], ['te', 'て형 (~하고·~해서)'],
-  ['tai', 'たい (~하고 싶다)'], ['pot', '가능형 (~할 수 있다)'], ['vol', '의지형 (~하자)'], ['ba', 'ば형 (~하면)'], ['imp', '명령형 (~해라)'], ['pass', '수동형 (~당하다)'], ['caus', '사역형 (~시키다)'], ['causp', '사역수동 (억지로 ~하다)']];
+const VFORMS = [['dict', '사전형'], ['masu', 'ます형'], ['nai', 'ない형'], ['ta', 'た형'], ['nakatta', 'なかった (과거 부정)'], ['te', 'て형'],
+  ['tai', 'たい (희망)'], ['pot', '가능형'], ['vol', '의지형'], ['ba', 'ば형'], ['imp', '명령형'], ['pass', '수동형'], ['caus', '사역형'], ['causp', '사역수동']];
 function conjVerb(w, y, g) {
   const R = {};
   if (g === '3s' || g === '3k') {
@@ -1353,8 +1354,8 @@ function conjVerb(w, y, g) {
   R.causp = both((s, l) => g === '1r' || g === '1a' ? '—' : s + gsh(l, 'a') + 'せられる');
   return R;
 }
-const AFORMS = { i: [['dict', '기본형'], ['desu', '정중'], ['neg', '부정'], ['past', '과거'], ['pastneg', '과거 부정'], ['te', 'て형 (~하고)'], ['adv', '부사 (~하게)'], ['ba', '~하면'], ['sa', '명사 (~함)'], ['sou', '~해 보인다']],
-  na: [['dict', '기본형'], ['desu', '정중'], ['neg', '부정'], ['past', '과거'], ['pastneg', '과거 부정'], ['te', 'で (~하고)'], ['adv', '부사 (~하게)'], ['ba', '~하면'], ['attr', '명사 꾸미기']] };
+const AFORMS = { i: [['dict', '기본형'], ['desu', '정중'], ['neg', '부정'], ['past', '과거'], ['pastneg', '과거 부정'], ['te', 'て형'], ['adv', '부사 (く)'], ['ba', '가정 (ければ)'], ['sa', '명사 (さ)'], ['sou', '모양 (そう)']],
+  na: [['dict', '기본형'], ['desu', '정중'], ['neg', '부정'], ['past', '과거'], ['pastneg', '과거 부정'], ['te', 'て형 (で)'], ['adv', '부사 (に)'], ['ba', '가정 (なら)'], ['attr', '명사 꾸미기 (な)']] };
 function conjAdj(w, y, t) {
   const R = {}, both = f => [f(w), f(y)];
   if (t === 'na') {
@@ -1372,6 +1373,30 @@ function conjAdj(w, y, t) {
 // 문장 속 1026자 한자를 누르면 그 한자 카드로
 const linkK = s => esc(s).replace(/\p{Script=Han}/gu, c => D.byK[c] ? `<span class="kl" data-k="${c}">${c}</span>` : c);
 let gramTab = 'intro', gramVerb = null, gramFilter = { lv: 0, g: '' };
+// 용어 사전: 본문의 문법 용어(て형·1그룹…)에 점선 밑줄 → 누르면 쉬운 풀이. 한 덩어리 안에서는 처음 나온 곳만 밑줄
+let GLRE = null, GLMAP = null;
+function glInit() {
+  if (GLMAP || !window.GRAM || !GRAM.gloss) return;
+  GLMAP = Object.fromEntries(GRAM.gloss.map(([t, d]) => [t, d]));
+  const ts = GRAM.gloss.filter(g => g[2]).map(g => g[0]).sort((a, b) => b.length - a.length);
+  GLRE = new RegExp('(' + ts.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')');
+}
+function rich(s, seen) {
+  glInit();
+  if (!GLRE) return linkK(s);
+  return String(s).split(GLRE).map((p, i) => {
+    if (!(i % 2)) return linkK(p);
+    if (seen) { if (seen.has(p)) return linkK(p); seen.add(p); }
+    return `<span class="gl" data-gl="${esc(p)}">${esc(p)}</span>`;
+  }).join('');
+}
+function showGloss(t) {
+  glInit();
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="card"><h2>📖 ${esc(t)}</h2><p style="margin-top:6px">${linkK(GLMAP[t] || '')}</p><button class="btn main" style="margin-top:14px">닫기</button></div>`;
+  m.onclick = e => { if (e.target === m || e.target.tagName === 'BUTTON') m.remove(); };
+  document.body.appendChild(m);
+}
 function renderGram(tab) {
   if (tab) gramTab = tab;
   if (!window.GRAM) {
@@ -1396,14 +1421,16 @@ function renderGram(tab) {
   sc.querySelectorAll('[data-gt]').forEach(b => b.onclick = () => renderGram(b.dataset.gt));
   sc.querySelectorAll('[data-say]').forEach(b => b.onclick = e => { if (e.target.closest('.kl')) return; speak(b.dataset.say); });
   sc.querySelectorAll('.kl').forEach(b => b.onclick = e => { e.stopPropagation(); renderCard(b.dataset.k, 'browse'); });
+  sc.querySelectorAll('.gl').forEach(b => b.onclick = e => { e.stopPropagation(); e.preventDefault(); showGloss(b.dataset.gl); });
   sc.querySelectorAll('[data-dv]').forEach(b => b.onclick = () => { gramVerb = +b.dataset.dv; renderGram(); });
   // 단어 목록: 펼칠 때 그 단어의 활용표만 그림 (목록 전체를 미리 그리면 폰에서 무거움)
   sc.querySelectorAll('details[data-w]').forEach(d => d.addEventListener('toggle', () => {
     const fx = d.querySelector('.fx');
     if (!d.open || fx.innerHTML) return;
     const { w, y, g } = d.dataset;
-    fx.innerHTML = g === 'i' || g === 'na' ? formTable(conjAdj(w, y, g), AFORMS[g]) : formTable(conjVerb(w, y, g), VFORMS);
+    fx.innerHTML = g === 'i' || g === 'na' ? formTable(conjAdj(w, y, g), AFORMS[g], GRAM.formKo[g]) : formTable(conjVerb(w, y, g), VFORMS, GRAM.formKo.v);
     fx.querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+    fx.querySelectorAll('.gl').forEach(b => b.onclick = e => { e.stopPropagation(); showGloss(b.dataset.gl); });
     fx.querySelectorAll('.kl').forEach(b => b.onclick = e => { e.stopPropagation(); renderCard(b.dataset.k, 'browse'); });
   }));
   sc.querySelectorAll('[data-fl]').forEach(b => b.onclick = () => { gramFilter.lv = +b.dataset.fl; renderGram(); });
@@ -1414,24 +1441,32 @@ function renderGram(tab) {
 // 가로로 긴 탭 줄에서 고른 탭이 보이도록 (다시 그리면 처음으로 돌아가므로)
 function keepTabVisible(sc) { const on = sc.querySelector('.tabs .on'); if (on) on.parentElement.scrollLeft = on.offsetLeft - on.parentElement.offsetLeft - 16; }
 function gramSec(s) {
+  if (s.gloss) {   // 📖 용어 사전 (전체 목록)
+    return `<div class="card"><h2>${esc(s.h)}</h2><p class="muted">문법 설명에 나오는 말을 쉬운 말로 풀었어요. 본문의 점선 밑줄 용어를 눌러도 볼 수 있어요.</p>
+      ${GRAM.gloss.map(([t, d]) => `<div class="gpat"><b>${esc(t)}</b><div style="font-size:.92rem">${linkK(d)}</div></div>`).join('')}</div>`;
+  }
+  const seen = new Set();
   return `<div class="card">${s.h ? `<h2>${esc(s.h)}</h2>` : ''}
-    ${(s.p || []).map(t => `<p>${linkK(t)}</p>`).join('')}
-    ${s.tbl ? `<table class="t cj">${s.tbl.head ? `<tr>${s.tbl.head.map(h => `<th>${esc(h)}</th>`).join('')}</tr>` : ''}${s.tbl.rows.map(r => `<tr>${r.map(c => `<td class="jp" lang="ja">${linkK(c).replace(/\n/g, '<br>')}</td>`).join('')}</tr>`).join('')}</table>` : ''}
+    ${(s.p || []).map(t => `<p>${rich(t, seen)}</p>`).join('')}
+    ${s.tbl ? `<table class="t cj">${s.tbl.head ? `<tr>${s.tbl.head.map(h => `<th>${esc(h)}</th>`).join('')}</tr>` : ''}${s.tbl.rows.map(r => `<tr>${r.map(c => `<td class="jp" lang="ja">${rich(c, seen).replace(/\n/g, '<br>')}</td>`).join('')}</tr>`).join('')}</table>` : ''}
+    ${(s.p2 || []).map(t => `<p>${rich(t, seen)}</p>`).join('')}
     ${(s.ex || []).map(gex).join('')}
-    ${s.tip ? `<div class="tip">💡 ${linkK(s.tip)}</div>` : ''}</div>`;
+    ${s.tip ? `<div class="tip">💡 ${rich(s.tip, seen)}</div>` : ''}</div>`;
 }
 const gex = ([j, y, k]) => `<button class="gex" data-say="${esc(j)}"><div class="j jp" lang="ja">${linkK(j)}</div><div class="y jp" lang="ja">${esc(y)}</div><div class="k">${esc(k)} 🔊</div></button>`;
 const GNAME = { '1': '1그룹', '1k': '1그룹', '1a': '1그룹', '1r': '1그룹', '2': '2그룹', '3s': '3그룹', '3k': '3그룹' };
-function formTable(R, forms) {
+// 활용표: 왼쪽 = 활용형 이름 + 한국어로 무슨 뜻인지(~합니다) / 오른쪽 = 일본어·읽기 (+ 대표 동사는 실제 한국어)
+function formTable(R, forms, ko, exact) {
   return `<table class="t cj">${forms.map(([k, lab]) => { const [f, r] = R[k] || ['—', '—'];
-    return `<tr><td style="width:40%">${esc(lab)}</td><td>${f === '—' ? '<span class="muted">—</span>' : `<button class="jp gform" lang="ja" data-say="${esc(r.replace('＋명사', ''))}"><span class="f">${linkK(f)}</span>${f !== r ? `<small>${esc(r)}</small>` : ''} 🔊</button>`}</td></tr>`; }).join('')}</table>`;
+    return `<tr><td style="width:38%">${rich(lab)}${ko && ko[k] ? `<small>${esc(ko[k])}</small>` : ''}</td><td>${f === '—' ? '<span class="muted">— (거의 안 씀)</span>' : `<button class="jp gform" lang="ja" data-say="${esc(r.replace('＋명사', ''))}"><span class="f">${linkK(f)}</span>${f !== r ? `<small>${esc(r)}</small>` : ''}${exact && exact[k] ? `<small class="kx">= ${esc(exact[k])}</small>` : ''} 🔊</button>`}</td></tr>`; }).join('')}</table>`;
 }
 function verbDemo(G) {
-  const vs = G.demo, i = gramVerb != null && vs[gramVerb] ? gramVerb : 0, [w, y, g, ko] = vs[i];
+  const vs = G.demo, i = gramVerb != null && vs[gramVerb] ? gramVerb : 0, [w, y, g, ko, kx] = vs[i];
   return `<div class="card"><h2>🔀 동사를 골라 활용해 보기</h2>
     <div class="optrow">${vs.map((v, j) => `<button class="tog ${j === i ? 'on' : ''} jp" lang="ja" data-dv="${j}">${esc(v[0])}</button>`).join('')}</div>
     <p><span class="jp" lang="ja" style="font-size:1.4rem">${linkK(w)}</span> <span class="jp" lang="ja">${esc(y)}</span> · ${esc(ko)} · <b>${GNAME[g]}</b></p>
-    ${formTable(conjVerb(w, y, g), VFORMS)}</div>`;
+    <p class="muted" style="font-size:.82rem">왼쪽 작은 글씨 = 그 모양이 한국어로 무슨 뜻인지 · 오른쪽 주황 글씨 = 이 동사의 실제 한국어</p>
+    ${formTable(conjVerb(w, y, g), VFORMS, G.formKo.v, kx)}</div>`;
 }
 function wordList(G, kind) {
   const src = kind === 'v' ? G.verbs : G.adjs.filter(a => a[2] === kind);
@@ -1446,9 +1481,11 @@ function wordList(G, kind) {
       ${kind === 'v' ? `<span class="lvb" style="background:#F5EEE5">${GNAME[g]}</span>` : ''}<span class="lvb n${lv}">N${lv}</span></summary><div class="fx"></div></details>`).join('')}</div>`;
 }
 function patList(ps) {
-  return `<div class="card">${ps.map(p => `<div class="gpat"><div class="pt jp" lang="ja">${linkK(p.p)}<span class="lvb n${p.lv}">N${p.lv}</span></div>
-    <div>${esc(p.m)}</div>${p.c ? `<div class="cn">${linkK(p.c)}</div>` : ''}${p.d ? `<p class="muted" style="font-size:.88rem">${linkK(p.d)}</p>` : ''}
-    ${p.ex.map(gex).join('')}</div>`).join('')}</div>`;
+  return `<div class="card"><p class="muted" style="font-size:.85rem">파란 칸 = <span class="gl" data-gl="접속">접속</span> (앞에 어떤 모양을 붙이는지). 점선 밑줄 용어를 누르면 풀이가 나와요. 처음이라면 📘 기초 ⑥을 먼저 보세요.</p></div>
+    <div class="card">${ps.map(p => { const seen = new Set();
+    return `<div class="gpat"><div class="pt jp" lang="ja">${linkK(p.p)}<span class="lvb n${p.lv}">N${p.lv}</span></div>
+    <div>${esc(p.m)}</div>${p.c ? `<div class="cn">접속: ${rich(p.c, seen)}</div>` : ''}${p.d ? `<p class="muted" style="font-size:.88rem">${rich(p.d, seen)}</p>` : ''}
+    ${p.ex.map(gex).join('')}</div>`; }).join('')}</div>`;
 }
 
 /* ═══════════════ 읽기 규칙 (한국음 ↔ 음독, 소리 가족 사전) ═══════════════ */
