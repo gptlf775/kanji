@@ -152,10 +152,10 @@ def write_index():
     avail = sorted(int(f[1:-3]) for f in os.listdir(dd) if re.match(r'^g\d\.js$', f))
     md5 = lambda p: hashlib.md5(open(p, 'rb').read()).hexdigest()[:8]
     ver = {str(g): md5(os.path.join(dd, f'g{g}.js')) for g in avail}
-    gp = os.path.join(dd, 'gram.js')
-    gv = md5(gp) if os.path.exists(gp) else ''
+    fv = lambda name: md5(os.path.join(dd, name)) if os.path.exists(os.path.join(dd, name)) else ''
     open(os.path.join(dd, 'index.js'), 'w', encoding='utf-8').write(
-        f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};window.GRAM_VER={json.dumps(gv)};\n')
+        f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};'
+        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};\n')
 
 def main(grade):
     J = json.load(open(os.path.join(REF_DIR, 'jouyou.json'), encoding='utf-8'))
