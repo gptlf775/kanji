@@ -44,8 +44,9 @@ h2{font-size:1.15rem;margin-bottom:8px;} h3{font-size:1rem;margin:4px 0 8px;colo
 .row{display:flex;gap:10px;align-items:center;}
 .grow{flex:1;}
 /* 상단바 */
-.topbar{display:flex;align-items:center;gap:10px;padding:10px 16px;max-width:560px;margin:0 auto;}
-.topbar .title{font-weight:bold;font-size:1.05rem;flex:1;}
+.topbar{display:flex;align-items:center;gap:8px;padding:10px 16px;max-width:560px;margin:0 auto;}
+.topbar .title{font-weight:bold;font-size:1rem;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.topbar .iconbtn{width:40px;height:40px;flex:none;}
 .pill{display:inline-block;padding:3px 12px;border-radius:99px;font-size:.82rem;font-weight:bold;}
 .pill.kid{background:var(--g3);} .pill.adult{background:var(--g4);}
 .iconbtn{width:44px;height:44px;border-radius:12px;background:#fff;font-size:1.3rem;box-shadow:0 1px 4px rgba(0,0,0,.06);}
@@ -182,6 +183,27 @@ details.fold summary::after{content:' ▾';color:var(--sub);}
 table.t{width:100%;border-collapse:collapse;font-size:.92rem;}
 table.t td,table.t th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left;}
 table.t th{color:var(--sub);font-size:.8rem;}
+/* 연습 (가나·한자) */
+.tog{display:inline-block;padding:7px 12px;border-radius:99px;border:2px solid var(--line);background:#fff;font-weight:bold;font-size:.88rem;margin:3px 2px;}
+.tog.on{border-color:var(--accent);background:var(--accent-soft);}
+.optrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0;}
+.optrow .lab{font-size:.85rem;color:var(--sub);min-width:58px;font-weight:bold;}
+.pstat{display:flex;justify-content:center;gap:18px;font-weight:bold;margin:4px 0;}
+.pbig{text-align:center;font-size:6.5rem;line-height:1.2;}
+.pword{text-align:center;font-size:3.2rem;line-height:1.3;}
+/* 활용어 */
+.gtab{font-size:.95rem;}
+.gram h2{margin-top:2px;} .gram p{margin:6px 0;}
+.gex{background:#F4F8FF;border-radius:12px;padding:8px 12px;margin:6px 0;display:block;width:100%;text-align:left;}
+.gex .j{font-size:1.2rem;line-height:1.5;} .gex .y{color:var(--sub);font-size:.85rem;} .gex .k{font-size:.92rem;}
+.kl{text-decoration:underline dotted var(--accent);text-underline-offset:3px;cursor:pointer;}
+.gpat{border-bottom:1px dashed var(--line);padding:10px 0;} .gpat:last-child{border-bottom:none;}
+.gpat .pt{font-size:1.25rem;font-weight:bold;} .gpat .cn{font-size:.85rem;color:var(--on);background:var(--on-soft);border-radius:8px;padding:1px 8px;display:inline-block;margin:2px 0;}
+.lvb{font-size:.72rem;border-radius:6px;padding:0 6px;margin-left:4px;vertical-align:2px;font-weight:bold;}
+.lvb.n5{background:#DDF2E5;color:#2F7A52;} .lvb.n4{background:#E4ECFC;color:#3A63B8;}
+table.cj td{vertical-align:top;} .gform{display:block;text-align:left;padding:2px;} table.cj .f{font-size:1.1rem;} table.cj small{display:block;color:var(--sub);font-size:.75rem;}
+.vrow{display:flex;gap:10px;align-items:center;padding:8px 4px;border-bottom:1px dashed var(--line);width:100%;text-align:left;}
+.vrow .w{font-size:1.3rem;min-width:84px;} .vrow .m{flex:1;font-size:.88rem;} .vrow .g{font-size:.75rem;border-radius:6px;padding:1px 6px;background:#F5EEE5;white-space:nowrap;}
 input[type=text],textarea{width:100%;font-size:16px;padding:10px;border-radius:12px;border:2px solid var(--line);background:#FFFDF9;font-family:inherit;}
 textarea{height:90px;font-size:12px;}
 .set{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);gap:10px;}
@@ -201,6 +223,7 @@ textarea{height:90px;font-size:12px;}
 <body>
 
 <div class="topbar">
+  <button class="iconbtn" id="btnBack" aria-label="뒤로">◀</button>
   <button class="iconbtn" id="btnHome" aria-label="홈">🏠</button>
   <button class="iconbtn" id="btnSearch" aria-label="검색">🔍</button>
   <div class="title" id="topTitle">초등 한자 1026</div>
@@ -218,6 +241,9 @@ textarea{height:90px;font-size:12px;}
   <section class="screen" id="scrSheet"></section>
   <section class="screen" id="scrSearch"></section>
   <section class="screen" id="scrSet"></section>
+  <section class="screen" id="scrKana"></section>
+  <section class="screen" id="scrKprac"></section>
+  <section class="screen" id="scrGram"></section>
 </main>
 <div class="toast" id="toast"></div>
 
@@ -256,7 +282,10 @@ const KH = (() => {
     や:'야',ゆ:'유',よ:'요',ら:'라',り:'리',る:'루',れ:'레',ろ:'로',わ:'와',を:'오',ー:'-'};
   const yo = {きゃ:'캬',きゅ:'큐',きょ:'쿄',ぎゃ:'갸',ぎゅ:'규',ぎょ:'교',しゃ:'샤',しゅ:'슈',しょ:'쇼',じゃ:'자',じゅ:'주',じょ:'조',
     ちゃ:'차',ちゅ:'추',ちょ:'초',にゃ:'냐',にゅ:'뉴',にょ:'뇨',ひゃ:'햐',ひゅ:'휴',ひょ:'효',びゃ:'뱌',びゅ:'뷰',びょ:'뵤',
-    ぴゃ:'퍄',ぴゅ:'퓨',ぴょ:'표',みゃ:'먀',みゅ:'뮤',みょ:'묘',りゃ:'랴',りゅ:'류',りょ:'료'};
+    ぴゃ:'퍄',ぴゅ:'퓨',ぴょ:'표',みゃ:'먀',みゅ:'뮤',みょ:'묘',りゃ:'랴',りゅ:'류',りょ:'료',
+    // 외래어 특수 표기 (가타카나 ファ·ティ 등)
+    ふぁ:'파',ふぃ:'피',ふぇ:'페',ふぉ:'포',てぃ:'티',でぃ:'디',うぃ:'위',うぇ:'웨',うぉ:'워',しぇ:'셰',じぇ:'제',ちぇ:'체',ゔぁ:'바',ゔぃ:'비',ゔぇ:'베',ゔぉ:'보'};
+  base['ゔ'] = '부';
   // 앞 글자에 받침 붙이기 (ㄴ=4, ㅅ=19)
   const addJong = (s, j) => { if (!s) return s; const c = s.charCodeAt(s.length - 1); if (c < 0xAC00 || c > 0xD7A3 || (c - 0xAC00) % 28) return s; return s.slice(0, -1) + String.fromCharCode(c + j); };
   return str => {
@@ -276,7 +305,10 @@ const KH = (() => {
 /* ═══════════════ 저장소 ═══════════════ */
 function defaultState() {
   return { v: 1, mode: null, name: '', newPerDay: CFG.DEFAULT_NEW.kid, hangul: true, rate: 0.8,
-    srs: {}, streak: { n: 0, last: 0 }, stickers: '', today: { day: 0, newDone: 0, revDone: 0 } };
+    srs: {}, streak: { n: 0, last: 0 }, stickers: '', today: { day: 0, newDone: 0, revDone: 0 },
+    weak: {},                                                                   // 연습에서 틀린 한자 → 헷갈린 한자 (복습 일정과 별개)
+    kana: { m: 'see', sets: { seion: true, daku: false, yoon: false, sp: false } }, kanaW: {},   // 가나 연습 옵션·약한 글자
+    kp: { m: 'see', grades: [1, 2, 3, 4, 5, 6] } };                            // 한자 연습 옵션
 }
 let S;
 function load() {
@@ -288,6 +320,10 @@ function load() {
   }
   Object.values(S.srs).forEach(s => { if (s.lv === undefined) s.lv = s.b >= 1 ? 1 : 0; });
   S.newPerDay = Math.min(S.newPerDay || 4, CFG.NEW_MAX);
+  const D0 = defaultState();   // 새로 생긴 옵션 항목 채우기 (이전 버전 진도 호환)
+  const sets0 = D0.kana.sets;
+  S.kana = Object.assign(D0.kana, S.kana); S.kana.sets = Object.assign(sets0, S.kana.sets);
+  S.kp = Object.assign(D0.kp, S.kp);
   const d = dayNum();
   if (S.today.day !== d) S.today = { day: d, newDone: 0, revDone: 0, bonus: 0 };
 }
@@ -327,15 +363,18 @@ function pickVoice() {
 }
 if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 const canSpeak = () => 'speechSynthesis' in window;
-function speak(text) {
+function speak(text, rate) {
   if (!canSpeak() || !text) return;
   try {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'ja-JP'; u.rate = S.rate; if (jaVoice) u.voice = jaVoice;
+    u.lang = 'ja-JP'; u.rate = rate || S.rate; if (jaVoice) u.voice = jaVoice;
     speechSynthesis.speak(u);
   } catch (e) { toast('발음을 재생하지 못했어요'); }
 }
+// 가나 한 글자는 음성 엔진이 '아!'처럼 짧게 끊으므로 장음(ー)을 붙여 '아~'로 늘이고 조금 천천히
+const isKanaUnit = s => /^[ぁ-ゖァ-ヺ][ぁぃぅぇぉゃゅょァィゥェォャュョ]?$/.test(s);
+function speakKana(s) { speak(isKanaUnit(s) ? s + 'ー' : s, Math.min(S.rate, 0.8)); }
 
 // 여러 개를 차례로 읽기 (한자 → 단어 → 문장)
 function speakSeq(list) {
@@ -352,8 +391,43 @@ function show(name, title) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('on'));
   $('#scr' + name).classList.add('on'); cur = name;
   $('#topTitle').textContent = title || '초등 한자 1026';
+  curRec = navRec;                                            // 이 화면이 뒤로가기 기록에 있는지
+  $('#btnBack').style.display = name === 'Home' ? 'none' : '';
   window.scrollTo(0, 0);
   stopAnim();
+}
+
+/* ═══════════════ 뒤로가기 (◀ 버튼) ═══════════════ */
+// 화면을 그린 함수와 인자를 기록 → ◀ 누르면 직전 화면을 다시 그리고 스크롤 위치도 되돌림.
+// 같은 화면 안에서 탭·이전/다음만 바꾼 것은 기록을 덮어씀 (◀ 한 번에 이전 화면으로).
+// 공부 중 화면(문제·새 한자 카드·완료)은 기록하지 않음.
+const NAV = [];
+let navRec = false, navReplay = false, curRec = false;
+function navable(fn, keyOf) {
+  const w = function (...args) {
+    const key = keyOf(args);
+    if (!key) return fn.apply(this, args);
+    if (!navReplay) {
+      const top = NAV[NAV.length - 1];
+      if (curRec && top) top.y = window.scrollY;
+      const e = { key, run: () => w(...args), y: 0 };
+      if (key === 'Home') NAV.length = 0;
+      if (curRec && top && top.key === key) NAV[NAV.length - 1] = e; else NAV.push(e);
+    }
+    navRec = true;
+    try { return fn.apply(this, args); } finally { navRec = false; }
+  };
+  return w;
+}
+const inStudy = () => (cur === 'Quiz' || (cur === 'Card' && cardCtx.mode === 'learn')) && SES && !SES.extra;
+function goBack() {
+  if (inStudy() && !confirm('공부를 멈추고 나갈까요? (푼 문제는 저장돼요)')) return;
+  if (curRec) NAV.pop();
+  const e = NAV[NAV.length - 1];
+  if (!e) { renderHome(); return; }
+  navReplay = true;
+  try { e.run(); } finally { navReplay = false; }
+  const y = e.y; setTimeout(() => window.scrollTo(0, y), 30);   // 다시 그린 뒤 원래 위치로
 }
 function topbar() {
   $('#topMode').innerHTML = S.mode ? `<span class="pill ${S.mode}">${S.mode === 'kid' ? '🧒 어린이' : '🧑 어른'}</span>` : '';
@@ -414,12 +488,14 @@ function renderHome() {
       ${gb}
     </div>
     <div class="menu">
-      <button id="goSheet" class="wide"><span>📋</span>한 장 정리 <small class="muted" style="display:block;font-weight:normal">히라가나·가타카나·숫자·날짜·세는 말…</small></button>
+      <button id="goSheet" class="wide"><span>📋</span>한 장 정리 <small class="muted" style="display:block;font-weight:normal">히라가나·가타카나 (연습 문제) · 숫자·날짜·세는 말…</small></button>
+      <button id="goGram" class="wide"><span>🔀</span>활용어 <small class="muted" style="display:block;font-weight:normal">동사·형용사 활용 · N5·N4 문법 · 단어</small></button>
+      <button id="goKprac"><span>✏️</span>한자 연습</button>
       <button id="goList"><span>📚</span>한자 목록</button>
       <button id="goSearch2"><span>🔍</span>한자 검색</button>
       <button id="goRules"><span>🧩</span>읽기 규칙</button>
       <button id="goWeak"><span>🔁</span>헷갈린 한자</button>
-      <button id="goSet" class="wide"><span>⚙️</span>설정</button>
+      <button id="goSet"><span>⚙️</span>설정</button>
     </div>
     ${S.mode === 'kid' && S.stickers ? `<div class="card"><h2>🏅 스티커 모음 (${(S.stickers.match(/\p{Extended_Pictographic}/gu) || []).length}개)</h2><div class="stickers">${S.stickers}</div></div>` : ''}`;
   const on = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };
@@ -430,6 +506,8 @@ function renderHome() {
   on('goSearch2', () => renderSearch());
   on('goRules', () => renderRules());
   on('goSheet', () => renderSheet());
+  on('goGram', () => renderGram());
+  on('goKprac', () => renderKprac());
   on('goWeak', () => startExtra());
   on('goSet', () => renderSet());
   show('Home');
@@ -607,36 +685,79 @@ function renderCard(k, mode, onDone) {
 }
 
 /* ═══════════════ 한자 검색 (한자 · 히라가나 · 한국 훈음 · 단어) ═══════════════ */
-let searchQ = '';
+// [의미] 훈의 뜻 부분·뜻·단어 뜻으로 찾기 / [발음] 한국 음(아 → 児·芽·我)·일본어 읽기(よっか → 四日)로 찾기
+// 한자를 넣으면 두 탭 모두 그 한자·단어를 찾음
+let searchQ = '', searchMode = 'sound';
+const koSounds = it => it.hun.split(' ').pop().split('/');                 // '수레 거/차' → ['거','차']
+const hunMeaning = it => it.hun.split(' ').slice(0, -1).join(' ');        // '넉 사' → '넉'
+const isKanaStr = s => /^[ぁ-ゖァ-ヺー]+$/.test(s);
+function searchRows(q) {
+  const h = kata2hira(q), res = [];
+  const hasHan = /\p{Script=Han}/u.test(q), hangul = /^[가-힣\s]+$/.test(q);
+  if (hasHan) {
+    D.items.forEach(it => {
+      const e = it.ex.find(e => e.w === q) || [...(it.caution || []), ...it.sp].find(e => e.w === q);
+      if (e) res.push({ it, sc: 90, why: `${e.w} ${e.y}${e.m ? ' · ' + e.m : ''}` });
+      else if (q.includes(it.k)) res.push({ it, sc: 100 - q.indexOf(it.k), why: it.hun });
+    });
+    return { res };
+  }
+  if (searchMode === 'sound') {
+    if (isKanaStr(q)) {
+      D.items.forEach(it => {
+        const e = it.ex.find(e => e.y === h) || [...(it.caution || []), ...it.sp].find(e => e.y === h);
+        const r = it.rd.find(r => kata2hira(r.stem) === h || kata2hira(r.stem + r.okuri) === h);
+        if (e) res.push({ it, sc: 90, why: `${e.w} ${e.y}${e.m ? ' · ' + e.m : ''}` });
+        else if (r) res.push({ it, sc: 80, why: `읽기 ${r.r}` });
+        else if (h.length >= 2) { const p = it.ex.find(e => e.y.includes(h)); if (p) res.push({ it, sc: 30, why: `${p.w} ${p.y} · ${p.m}` }); }
+      });
+      return { res };
+    }
+    if (hangul) {   // 한 글자씩 한국 음으로 (학교 → 학 + 교)
+      const syl = [...q.replace(/\s/g, '')], groups = [];
+      syl.forEach((s, i) => { if (syl.indexOf(s) !== i) return; const ks = D.items.filter(it => koSounds(it).includes(s)); groups.push({ s, ks }); });
+      return { groups };
+    }
+    return { res, hint: '발음 탭에서는 한글(한국 음) 또는 히라가나·가타카나를 입력하세요.' };
+  }
+  if (isKanaStr(q)) return { res, hint: '히라가나·가타카나 읽기는 [🔊 발음] 탭에서 찾아요.' };
+  D.items.forEach(it => {
+    if (it.hun === q) { res.push({ it, sc: 100, why: it.hun }); return; }
+    const hm = hunMeaning(it);
+    if (hm.includes(q)) { res.push({ it, sc: hm === q ? 80 : 60, why: it.hun }); return; }
+    if (it.m.includes(q)) { res.push({ it, sc: 50, why: it.m }); return; }
+    const em = it.ex.find(e => e.m.includes(q));
+    if (em) res.push({ it, sc: 30, why: `${em.w} ${em.y} · ${em.m}` });
+  });
+  return { res };
+}
 function renderSearch() {
-  $('#scrSearch').innerHTML = `<div class="card"><input type="text" id="sq" placeholder="예: 四 · よっか · 넉 사 · 学校 · 공부" value="${esc(searchQ)}" autocomplete="off"></div><div id="sres"></div>`;
+  const ph = searchMode === 'sound' ? '예: 아 · 학교 · よっか · がっこう · 四' : '예: 공부 · 물 · 넷 · 배우다 · 学校';
+  $('#scrSearch').innerHTML = `<div class="card">
+    <div class="seg" style="margin-bottom:10px"><button data-sm="mean" class="grow ${searchMode === 'mean' ? 'on' : ''}">📖 의미로 찾기</button><button data-sm="sound" class="grow ${searchMode === 'sound' ? 'on' : ''}">🔊 발음으로 찾기</button></div>
+    <input type="text" id="sq" placeholder="${ph}" value="${esc(searchQ)}" autocomplete="off">
+    <p class="muted" style="font-size:.8rem;margin-top:6px">${searchMode === 'sound' ? '한글은 <b>한국 음</b>으로만 찾아요 (아 → 児 아이 아 · 芽 싹 아 …, 뜻에 \'아\'가 든 한자는 제외). 히라가나·가타카나는 일본어 읽기로 찾아요.' : '훈의 <b>뜻 부분</b>·한자 뜻·단어 뜻으로 찾아요 (한국 음은 제외).'}</p></div><div id="sres"></div>`;
+  const row = x => `<button class="srow" data-k="${x.it.k}"><span class="c jp" lang="ja">${x.it.k}</span><span class="t"><b>${esc(x.it.hun)}</b> <span class="muted">초${x.it.g}</span><br><span class="jp" lang="ja">${esc(x.why)}</span></span></button>`;
   const run = () => {
     searchQ = $('#sq').value.trim();
-    const q = searchQ, h = kata2hira(q);
-    if (!q) { $('#sres').innerHTML = '<p class="muted" style="text-align:center">한자, 읽기(히라가나·가타카나), 한국어 훈음·뜻, 단어로 찾을 수 있어요.</p>'; return; }
-    const res = [];
-    D.items.forEach(it => {
-      let sc = 0, why = '';
-      if (q.includes(it.k)) { sc = 100; why = it.hun; }
-      const r = it.rd.find(r => kata2hira(r.stem) === h || kata2hira(r.stem + r.okuri) === h);
-      if (!sc && r) { sc = 80; why = `읽기 ${r.r}`; }
-      const e = it.ex.find(e => e.w === q || e.y === h) || [...(it.caution || []), ...it.sp].find(e => e.w === q || e.y === h);
-      if (sc < 90 && e) { sc = Math.max(sc, 90); why = `${e.w} ${e.y}${e.m ? ' · ' + e.m : ''}`; }
-      if (!sc && it.hun.includes(q)) { sc = 60; why = it.hun; }
-      if (!sc && it.m.includes(q)) { sc = 50; why = it.m; }
-      const em = !sc && it.ex.find(e => e.m.includes(q) || (h.length >= 2 && e.y.includes(h)));
-      if (em) { sc = 30; why = `${em.w} ${em.y} · ${em.m}`; }
-      if (sc) res.push({ it, sc, why });
-    });
-    res.sort((a, b) => b.sc - a.sc || a.it.g - b.it.g);
-    $('#sres').innerHTML = res.length ? `<p class="muted">${res.length}자 찾음</p>` + res.slice(0, 80).map(x => `<button class="srow" data-k="${x.it.k}"><span class="c jp" lang="ja">${x.it.k}</span><span class="t"><b>${esc(x.it.hun)}</b> <span class="muted">초${x.it.g}</span><br><span class="jp" lang="ja">${esc(x.why)}</span></span></button>`).join('')
-      : '<p class="muted" style="text-align:center">찾는 한자가 없어요.</p>';
+    if (!searchQ) { $('#sres').innerHTML = `<p class="muted" style="text-align:center">${searchMode === 'sound' ? '한국 음이나 일본어 읽기를 입력하세요.' : '뜻을 한국어로 입력하세요.'}</p>`; return; }
+    const { res, groups, hint } = searchRows(searchQ);
+    let html = '';
+    if (groups) {
+      const n = groups.reduce((a, g) => a + g.ks.length, 0);
+      html = n ? `<p class="muted">${n}자 찾음 (한국 음)</p>` + groups.map(g => `<h3>'${esc(g.s)}' 음 · ${g.ks.length}자</h3>` + (g.ks.length ? g.ks.sort((a, b) => a.g - b.g).map(it => row({ it, why: `한국 음 ${g.s}` })).join('') : '<p class="muted">없음</p>')).join('') : '';
+    } else if (res.length) {
+      res.sort((a, b) => b.sc - a.sc || a.it.g - b.it.g);
+      html = `<p class="muted">${res.length}자 찾음</p>` + res.slice(0, 80).map(row).join('');
+    }
+    $('#sres').innerHTML = html || `<p class="muted" style="text-align:center">${hint ? esc(hint) : '찾는 한자가 없어요.'}</p>`;
     $('#sres').querySelectorAll('.srow').forEach(b => b.onclick = () => renderCard(b.dataset.k, 'browse'));
   };
+  $('#scrSearch').querySelectorAll('[data-sm]').forEach(b => b.onclick = () => { searchQ = $('#sq').value.trim(); searchMode = b.dataset.sm; renderSearch(); });
   $('#sq').oninput = () => { clearTimeout(run._t); run._t = setTimeout(run, 150); };
   run();
   show('Search', '🔍 한자 검색');
-  setTimeout(() => $('#sq').focus(), 50);
+  if (!navReplay) setTimeout(() => $('#sq').focus(), 50);
 }
 
 /* ═══════════════ 문제 만들기 (숙련도 단계별) ═══════════════ */
@@ -756,7 +877,9 @@ function startSession() {
   stepSession();
 }
 function startExtra() {
-  const weak = D.items.filter(it => st(it.k) && st(it.k).w > 0).sort((a, b) => (st(b.k).w / (st(b.k).c + 1)) - (st(a.k).w / (st(a.k).c + 1))).slice(0, 12);
+  // 복습에서 틀린 한자 + 한자 연습에서 틀린 한자(S.weak)
+  const score = it => { const s = st(it.k); return (s ? s.w / (s.c + 1) : 0) + (S.weak[it.k] || 0); };
+  const weak = D.items.filter(it => (st(it.k) && st(it.k).w > 0) || S.weak[it.k]).sort((a, b) => score(b) - score(a)).slice(0, 12);
   const pool = weak.length ? weak : D.items.filter(it => st(it.k)).slice(-12);
   if (!pool.length) { toast('먼저 오늘의 공부로 한자를 배워 보세요!'); return; }
   SES = { q: shuffle(pool.slice()).map(it => ({ t: 'quiz', k: it.k, practice: true })), pos: 0, ok: 0, ng: 0, newKs: [], revN: 0, extra: true, up: {} };
@@ -768,8 +891,16 @@ function stepSession() {
   if (item.t === 'learn') renderCard(item.k, 'learn', () => { SES.pos++; stepSession(); });
   else renderQuiz(item);
 }
+function noteWeak(k, ok) {   // 연습 결과: 틀리면 헷갈린 한자에 추가, 맞히면 하나 덜어냄 (복습 일정은 그대로)
+  if (!ok) S.weak[k] = (S.weak[k] || 0) + 1;
+  else if (S.weak[k]) { if (--S.weak[k] <= 0) delete S.weak[k]; }
+}
 function grade(item, ok, level) {
   const today = dayNum(), I = CFG.INTERVALS, top = I.length - 1;
+  if (item.practice) {
+    noteWeak(item.k, ok);
+    if (!S.srs[item.k]) { ok ? SES.ok++ : SES.ng++; save(); return; }   // 아직 안 배운 한자는 복습 일정에 넣지 않음
+  }
   const s = S.srs[item.k] || (S.srs[item.k] = { b: 0, d: today, c: 0, w: 0, f: today, lv: 0 });
   ok ? s.c++ : s.w++;
   const before = s.lv || 0;
@@ -952,15 +1083,18 @@ function renderSheet(id) {
   if (sh.kana) {
     const K = sh.kana === 'kata' ? hira2kata : (s => s);
     const cell = ch => ch === '・' ? '<div class="kc empty"></div>'
-      : `<button class="kc jp" lang="ja" data-say="${ch}">${K(ch)}<small>${KH(ch)}</small></button>`;
+      : `<button class="kc jp" lang="ja" data-kana="${K(ch)}">${K(ch)}<small>${kLabel(ch)}</small></button>`;
     const grid = (rows, per) => rows.map(r => `<div class="krow c${per}">${(per === 3 ? r.match(/.[ゃゅょ]/g) : [...r]).map(cell).join('')}</div>`).join('');
-    body = `<div class="card"><h2>${sh.kana === 'kata' ? '가타카나 — 외래어·이름·소리 흉내' : '히라가나 — 일본어의 기본 글자'}</h2>
+    const nm = sh.kana === 'kata' ? '가타카나' : '히라가나';
+    body = `<div class="card" style="text-align:center"><button class="btn main" id="goKana">✏️ ${nm} 연습 (문제 풀기)</button>
+      <p class="muted" style="font-size:.82rem;margin-top:6px">보고 맞히기 · 듣고 맞히기 · 청음/탁음/요음/특수 표기 골라서 무한 연습</p></div>
+      <div class="card"><h2>${sh.kana === 'kata' ? '가타카나 — 외래어·이름·소리 흉내' : '히라가나 — 일본어의 기본 글자'}</h2>
       <p class="muted">글자를 누르면 소리를 들을 수 있어요. ${sh.kana === 'kata' ? '모양은 다르지만 소리는 히라가나와 똑같아요.' : '가로줄은 같은 자음, 세로줄은 같은 모음(아·이·우·에·오)이에요.'}</p>
       <h3>청음 (기본 46자)</h3>${grid(KANA.seion, 5)}</div>
       <div class="card"><h3>탁음 · 반탁음 (점 두 개 ゛ = 흐린 소리, 동그라미 ゜ = ㅍ 소리)</h3>${grid(KANA.daku, 5)}</div>
       <div class="card"><h3>요음 (작은 ゃ·ゅ·ょ를 붙인 소리)</h3>${grid(KANA.yoon, 3)}
       <p class="muted" style="margin-top:8px">작은 っ는 다음 소리를 한 박자 멈춤(がっこう), ん은 받침 'ㄴ'처럼 읽어요.</p></div>
-      ${sh.kana === 'kata' ? `<div class="card"><h3>외래어에만 쓰는 특수 표기</h3><div class="krow c4">${KANA.gairai.map(([k, h]) => `<button class="kc jp" lang="ja" data-say="${k}">${k}<small>${h}</small></button>`).join('')}</div>
+      ${sh.kana === 'kata' ? `<div class="card"><h3>외래어에만 쓰는 특수 표기</h3><div class="krow c4">${KANA.gairai.map(([k, h]) => `<button class="kc jp" lang="ja" data-kana="${k}">${k}<small>${h}</small></button>`).join('')}</div>
         <p class="muted" style="margin-top:8px">장음 ー 는 앞소리를 길게: コーヒー(커피), ケーキ(케이크)</p></div>` : ''}`;
   } else if (sh.counters) {
     body = `<div class="card"><h2>세는 말 (조수사)</h2><p class="muted">일본어는 세는 물건에 따라 뒤에 붙는 말이 달라요. ★는 소리가 변하는 곳 — 1·6·8·10에서 자주 변해요!</p>` +
@@ -975,7 +1109,346 @@ function renderSheet(id) {
   $('#scrSheet').innerHTML = `<div class="tabs">${tabs}</div>${body}`;
   $('#scrSheet').querySelectorAll('.tabs button').forEach(b => b.onclick = () => renderSheet(b.dataset.id));
   $('#scrSheet').querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+  $('#scrSheet').querySelectorAll('[data-kana]').forEach(b => b.onclick = () => speakKana(b.dataset.kana));
+  if ($('#goKana')) $('#goKana').onclick = () => renderKana(sh.kana);
   show('Sheet', '📋 한 장 정리');
+  keepTabVisible($('#scrSheet'));
+}
+
+/* ═══════════════ 연습 공용: 문제 하나 보여 주고 채점 (무한 연습) ═══════════════ */
+// Q = { ask, body, choices:[{html, ok}], cls, say, sayFn, sayFirst, sayAfter, after }
+function practiceQ(box, Q, { onResult, next, cardK }) {
+  const say = Q.sayFn || speak;
+  box.innerHTML = `<div class="qask">${esc(Q.ask)}</div>${Q.body}
+    <div class="choices">${Q.choices.map((c, i) => `<button class="choice ${Q.cls || ''} ${Q.cls === 'kan' ? 'jp' : ''}" ${Q.cls === 'kan' ? 'lang="ja"' : ''} data-i="${i}">${c.html}</button>`).join('')}</div>
+    <div class="fb" id="pfb"></div><div id="pafter"></div>`;
+  const spk = box.querySelector('#qSpk');
+  if (spk) spk.onclick = () => say(Q.say);
+  if (Q.sayFirst) say(Q.say);
+  const peek = box.querySelector('#qPeek');
+  if (peek) peek.onclick = () => { box.querySelector('#qPeekT').style.display = 'inline'; peek.style.display = 'none'; };
+  let answered = false;
+  box.querySelectorAll('.choice').forEach(b => b.onclick = () => {
+    if (answered) return; answered = true;
+    const ok = !!Q.choices[+b.dataset.i].ok;
+    box.querySelectorAll('.choice').forEach(x => { if (Q.choices[+x.dataset.i].ok) x.classList.add('right'); });
+    if (!ok) b.classList.add('wrong');
+    const fb = box.querySelector('#pfb'); fb.className = 'fb ' + (ok ? 'ok' : 'ng'); fb.textContent = ok ? pick(['⭕ 정답!', '⭕ 잘했어요!', '⭕ 맞았어요!']) : '❌ 아쉬워요!';
+    if (Q.sayAfter && Q.say) say(Q.say);
+    onResult(ok);
+    box.querySelector('#pafter').innerHTML = `${Q.after || ''}${!ok && cardK ? `<button class="btn ghost" id="pCard" style="margin-top:10px"><span class="jp" lang="ja">${cardK}</span> 카드 보기</button>` : ''}<button class="btn main" id="pNext" style="margin-top:10px">다음 ▶</button>`;
+    if (box.querySelector('#pCard')) box.querySelector('#pCard').onclick = () => renderCard(cardK, 'browse');
+    let t = 0;
+    box.querySelector('#pNext').onclick = () => { clearTimeout(t); next(); };
+    if (ok) t = setTimeout(next, Q.sayAfter ? 1400 : 900);   // 맞히면 저절로 다음 문제
+  });
+}
+const wpick = (arr, wf) => { const ws = arr.map(wf), tot = ws.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < arr.length; i++) { r -= ws[i]; if (r <= 0) return arr[i]; } return arr[arr.length - 1]; };
+const speakerHTML = peekText => `<button class="speaker" id="qSpk">🔊</button><div class="qsub"><button class="btn ghost" id="qPeek" style="display:inline-block;width:auto;padding:6px 14px;font-size:.85rem">👀 글자로 보기</button> <span class="jp" lang="ja" id="qPeekT" style="display:none">${peekText}</span></div>`;
+
+/* ═══════════════ 가나 연습 (히라가나·가타카나, 무한) ═══════════════ */
+const KSETS = {
+  seion: KANA.seion.join('').replace(/・/g, '').split(''),     // 46
+  daku: KANA.daku.join('').split(''),                          // 25
+  yoon: KANA.yoon.join('').match(/.[ゃゅょ]/g)                 // 33
+};
+// 특수 표기: 촉음(っ)·발음(ん)·장음이 든 짧은 말 / 가타카나는 외래어 표기(ファ 등)와 장음(ー)
+const KSP = {
+  hira: ['きって', 'ざっし', 'きっぷ', 'がっこう', 'いっしょ', 'ちょっと', 'はっぱ', 'おかあさん', 'おとうさん', 'おにいさん', 'おねえさん', 'せんせい', 'ぎゅうにゅう', 'りょこう', 'でんしゃ', 'きんぎょ', 'ほんや', 'こうえん'],
+  kata: ['ファ', 'フィ', 'フェ', 'フォ', 'ティ', 'ディ', 'ウィ', 'ウェ', 'ウォ', 'シェ', 'ジェ', 'チェ', 'ヴ', 'コーヒー', 'ケーキ', 'スープ', 'ノート', 'ゲーム', 'カード', 'ボール', 'ベッド', 'カップ', 'サッカー', 'チーズ', 'パーティー', 'フォーク', 'ファイル', 'メール']
+};
+const GAIRAI_LB = Object.fromEntries(KANA.gairai);
+// 가나 → 한글 보기. ん은 받침이라 따로, 외래어 표기는 (fa)처럼 구별해 パ(파)와 겹치지 않게
+function kLabel(u) {
+  if (GAIRAI_LB[u]) return GAIRAI_LB[u];
+  if (u === 'ん' || u === 'ン') return 'ㄴ(응)';
+  return KH(u);
+}
+// 모양이 비슷해 헷갈리는 글자 (보고 맞히기 오답으로 우선 사용)
+const KVIS = ['あお', 'ぬめ', 'ねれわ', 'るろ', 'はほ', 'さちき', 'いり', 'うら', 'こに', 'たな', 'けは', 'しつ', 'まも', 'くへ',
+  'シツ', 'ソンリ', 'ノメ', 'クタケ', 'ワウ', 'チテ', 'コユロ', 'マア', 'ヌス', 'ラヲ', 'セヤ', 'オホ'];
+const KROW = (() => {   // 글자 → 같은 행(자음)·같은 단(모음)
+  const m = {};
+  [...KANA.seion, ...KANA.daku].forEach((r, ri) => [...r].forEach((c, ci) => { if (c !== '・') m[c] = { r: 'r' + ri, c: ci }; }));
+  KSETS.yoon.forEach(y => { m[y] = { r: 'y' + y[0], c: 'ゃゅょ'.indexOf(y[1]) + 10 }; });
+  return m;
+})();
+function kanaDistract(u, pool, method) {
+  const lb = kLabel(u), used = new Set([lb]), out = [], H = kata2hira(u), info = KROW[H];
+  const add = x => { if (out.length >= 3 || !x || x === u || !pool.includes(x)) return; const l = kLabel(x); if (!used.has(l)) { used.add(l); out.push(x); } };
+  const conv = h => /[ァ-ヺ]/.test(u) ? hira2kata(h) : h;
+  if (method === 'see') KVIS.filter(g => g.includes(u)).forEach(g => shuffle([...g]).forEach(add));
+  if (DK[H[0]]) add(conv(DK[H[0]] + H.slice(1)));                             // か ↔ が
+  if (info) {
+    shuffle(pool.filter(x => { const i = KROW[kata2hira(x)]; return i && (i.r === info.r || i.c === info.c); })).slice(0, 4).forEach(x => { if (out.length < 2) add(x); });
+  }
+  shuffle(pool.slice()).forEach(add);
+  return out;
+}
+// 특수 표기 말의 그럴듯한 오답: っ 빼기/넣기 · 장음 빼기 · 탁음 바꾸기 · 요음을 큰 글자로
+function wordVariants(w) {
+  const kat = /[ァ-ヺ]/.test(w), H = kata2hira(w), out = new Set();
+  const put = s => { if (s && s !== H) out.add(kat ? hira2kata(s) : s); };
+  if (H.includes('っ')) put(H.replace('っ', '')); else if (H.length >= 3) put(H[0] + 'っ' + H.slice(1));
+  if (H.includes('ー')) put(H.replace('ー', ''));
+  const LONG = { う: 'おこそとのほもよろごぞどぼぽょ', い: 'えけせてねへめれげぜでべぺ', あ: 'あかさたなはまやらわがざだばぱゃ' };
+  for (let i = 1; i < H.length; i++) if (LONG[H[i]] && LONG[H[i]].includes(H[i - 1])) { put(H.slice(0, i) + H.slice(i + 1)); break; }
+  [...H].forEach((c, i) => { if (DK[c]) put(H.slice(0, i) + DK[c] + H.slice(i + 1)); });
+  if (H.includes('ん')) put(H.replace('ん', ''));
+  const ys = H.search(/[ゃゅょ]/); if (ys > 0) put(H.slice(0, ys) + { ゃ: 'や', ゅ: 'ゆ', ょ: 'よ' }[H[ys]] + H.slice(ys + 1));
+  return shuffle([...out]);
+}
+const isKanaWord = u => [...u].length > 2 || u.includes('ー');
+function kanaPool(script) {
+  const o = S.kana.sets, K = script === 'kata' ? hira2kata : (s => s), p = [];
+  if (o.seion) p.push(...KSETS.seion.map(K));
+  if (o.daku) p.push(...KSETS.daku.map(K));
+  if (o.yoon) p.push(...KSETS.yoon.map(K));
+  if (o.sp) p.push(...KSP[script]);
+  return p;
+}
+function kanaQ(u, pool, method) {
+  const word = isKanaWord(u);
+  let ds;
+  if (word) {
+    const lb = kLabel(u), used = new Set([lb]); ds = [];
+    [...wordVariants(u), ...shuffle(pool.filter(isKanaWord))].forEach(x => { if (ds.length < 3 && x !== u && !used.has(kLabel(x))) { used.add(kLabel(x)); ds.push(x); } });
+  } else ds = kanaDistract(u, pool.filter(x => !isKanaWord(x)), method);
+  const opts = shuffle([u, ...ds]);
+  if (method === 'hear') {
+    return { ask: '잘 듣고 알맞은 글자를 고르세요', body: speakerHTML(esc(kLabel(u))), say: u, sayFn: speakKana, sayFirst: true,
+      choices: opts.map(x => ({ html: `<span class="jp" lang="ja" style="font-size:${word ? 1.5 : 2.4}rem">${esc(x)}</span>`, ok: x === u })) };
+  }
+  return { ask: '이 글자는 어떻게 읽을까요?', body: `<div class="${word ? 'pword' : 'pbig'} jp" lang="ja">${esc(u)}</div>`, say: u, sayFn: speakKana, sayAfter: true,
+    choices: opts.map(x => ({ html: esc(kLabel(x)), ok: x === u })) };
+}
+let KP = null;   // 이번 연습의 점수 { script, ok, ng, run, last }
+function renderKana(script) {
+  script = script || (KP && KP.script) || 'hira';
+  if (!KP || KP.script !== script) KP = { script, ok: 0, ng: 0, run: 0, last: '' };
+  const o = S.kana, nm = script === 'kata' ? '가타카나' : '히라가나';
+  const SETS = [['seion', '청음'], ['daku', '탁음·반탁음'], ['yoon', '요음'], ['sp', script === 'kata' ? '특수 표기·장음' : '특수 표기(っ·ん·장음)']];
+  $('#scrKana').innerHTML = `<div class="card">
+    <div class="optrow"><span class="lab">풀이 방법</span><div class="seg"><button data-km="see" class="${o.m === 'see' ? 'on' : ''}">👁️ 보고 맞히기</button><button data-km="hear" class="${o.m === 'hear' ? 'on' : ''}">👂 듣고 맞히기</button></div></div>
+    <div class="optrow"><span class="lab">범위</span>${SETS.map(([id, t]) => `<button class="tog ${o.sets[id] ? 'on' : ''}" data-ks="${id}">${o.sets[id] ? '✓ ' : ''}${t}</button>`).join('')}</div>
+    <div class="pstat" id="kStat"></div></div>
+    <div class="card" id="kQ"></div>`;
+  $('#scrKana').querySelectorAll('[data-km]').forEach(b => b.onclick = () => { S.kana.m = b.dataset.km; save(); renderKana(script); });
+  $('#scrKana').querySelectorAll('[data-ks]').forEach(b => b.onclick = () => {
+    const id = b.dataset.ks;
+    if (o.sets[id] && Object.values(o.sets).filter(Boolean).length === 1) { toast('하나 이상 골라야 해요'); return; }
+    o.sets[id] = !o.sets[id]; save(); renderKana(script);
+  });
+  kanaStat(); nextKana();
+  show('Kana', `✏️ ${nm} 연습`);
+}
+function kanaStat() { $('#kStat').innerHTML = `<span style="color:var(--ok)">⭕ ${KP.ok}</span><span style="color:var(--ng)">❌ ${KP.ng}</span><span>🔥 연속 ${KP.run}</span>`; }
+function nextKana() {
+  const pool = kanaPool(KP.script), m = S.kana.m;
+  if (m === 'hear' && !canSpeak()) { $('#kQ').innerHTML = '<p class="muted">이 기기는 음성을 지원하지 않아 듣고 맞히기를 할 수 없어요.</p>'; return; }
+  const cand = pool.length > 1 ? pool.filter(x => x !== KP.last) : pool;
+  const u = wpick(cand, x => S.kanaW[x] || 1);
+  KP.last = u;
+  practiceQ($('#kQ'), kanaQ(u, pool, m), {
+    onResult: ok => {
+      ok ? (KP.ok++, KP.run++) : (KP.ng++, KP.run = 0);
+      const w = S.kanaW[u] || 1;
+      if (ok) { if (w > 1) S.kanaW[u] = Math.max(1, w - 0.5); if (S.kanaW[u] === 1) delete S.kanaW[u]; }
+      else S.kanaW[u] = Math.min(8, w + 2);          // 틀린 글자는 더 자주
+      save(); kanaStat();
+    },
+    next: () => { if (cur === 'Kana') nextKana(); }
+  });
+}
+
+/* ═══════════════ 한자 연습 (무한 · 학년 선택 · 복습 일정은 그대로) ═══════════════ */
+let KPS = null;   // { ok, ng, run, last }
+const kpPool = () => D.items.filter(it => S.kp.grades.includes(it.g));
+function renderKprac() {
+  if (!KPS) KPS = { ok: 0, ng: 0, run: 0, last: '' };
+  const o = S.kp;
+  $('#scrKprac').innerHTML = `<div class="card">
+    <div class="optrow"><span class="lab">풀이 방법</span><div class="seg"><button data-pm="see" class="${o.m === 'see' ? 'on' : ''}">👁️ 보고 맞히기</button><button data-pm="hear" class="${o.m === 'hear' ? 'on' : ''}">👂 듣고 맞히기</button></div></div>
+    <div class="optrow"><span class="lab">학년</span>${[1, 2, 3, 4, 5, 6].filter(g => D.grades[g]).map(g => `<button class="tog ${o.grades.includes(g) ? 'on' : ''}" data-pg="${g}">${o.grades.includes(g) ? '✓ ' : ''}초${g}</button>`).join('')}</div>
+    <p class="muted" style="font-size:.8rem">연습은 복습 일정에 영향이 없어요. 틀린 한자는 <b>🔁 헷갈린 한자</b>에 모여요.</p>
+    <div class="pstat" id="pStat"></div></div>
+    <div class="card" id="pQ"></div>`;
+  $('#scrKprac').querySelectorAll('[data-pm]').forEach(b => b.onclick = () => { S.kp.m = b.dataset.pm; save(); renderKprac(); });
+  $('#scrKprac').querySelectorAll('[data-pg]').forEach(b => b.onclick = () => {
+    const g = +b.dataset.pg, has = o.grades.includes(g);
+    if (has && o.grades.length === 1) { toast('학년을 하나 이상 골라야 해요'); return; }
+    o.grades = has ? o.grades.filter(x => x !== g) : [...o.grades, g].sort(); save(); renderKprac();
+  });
+  kpStat(); nextKprac();
+  show('Kprac', '✏️ 한자 연습');
+}
+function kpStat() { $('#pStat').innerHTML = `<span style="color:var(--ok)">⭕ ${KPS.ok}</span><span style="color:var(--ng)">❌ ${KPS.ng}</span><span>🔥 연속 ${KPS.run}</span>`; }
+function kpracQ(it) {
+  if (S.kp.m === 'hear') {
+    if (Math.random() < 0.5) { const Q = makeQuiz(it, 4); if (Q.t === 'listen') return Q; }
+    // 단어를 듣고 그 단어에 든 한자 고르기 (한 글자 소리는 동음이의 한자가 많아 단어로 들려줌)
+    const e = pickEx(it) || pick(it.ex);
+    const ds = distinct(kpPool().filter(x => !e.w.includes(x.k)), x => x.k, 3, [it.k]);
+    return { t: 'hearKanji', ask: '잘 듣고, 이 단어에 들어 있는 한자를 고르세요', body: speakerHTML(esc(e.y)),
+      choices: shuffle([{ html: it.k, ok: true }, ...ds.map(x => ({ html: x.k }))]), cls: 'kan', say: e.y, sayFirst: true,
+      after: `<p class="qsub"><span class="jp" lang="ja">${esc(e.w)}（${esc(e.y)}）</span> = ${esc(e.m)}</p>` };
+  }
+  const lvs = [1, 1, 2, 2, 3, 3]; if (maxLv(it) >= 5) lvs.push(5, 5);
+  let Q = makeQuiz(it, pick(lvs));
+  if (Q.t === 'listen') Q = makeQuiz(it, 3);
+  return Q;
+}
+function nextKprac() {
+  if (S.kp.m === 'hear' && !canSpeak()) { $('#pQ').innerHTML = '<p class="muted">이 기기는 음성을 지원하지 않아 듣고 맞히기를 할 수 없어요.</p>'; return; }
+  const pool = kpPool(), cand = pool.length > 1 ? pool.filter(x => x.k !== KPS.last) : pool;
+  const it = wpick(cand, x => 1 + 2 * (S.weak[x.k] || 0));   // 틀린 한자는 더 자주
+  KPS.last = it.k;
+  const Q = kpracQ(it);
+  practiceQ($('#pQ'), { ...Q, ask: `초${it.g} · ${Q.ask}` }, {
+    cardK: it.k,
+    onResult: ok => { ok ? (KPS.ok++, KPS.run++) : (KPS.ng++, KPS.run = 0); noteWeak(it.k, ok); save(); kpStat(); },
+    next: () => { if (cur === 'Kprac') nextKprac(); }
+  });
+}
+
+/* ═══════════════ 활용어 (동사·형용사 활용 · N5·N4 문법) ═══════════════ */
+// 활용 엔진: 사전형·그룹만 주면 규칙으로 모든 활용형을 만듦 (표기·읽기 함께)
+// 그룹: 1=5단(1그룹) 1k=行く 1a=いらっしゃる류(ます·명령 불규칙) 1r=ある 2=1단(2그룹) 3s=する(○○する) 3k=来る
+const GROW = { u: 'うくぐすつぬぶむる', a: 'わかがさたなばまら', i: 'いきぎしちにびみり', e: 'えけげせてねべめれ', o: 'おこごそとのぼもろ' };
+const gsh = (c, to) => GROW[to][GROW.u.indexOf(c)];
+const VFORMS = [['dict', '사전형'], ['masu', 'ます형 (정중)'], ['nai', 'ない형 (부정)'], ['ta', 'た형 (과거)'], ['nakatta', 'なかった (과거 부정)'], ['te', 'て형 (~하고·~해서)'],
+  ['tai', 'たい (~하고 싶다)'], ['pot', '가능형 (~할 수 있다)'], ['vol', '의지형 (~하자)'], ['ba', 'ば형 (~하면)'], ['imp', '명령형 (~해라)'], ['pass', '수동형 (~당하다)'], ['caus', '사역형 (~시키다)'], ['causp', '사역수동 (억지로 ~하다)']];
+function conjVerb(w, y, g) {
+  const R = {};
+  if (g === '3s' || g === '3k') {
+    const T = g === '3s'
+      ? { dict: 'する', masu: 'します', nai: 'しない', ta: 'した', nakatta: 'しなかった', te: 'して', tai: 'したい', pot: 'できる', vol: 'しよう', ba: 'すれば', imp: 'しろ', pass: 'される', caus: 'させる', causp: 'させられる' }
+      : { dict: 'くる', masu: 'きます', nai: 'こない', ta: 'きた', nakatta: 'こなかった', te: 'きて', tai: 'きたい', pot: 'こられる', vol: 'こよう', ba: 'くれば', imp: 'こい', pass: 'こられる', caus: 'こさせる', causp: 'こさせられる' };
+    const pw = w.slice(0, -2), py = y.slice(0, -2), kanji = g === '3k' && w.endsWith('来る');
+    for (const k in T) R[k] = [pw + (kanji ? '来' + T[k].slice(1) : T[k]), py + T[k]];
+    return R;
+  }
+  const both = f => [f(w.slice(0, -1), w.slice(-1)), f(y.slice(0, -1), y.slice(-1))];
+  if (g === '2') {
+    const T = { dict: 'る', masu: 'ます', nai: 'ない', ta: 'た', nakatta: 'なかった', te: 'て', tai: 'たい', pot: 'られる', vol: 'よう', ba: 'れば', imp: 'ろ', pass: 'られる', caus: 'させる', causp: 'させられる' };
+    for (const k in T) R[k] = both(s => s + T[k]);
+    return R;
+  }
+  const TE = { う: 'って', つ: 'って', る: 'って', む: 'んで', ぶ: 'んで', ぬ: 'んで', く: 'いて', ぐ: 'いで', す: 'して' };
+  const te = (s, l) => s + (g === '1k' ? 'って' : TE[l]);
+  const ist = (s, l) => s + (g === '1a' ? 'い' : gsh(l, 'i'));
+  R.dict = both((s, l) => s + l);
+  R.masu = both((s, l) => ist(s, l) + 'ます');
+  R.nai = both((s, l) => g === '1r' ? 'ない' : s + gsh(l, 'a') + 'ない');
+  R.nakatta = both((s, l) => g === '1r' ? 'なかった' : s + gsh(l, 'a') + 'なかった');
+  R.te = both(te);
+  R.ta = both((s, l) => te(s, l).replace(/て$/, 'た').replace(/で$/, 'だ'));
+  R.tai = both((s, l) => g === '1r' ? '—' : ist(s, l) + 'たい');
+  R.pot = both((s, l) => g === '1r' || g === '1a' ? '—' : s + gsh(l, 'e') + 'る');
+  R.vol = both((s, l) => g === '1r' ? '—' : s + gsh(l, 'o') + 'う');
+  R.ba = both((s, l) => s + gsh(l, 'e') + 'ば');
+  R.imp = both((s, l) => g === '1r' ? '—' : g === '1a' ? s + 'い' : s + gsh(l, 'e'));
+  R.pass = both((s, l) => g === '1r' || g === '1a' ? '—' : s + gsh(l, 'a') + 'れる');
+  R.caus = both((s, l) => g === '1r' || g === '1a' ? '—' : s + gsh(l, 'a') + 'せる');
+  R.causp = both((s, l) => g === '1r' || g === '1a' ? '—' : s + gsh(l, 'a') + 'せられる');
+  return R;
+}
+const AFORMS = { i: [['dict', '기본형'], ['desu', '정중'], ['neg', '부정'], ['past', '과거'], ['pastneg', '과거 부정'], ['te', 'て형 (~하고)'], ['adv', '부사 (~하게)'], ['ba', '~하면'], ['sa', '명사 (~함)'], ['sou', '~해 보인다']],
+  na: [['dict', '기본형'], ['desu', '정중'], ['neg', '부정'], ['past', '과거'], ['pastneg', '과거 부정'], ['te', 'で (~하고)'], ['adv', '부사 (~하게)'], ['ba', '~하면'], ['attr', '명사 꾸미기']] };
+function conjAdj(w, y, t) {
+  const R = {}, both = f => [f(w), f(y)];
+  if (t === 'na') {
+    const T = { dict: 'だ', desu: 'です', neg: 'じゃない', past: 'だった', pastneg: 'じゃなかった', te: 'で', adv: 'に', ba: 'なら', attr: 'な＋명사' };
+    for (const k in T) R[k] = both(s => s + T[k]);
+    return R;
+  }
+  const irr = y.endsWith('いい');                                       // いい → よ로 활용 (よくない·よかった)
+  const st = s => irr ? s.slice(0, -2) + 'よ' : s.slice(0, -1);
+  const T = { desu: 'いです', neg: 'くない', past: 'かった', pastneg: 'くなかった', te: 'くて', adv: 'く', ba: 'ければ', sa: 'さ', sou: 'そう' };
+  R.dict = both(s => s);
+  for (const k in T) R[k] = both(s => k === 'desu' ? s + 'です' : st(s) + (k === 'sou' && irr ? 'さそう' : T[k]));
+  return R;
+}
+// 문장 속 1026자 한자를 누르면 그 한자 카드로
+const linkK = s => esc(s).replace(/\p{Script=Han}/gu, c => D.byK[c] ? `<span class="kl" data-k="${c}">${c}</span>` : c);
+let gramTab = 'intro', gramVerb = null, gramFilter = { lv: 0, g: '' };
+function renderGram(tab) {
+  if (tab) gramTab = tab;
+  if (!window.GRAM) {
+    $('#scrGram').innerHTML = '<div class="card muted" style="text-align:center">불러오는 중…</div>';
+    show('Gram', '🔀 활용어');
+    loadScript('data/gram.js' + (window.GRAM_VER ? '?v=' + window.GRAM_VER : '?t=' + Date.now())).then(() => {
+      if (!window.GRAM) { $('#scrGram').innerHTML = '<div class="card">⚠ 활용어 자료를 불러오지 못했어요. 인터넷 연결을 확인해 주세요.</div>'; return; }
+      if (cur === 'Gram') renderGram();
+    });
+    return;
+  }
+  const G = window.GRAM, tabs = G.tabs.map(t => `<button class="gtab ${t.id === gramTab ? 'on' : ''}" data-gt="${t.id}">${t.t}</button>`).join('');
+  const tb = G.tabs.find(t => t.id === gramTab) || G.tabs[0];
+  let body = (tb.secs || []).map(gramSec).join('');
+  if (tb.id === 'vform') body = verbDemo(G) + body;
+  if (tb.id === 'verbs') body += wordList(G, 'v');
+  if (tb.id === 'iadj') body += wordList(G, 'i');
+  if (tb.id === 'naadj') body += wordList(G, 'na');
+  if (tb.pat) body += patList(G.pat.filter(p => p.lv === tb.pat));
+  $('#scrGram').innerHTML = `<div class="tabs">${tabs}</div><div class="gram">${body}</div>`;
+  const sc = $('#scrGram');
+  sc.querySelectorAll('[data-gt]').forEach(b => b.onclick = () => renderGram(b.dataset.gt));
+  sc.querySelectorAll('[data-say]').forEach(b => b.onclick = e => { if (e.target.closest('.kl')) return; speak(b.dataset.say); });
+  sc.querySelectorAll('.kl').forEach(b => b.onclick = e => { e.stopPropagation(); renderCard(b.dataset.k, 'browse'); });
+  sc.querySelectorAll('[data-dv]').forEach(b => b.onclick = () => { gramVerb = +b.dataset.dv; renderGram(); });
+  // 단어 목록: 펼칠 때 그 단어의 활용표만 그림 (목록 전체를 미리 그리면 폰에서 무거움)
+  sc.querySelectorAll('details[data-w]').forEach(d => d.addEventListener('toggle', () => {
+    const fx = d.querySelector('.fx');
+    if (!d.open || fx.innerHTML) return;
+    const { w, y, g } = d.dataset;
+    fx.innerHTML = g === 'i' || g === 'na' ? formTable(conjAdj(w, y, g), AFORMS[g]) : formTable(conjVerb(w, y, g), VFORMS);
+    fx.querySelectorAll('[data-say]').forEach(b => b.onclick = () => speak(b.dataset.say));
+    fx.querySelectorAll('.kl').forEach(b => b.onclick = e => { e.stopPropagation(); renderCard(b.dataset.k, 'browse'); });
+  }));
+  sc.querySelectorAll('[data-fl]').forEach(b => b.onclick = () => { gramFilter.lv = +b.dataset.fl; renderGram(); });
+  sc.querySelectorAll('[data-fg]').forEach(b => b.onclick = () => { gramFilter.g = b.dataset.fg; renderGram(); });
+  show('Gram', '🔀 활용어');
+  keepTabVisible(sc);
+}
+// 가로로 긴 탭 줄에서 고른 탭이 보이도록 (다시 그리면 처음으로 돌아가므로)
+function keepTabVisible(sc) { const on = sc.querySelector('.tabs .on'); if (on) on.parentElement.scrollLeft = on.offsetLeft - on.parentElement.offsetLeft - 16; }
+function gramSec(s) {
+  return `<div class="card">${s.h ? `<h2>${esc(s.h)}</h2>` : ''}
+    ${(s.p || []).map(t => `<p>${linkK(t)}</p>`).join('')}
+    ${s.tbl ? `<table class="t cj">${s.tbl.head ? `<tr>${s.tbl.head.map(h => `<th>${esc(h)}</th>`).join('')}</tr>` : ''}${s.tbl.rows.map(r => `<tr>${r.map(c => `<td class="jp" lang="ja">${linkK(c).replace(/\n/g, '<br>')}</td>`).join('')}</tr>`).join('')}</table>` : ''}
+    ${(s.ex || []).map(gex).join('')}
+    ${s.tip ? `<div class="tip">💡 ${linkK(s.tip)}</div>` : ''}</div>`;
+}
+const gex = ([j, y, k]) => `<button class="gex" data-say="${esc(j)}"><div class="j jp" lang="ja">${linkK(j)}</div><div class="y jp" lang="ja">${esc(y)}</div><div class="k">${esc(k)} 🔊</div></button>`;
+const GNAME = { '1': '1그룹', '1k': '1그룹', '1a': '1그룹', '1r': '1그룹', '2': '2그룹', '3s': '3그룹', '3k': '3그룹' };
+function formTable(R, forms) {
+  return `<table class="t cj">${forms.map(([k, lab]) => { const [f, r] = R[k] || ['—', '—'];
+    return `<tr><td style="width:40%">${esc(lab)}</td><td>${f === '—' ? '<span class="muted">—</span>' : `<button class="jp gform" lang="ja" data-say="${esc(r.replace('＋명사', ''))}"><span class="f">${linkK(f)}</span>${f !== r ? `<small>${esc(r)}</small>` : ''} 🔊</button>`}</td></tr>`; }).join('')}</table>`;
+}
+function verbDemo(G) {
+  const vs = G.demo, i = gramVerb != null && vs[gramVerb] ? gramVerb : 0, [w, y, g, ko] = vs[i];
+  return `<div class="card"><h2>🔀 동사를 골라 활용해 보기</h2>
+    <div class="optrow">${vs.map((v, j) => `<button class="tog ${j === i ? 'on' : ''} jp" lang="ja" data-dv="${j}">${esc(v[0])}</button>`).join('')}</div>
+    <p><span class="jp" lang="ja" style="font-size:1.4rem">${linkK(w)}</span> <span class="jp" lang="ja">${esc(y)}</span> · ${esc(ko)} · <b>${GNAME[g]}</b></p>
+    ${formTable(conjVerb(w, y, g), VFORMS)}</div>`;
+}
+function wordList(G, kind) {
+  const src = kind === 'v' ? G.verbs : G.adjs.filter(a => a[2] === kind);
+  const f = gramFilter, rows = src.filter(r => (!f.lv || r[4] === f.lv) && (kind !== 'v' || !f.g || GNAME[r[2]][0] === f.g));
+  const lvT = [[0, '전체'], [5, 'N5'], [4, 'N4']].map(([v, t]) => `<button class="tog ${f.lv === v ? 'on' : ''}" data-fl="${v}">${t}</button>`).join('');
+  const gT = kind === 'v' ? [['', '모든 그룹'], ['1', '1그룹'], ['2', '2그룹'], ['3', '3그룹']].map(([v, t]) => `<button class="tog ${f.g === v ? 'on' : ''}" data-fg="${v}">${t}</button>`).join('') : '';
+  const title = kind === 'v' ? '📚 N5·N4 동사' : kind === 'i' ? '📚 N5·N4 い형용사' : '📚 N5·N4 な형용사';
+  return `<div class="card"><h2>${title} (${rows.length}개)</h2>
+    <div class="optrow">${lvT}</div>${gT ? `<div class="optrow">${gT}</div>` : ''}
+    <p class="muted" style="font-size:.8rem">단어를 누르면 활용형이 펼쳐져요. N5·N4 구분은 공식 목록이 없어 일반적인 학습 목록 기준(참고용)이에요.</p>
+    ${rows.map(([w, y, g, ko, lv]) => `<details class="cnt" data-w="${esc(w)}" data-y="${esc(y)}" data-g="${kind === 'v' ? g : kind}"><summary><span class="jp" lang="ja" style="font-size:1.25rem">${linkK(w)}</span> <span class="jp muted" lang="ja">${esc(y)}</span> ${esc(ko)}
+      ${kind === 'v' ? `<span class="lvb" style="background:#F5EEE5">${GNAME[g]}</span>` : ''}<span class="lvb n${lv}">N${lv}</span></summary><div class="fx"></div></details>`).join('')}</div>`;
+}
+function patList(ps) {
+  return `<div class="card">${ps.map(p => `<div class="gpat"><div class="pt jp" lang="ja">${linkK(p.p)}<span class="lvb n${p.lv}">N${p.lv}</span></div>
+    <div>${esc(p.m)}</div>${p.c ? `<div class="cn">${linkK(p.c)}</div>` : ''}${p.d ? `<p class="muted" style="font-size:.88rem">${linkK(p.d)}</p>` : ''}
+    ${p.ex.map(gex).join('')}</div>`).join('')}</div>`;
 }
 
 /* ═══════════════ 읽기 규칙 (한국음 ↔ 음독, 소리 가족 사전) ═══════════════ */
@@ -1083,6 +1556,18 @@ function onboarding() {
 }
 
 /* ═══════════════ 시작 ═══════════════ */
+// 뒤로가기 기록에 올릴 화면들 (공부 중 새 한자 카드는 기록하지 않음)
+renderHome = navable(renderHome, () => 'Home');
+renderList = navable(renderList, () => 'List');
+renderCard = navable(renderCard, a => a[1] === 'learn' ? null : 'Card');
+renderSearch = navable(renderSearch, () => 'Search');
+renderSheet = navable(renderSheet, () => 'Sheet');
+renderRules = navable(renderRules, () => 'Rules');
+renderSet = navable(renderSet, () => 'Set');
+renderKana = navable(renderKana, () => 'Kana');
+renderKprac = navable(renderKprac, () => 'Kprac');
+renderGram = navable(renderGram, () => 'Gram');
+$('#btnBack').onclick = goBack;
 $('#btnSearch').onclick = () => { if (cur === 'Quiz' && !confirm('공부를 멈추고 검색할까요? (푼 문제는 저장돼요)')) return; renderSearch(); };
 $('#btnHome').onclick = () => { if (cur === 'Quiz' && !confirm('공부를 그만하고 홈으로 갈까요? (푼 문제는 저장돼요)')) return; renderHome(); };
 load();

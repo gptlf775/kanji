@@ -145,6 +145,18 @@ def check_v2(k, it, rds, exs, J, common, tagger, errors, warns, infos):
     if it.get('oc') not in OC_VALUES:
         errors.append(f'{k}: 유래 신뢰도(oc)는 {sorted(OC_VALUES)} 중 하나')
 
+def write_index():
+    """data/index.js — 준비된 학년 목록 + 파일 내용 해시(=버전). 앱이 주소에 붙여 서버 캐시(최대 10분)의 옛 파일을 피함.
+    활용어 자료 data/gram.js 의 버전(GRAM_VER)도 함께 기록 (build_gram.py 도 이 함수를 씀)"""
+    dd = os.path.join(ROOT, 'data')
+    avail = sorted(int(f[1:-3]) for f in os.listdir(dd) if re.match(r'^g\d\.js$', f))
+    md5 = lambda p: hashlib.md5(open(p, 'rb').read()).hexdigest()[:8]
+    ver = {str(g): md5(os.path.join(dd, f'g{g}.js')) for g in avail}
+    gp = os.path.join(dd, 'gram.js')
+    gv = md5(gp) if os.path.exists(gp) else ''
+    open(os.path.join(dd, 'index.js'), 'w', encoding='utf-8').write(
+        f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};window.GRAM_VER={json.dumps(gv)};\n')
+
 def main(grade):
     J = json.load(open(os.path.join(REF_DIR, 'jouyou.json'), encoding='utf-8'))
     cw_path = os.path.join(REF_DIR, 'freq', 'common_words.json')
@@ -273,12 +285,7 @@ def main(grade):
     js = f'window.KANJI_GRADES=window.KANJI_GRADES||{{}};window.KANJI_GRADES[{grade}]=' + \
          json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n'
     open(os.path.join(ROOT, 'data', f'g{grade}.js'), 'w', encoding='utf-8').write(js)
-    # 준비된 학년 목록 (앱이 없는 파일을 요청하지 않도록)
-    avail = sorted(int(f[1:-3]) for f in os.listdir(os.path.join(ROOT, 'data')) if re.match(r'^g\d\.js$', f))
-    # 학년별 내용 해시 = 버전. 앱이 파일 주소에 붙여서 서버 캐시(최대 10분)에 걸린 옛 파일을 피함
-    ver = {str(g): hashlib.md5(open(os.path.join(ROOT, 'data', f'g{g}.js'), 'rb').read()).hexdigest()[:8] for g in avail}
-    open(os.path.join(ROOT, 'data', 'index.js'), 'w', encoding='utf-8').write(
-        f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};\n')
+    write_index()
 
     report.append(f'[{grade}학년] 공식 {len(official)}자 / 작성 {len(authored)}자 / 예시 {n_ex}개 (소리 변화 {n_changed}개) / 2차 항목 작성 {v2_count}자')
     report.append(f'오류 {len(errors)}건, 경고 {len(warns)}건, 참고 {len(infos)}건(예시 없는 읽기)')
