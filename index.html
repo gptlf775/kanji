@@ -505,6 +505,7 @@ function renderHome() {
       <button id="goWeak"><span>🔁</span>헷갈린 한자</button>
       <button id="goSet"><span>⚙️</span>설정</button>
     </div>
+    <p style="text-align:center;margin:14px 0 4px"><a href="guide.html" style="color:var(--sub);font-size:.88rem">ℹ️ 앱 소개 · 사용법 · 오류 제보</a></p>
     ${S.mode === 'kid' && S.stickers ? `<div class="card"><h2>🏅 스티커 모음 (${(S.stickers.match(/\p{Extended_Pictographic}/gu) || []).length}개)</h2><div class="stickers">${S.stickers}</div></div>` : ''}`;
   const on = (id, fn) => { const e = $('#' + id); if (e) e.onclick = fn; };
   on('goStudy', () => startSession());
@@ -1801,6 +1802,9 @@ function renderSet() {
       <textarea id="bTxt" placeholder="여기에 백업 코드를 붙여 넣고 '불러오기'를 누르세요" style="margin-top:10px"></textarea>
       <button class="btn ghost" id="bImp" style="margin-top:8px">불러오기</button>
       <button class="btn ghost" id="bReset" style="margin-top:18px;color:var(--ng)">진도 모두 지우기</button></div>
+    <div class="card"><h2>ℹ️ 앱 소개 · 오류 제보</h2>
+      <p class="muted">홈 화면 추가 방법, 기능 설명, 자주 묻는 질문, 오류 제보 방법을 볼 수 있어요.</p>
+      <a class="btn ghost" href="guide.html" style="margin-top:8px;text-decoration:none">앱 소개 페이지 열기</a></div>
     <div class="card muted" style="font-size:.82rem">
       <h2 style="color:var(--ink)">📖 출처</h2>
       한자 목록·학년: 文部科学省 「学年別漢字配当表」(2020 시행) · 음훈: 文化庁 「常用漢字表」(2010)<br>

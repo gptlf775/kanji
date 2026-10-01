@@ -1,0 +1,26 @@
+초등 한자 1026 — https://gptlf775.github.io/kanji/
+Copyright (c) 2026 gptlf775
+
+공식 주소는 https://gptlf775.github.io/kanji/ 하나뿐입니다.
+이 저장소는 공개되어 있지만, 저장소 소유자 외에는 원본을 수정할 수 없습니다.
+
+1. 한자·단어·문법 데이터 (data/*.js, src/content_*.json, src/gram_src.py, src/vocab_ko.txt, src/vocab_core.txt)
+   크리에이티브 커먼즈 저작자표시-동일조건변경허락 4.0 (CC BY-SA 4.0)
+   https://creativecommons.org/licenses/by-sa/4.0/
+   원천 자료와 라이선스:
+   - KANJIDIC2, JMdict — Electronic Dictionary Research and Development Group (EDRDG), CC BY-SA 4.0
+   - KanjiVG — Ulrich Apel, CC BY-SA 3.0
+   - JLPT N5·N4 단어 목록 — Jonathan Waller (tanos.co.uk), CC BY
+   - 学年別漢字配当表 (文部科学省), 常用漢字表 (文化庁)
+   이 데이터를 다시 쓸 때는 출처(이 앱과 위 원천 자료)를 밝히고 같은 라이선스로 공유해야 합니다.
+
+2. 앱 코드 (index.html, guide.html, sw.js, manifest.webmanifest, src/*.py, icons/)
+   All rights reserved.
+   개인 학습 목적으로 앱을 사용하고 코드를 열람하는 것은 자유입니다.
+   코드의 복제·수정·재배포·상업적 이용은 저작권자의 허락이 필요합니다.
+
+---
+Elementary Kanji 1026 — https://gptlf775.github.io/kanji/
+Data (data/, src/content_*.json, src/gram_src.py, src/vocab_*.txt): CC BY-SA 4.0 (derived from KANJIDIC2/JMdict © EDRDG CC BY-SA 4.0,
+KanjiVG © Ulrich Apel CC BY-SA 3.0, JLPT lists © Jonathan Waller tanos.co.uk CC BY).
+App code: All rights reserved. Free to use for personal study. The only official address is https://gptlf775.github.io/kanji/.
