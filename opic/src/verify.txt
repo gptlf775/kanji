@@ -1,0 +1,4 @@
+질문 110개 · 묶음 {'home': 14, 'park': 12, 'roleplay': 30, 'show': 10, 'surprise': 36, 'travel': 8} · 유형 {'intro': 1, 'desc': 24, 'routine': 19, 'past': 19, 'compare': 17, 'rp_ask': 10, 'rp_solve': 10, 'rp_exp': 10}
+모범 답변 문장: IM2 977 · IH 1384
+core: 레슨 24 · 도구 20 · 표현 156 · 동사 100
+오류 0건, 경고 0건

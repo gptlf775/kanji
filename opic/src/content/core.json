@@ -1,0 +1,3491 @@
+{
+ "levels": [
+  {
+   "lv": 0,
+   "name": "기초",
+   "goal": "영어 문장의 뼈대(누가 + 한다 + 무엇을)와 기본 소리에 익숙해지기",
+   "why": "한국어는 '나는 영화를 좋아해요'처럼 동사가 맨 끝에 오지만, 영어는 'I like movies'처럼 동사가 두 번째 자리에 와요. 이 순서가 몸에 배지 않으면 단어를 알아도 입에서 문장이 안 나옵니다. 집을 지을 때 기둥부터 세우듯, 뼈대부터 잡는 단계예요.",
+   "how": [
+    "오늘의 레슨 1개 읽기 (5분)",
+    "틀 문장의 빈칸에 단어를 바꿔 넣으며 소리 내어 5번 말하기",
+    "예문을 듣고 바로 따라 말하기 3번 (쉐도잉)",
+    "'말해 보기' 과제를 녹음하고 다시 들어 보기"
+   ],
+   "pass": "'I'm ___ / I like ___ / I live in ___ / I went to ___'로 나에 대한 문장 5개를 멈추지 않고 말할 수 있다."
+  },
+  {
+   "lv": 1,
+   "name": "한 문장",
+   "goal": "질문을 듣고 '완전한 한 문장'으로 대답하기 (묘사·이유·빈도·과거·미래·감정)",
+   "why": "OPIc 채점자는 단어만 툭툭 던지는 사람(NL~NH)과 문장으로 말하는 사람(IL 이상)을 가장 먼저 구분해요. 한 문장을 끝까지 말할 수 있어야 그다음에 문장을 이을 수 있어요. 벽돌 한 장을 제대로 구워야 벽을 쌓을 수 있는 것과 같아요.",
+   "how": [
+    "오늘의 레슨 틀 문장 2~3개 외우기",
+    "내 이야기로 빈칸을 채워 한 문장씩 5개 만들기",
+    "시제(현재·과거·미래)를 바꿔 같은 문장 다시 말하기",
+    "도구(문법) 카드 1장 복습"
+   ],
+   "pass": "'주말에 뭐 해요? / 지난 주말엔? / 다음 주말엔?'에 각각 완전한 한 문장으로 3초 안에 대답할 수 있다."
+  },
+  {
+   "lv": 2,
+   "name": "문장 잇기",
+   "goal": "and·but·so·because·then으로 문장 2~3개를 자연스럽게 이어 말하기",
+   "why": "IM 등급의 핵심은 '문장을 이어서 하나의 덩어리로 말하기'예요. 문장이 뚝뚝 끊기면 아무리 맞아도 IL에 머물러요. 구슬(문장)을 실(연결어)로 꿰어야 목걸이(답변)가 되는 것처럼, 이 단계에서 '실' 쓰는 법을 익혀요.",
+   "how": [
+    "연결어 1개를 골라 오늘 하루 계속 써 보기",
+    "3문장 틀(묘사·습관·경험·비교) 중 하나로 답 만들기",
+    "막히면 시간 벌기 표현으로 3초 버티기 연습",
+    "마무리 표현으로 끝맺기까지 녹음"
+   ],
+   "pass": "아무 주제나 들었을 때 연결어를 2개 이상 써서 3문장을 끊김 없이 말하고, 마무리 표현으로 끝낼 수 있다."
+  },
+  {
+   "lv": 3,
+   "name": "1분 이야기 (IM2)",
+   "goal": "한 질문에 6~10문장(약 1분, 70~110단어)으로 '시작 → 내용 → 마무리' 답변하기",
+   "why": "IM2는 '익숙한 주제에 대해 1분 정도 문장을 이어 말할 수 있는 수준'이에요. 모범 답변(IM2판)을 내 것처럼 외워 두면, 시험에서 비슷한 질문이 나왔을 때 그대로 꺼내 쓸 수 있어요. 요리 레시피를 외워 두면 재료만 바꿔 다른 요리도 하는 것과 같아요.",
+   "how": [
+    "주제 하나 고르고 IM2판 모범 답변을 듣고 따라 말하기",
+    "문장 하나씩 가리고 다음 문장 떠올리기",
+    "이야기 은행(S1~S6) 하나를 1분 동안 말해 보기",
+    "녹음해서 1분을 넘기는지, 시제가 맞는지 점검"
+   ],
+   "pass": "묘사·루틴·과거 경험·비교 질문 중 아무거나 하나에 1분 동안 멈춤 3초 이하로, 시작과 마무리를 갖춰 말할 수 있다."
+  },
+  {
+   "lv": 4,
+   "name": "실전",
+   "goal": "롤플레이(질문하기·문제 해결)·돌발 주제·모의고사로 실제 시험처럼 연습하기",
+   "why": "실제 시험은 15문항을 40분 안에 이어서 풀고, 준비하지 않은 돌발 주제와 롤플레이가 꼭 섞여 나와요. 외운 답을 상황에 맞게 바꿔 쓰는 힘과, 긴 시험을 버티는 체력이 필요해요. 운전 연수를 마치고 실제 도로에 나가 보는 단계예요.",
+   "how": [
+    "롤플레이 질문하기: 질문 3~4개 만들어 말하기",
+    "롤플레이 문제 해결: 상황 설명 + 대안 2~3개 말하기",
+    "돌발 주제에 이야기 은행 하나를 끌어와 답하기",
+    "주 1회 모의고사(15문항) 녹음 후 다시 듣기"
+   ],
+   "pass": "모의고사 15문항을 쉬지 않고 끝까지 말하고, 롤플레이에서 질문 3개와 대안 2개를 빠뜨리지 않는다."
+  }
+ ],
+ "lessons": [
+  {
+   "id": "L0-1",
+   "lv": 0,
+   "title": "영어 문장의 뼈대: 누가 + 한다 + 무엇을",
+   "explain": [
+    "왜 먼저 배울까요? 한국어는 '나는 영화를 좋아해요'처럼 '좋아해요(동사)'가 맨 끝에 와요. 영어는 'I like movies'처럼 '누가(I) → 한다(like) → 무엇을(movies)' 순서예요. 동사가 두 번째 자리에 딱 붙어 있어요.",
+    "비유하면, 한국어는 결론(동사)을 끝에 말하는 말이고, 영어는 결론부터 말하는 말이에요. 영어로 말할 때는 '나 → 뭘 한다'까지 먼저 말해 버리고, 대상은 뒤에 붙인다고 생각하세요.",
+    "OPIc에서는 어려운 단어보다 이 순서를 지킨 짧은 문장이 훨씬 중요해요. '누가 + 한다 + 무엇을' 세 칸만 채우면 일단 말이 됩니다."
+   ],
+   "frames": [
+    [
+     "I like ___.",
+     "나는 ___을(를) 좋아해요.",
+     [
+      "movies",
+      "music",
+      "walking"
+     ]
+    ],
+    [
+     "I ___ movies.",
+     "나는 영화를 ___.",
+     [
+      "like",
+      "watch",
+      "love"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I like movies.",
+     "나는 영화를 좋아해요."
+    ],
+    [
+     "I watch Netflix.",
+     "나는 넷플릭스를 봐요."
+    ],
+    [
+     "I listen to music.",
+     "나는 음악을 들어요."
+    ],
+    [
+     "I have a gray sofa.",
+     "나는 회색 소파가 있어요."
+    ],
+    [
+     "I eat breakfast at home.",
+     "나는 집에서 아침을 먹어요."
+    ]
+   ],
+   "speak": [
+    "'I like ___.'에 좋아하는 것 3가지를 넣어 소리 내어 말해 보세요.",
+    "'나는 음악을 들어요'를 영어 순서(누가 → 한다 → 무엇을)로 바꿔 말해 보세요. (정답: I listen to music.)"
+   ]
+  },
+  {
+   "id": "L0-2",
+   "lv": 0,
+   "title": "be동사: I am / It is (~이에요, ~해요)",
+   "explain": [
+    "왜 필요할까요? '나 피곤해', '그거 커'처럼 상태를 말할 때 영어는 특별한 동사 be를 써요. 한국어의 '~이에요/~해요'에 해당하는 연결고리예요.",
+    "모양: I → am, You/We/They → are, He/She/It → is. 과거는 was/were. 말할 때는 줄여서 I'm, It's, You're라고 하면 훨씬 자연스러워요.",
+    "주의: '나는 피곤해'를 'I tired'라고 하면 동사 자리가 비어 있어요. tired, big, fun 같은 상태 단어 앞에는 꼭 am/is/are를 넣으세요. 다리 하나 빠진 의자 같은 문장이 되지 않게요!"
+   ],
+   "frames": [
+    [
+     "I'm ___.",
+     "나는 ___해요(이에요).",
+     [
+      "tired",
+      "happy",
+      "busy"
+     ]
+    ],
+    [
+     "It's ___.",
+     "그건 ___해요.",
+     [
+      "small",
+      "quiet",
+      "fun"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I'm from Seoul.",
+     "나는 서울 출신이에요."
+    ],
+    [
+     "I'm a little tired today.",
+     "오늘은 좀 피곤해요."
+    ],
+    [
+     "My apartment is small.",
+     "우리 집은 작아요."
+    ],
+    [
+     "It's really quiet at night.",
+     "밤에는 정말 조용해요."
+    ],
+    [
+     "The park is very close.",
+     "공원이 아주 가까워요."
+    ],
+    [
+     "The movie was really fun.",
+     "그 영화 정말 재미있었어요."
+    ]
+   ],
+   "speak": [
+    "'I'm ___.'로 지금 내 기분이나 상태를 3번 말해 보세요.",
+    "우리 집을 'It's ___.'로 두 문장 말해 보세요. (예: It's small. It's cozy.)"
+   ]
+  },
+  {
+   "id": "L0-3",
+   "lv": 0,
+   "title": "일반동사: I like / I live / I go",
+   "explain": [
+    "be동사가 '상태'라면, 일반동사는 '행동'이에요. like(좋아하다), live(살다), go(가다), watch(보다), eat(먹다)처럼요. 이때는 am/is를 쓰지 않아요. 'I am like movies'는 틀린 문장이에요. 한 문장에 동사 자리는 하나뿐!",
+    "평소에 반복하는 일(습관)은 그냥 기본형으로 말해요. 'I go to the park.'는 오늘만이 아니라 '보통 그렇다'는 뜻이에요. OPIc 루틴 질문의 대부분이 이 모양으로 해결돼요.",
+    "He/She/Minsu처럼 '나도 너도 아닌 한 사람'이 주인공이면 동사에 -s를 붙여요: Minsu likes action movies. 지금은 '나(I)'로 말하는 연습이 먼저예요."
+   ],
+   "frames": [
+    [
+     "I live in ___.",
+     "나는 ___에 살아요.",
+     [
+      "Seoul",
+      "a small apartment",
+      "an apartment near the park"
+     ]
+    ],
+    [
+     "I go to ___.",
+     "나는 ___에 가요.",
+     [
+      "the park",
+      "the movies",
+      "the mall"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I live alone.",
+     "나는 혼자 살아요."
+    ],
+    [
+     "I live in a small apartment in Seoul.",
+     "나는 서울의 작은 아파트에 살아요."
+    ],
+    [
+     "I go to the park every evening.",
+     "나는 매일 저녁 공원에 가요."
+    ],
+    [
+     "I watch movies on Netflix.",
+     "나는 넷플릭스로 영화를 봐요."
+    ],
+    [
+     "I listen to music with my earphones.",
+     "나는 이어폰으로 음악을 들어요."
+    ],
+    [
+     "Minsu likes action movies, too.",
+     "민수도 액션 영화를 좋아해요."
+    ]
+   ],
+   "speak": [
+    "'I live ___ / I like ___ / I go to ___' 세 문장으로 나를 말해 보세요.",
+    "평소에 하는 일 3가지를 'I ___.'로 말해 보세요. (watch, eat, walk, listen to ...)"
+   ]
+  },
+  {
+   "id": "L0-4",
+   "lv": 0,
+   "title": "부정: don't / I'm not (안 해요, 아니에요)",
+   "explain": [
+    "왜 필요할까요? '이건 안 좋아하지만 저건 좋아해요'처럼 대비해서 말하면 답이 훨씬 풍부해져요. OPIc에서 내용이 모자랄 때 쓰기 좋은 무기예요.",
+    "행동(일반동사)을 '안 한다'고 할 때는 동사 앞에 don't를 넣어요: I don't like horror movies. 한국어도 '안 좋아해요'처럼 동사 앞에 '안'을 넣죠. 거의 같은 자리예요.",
+    "상태(be동사)는 am/is 뒤에 not을 붙여요: I'm not busy. It's not that big. '안'의 자리가 하나는 앞, 하나는 뒤라는 것만 기억하세요."
+   ],
+   "frames": [
+    [
+     "I don't ___.",
+     "나는 ___ 안 해요.",
+     [
+      "like horror movies",
+      "cook much",
+      "drive"
+     ]
+    ],
+    [
+     "It's not ___.",
+     "그건 ___ 않아요.",
+     [
+      "that big",
+      "expensive",
+      "far"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I don't like horror movies.",
+     "나는 공포 영화를 안 좋아해요."
+    ],
+    [
+     "I don't cook much on weekdays.",
+     "평일에는 요리를 별로 안 해요."
+    ],
+    [
+     "It's not that big, but it's cozy.",
+     "그렇게 크진 않지만 아늑해요."
+    ],
+    [
+     "I'm not a morning person.",
+     "나는 아침형 인간이 아니에요."
+    ],
+    [
+     "The park isn't crowded in the morning.",
+     "아침에는 공원이 붐비지 않아요."
+    ]
+   ],
+   "speak": [
+    "싫어하는 것 2가지를 'I don't like ___.'로 말해 보세요.",
+    "'I don't ___, but I ___.' 모양으로 한 문장 만들어 보세요. (예: I don't run every day, but I walk every evening.)"
+   ]
+  },
+  {
+   "id": "L0-5",
+   "lv": 0,
+   "title": "과거: I went / I watched (했어요)",
+   "explain": [
+    "왜 중요할까요? OPIc에는 '마지막으로 ~한 게 언제예요? 무슨 일이 있었나요?' 같은 과거 질문이 꼭 나와요. 이때 현재형으로 말하면 점수가 크게 깎여요. 과거형은 '이미 끝난 일'이라는 도장을 동사에 찍는 거예요.",
+    "규칙 동사: 끝에 -ed를 붙여요. watch → watched, walk → walked, stay → stayed. 한국어 '하다 → 했다'의 '-ㅆ-'처럼 붙이는 꼬리라고 생각하세요.",
+    "불규칙 동사: 자주 쓰는 동사일수록 모양이 바뀌어요. go → went, eat → ate, see → saw, have → had, buy → bought. 처음엔 많이 쓰는 10개만 외워도 충분해요(동사표 참고)."
+   ],
+   "frames": [
+    [
+     "Last weekend, I ___.",
+     "지난 주말에 나는 ___.",
+     [
+      "watched a movie",
+      "went to the park",
+      "stayed home"
+     ]
+    ],
+    [
+     "Yesterday, I ___.",
+     "어제 나는 ___.",
+     [
+      "ate out",
+      "cleaned my room",
+      "bought some clothes online"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "Last weekend, I watched a movie with Minsu.",
+     "지난 주말에 민수랑 영화를 봤어요."
+    ],
+    [
+     "I went to the Han River park yesterday.",
+     "어제 한강 공원에 갔어요."
+    ],
+    [
+     "We ate fried chicken after the movie.",
+     "영화 끝나고 치킨을 먹었어요."
+    ],
+    [
+     "I stayed home and cleaned my apartment.",
+     "집에 있으면서 청소를 했어요."
+    ],
+    [
+     "I saw a really funny comedy on Netflix.",
+     "넷플릭스에서 정말 웃긴 코미디를 봤어요."
+    ],
+    [
+     "It was really fun.",
+     "정말 재미있었어요."
+    ]
+   ],
+   "speak": [
+    "어제 한 일 3가지를 과거형으로 말해 보세요. (went / ate / watched)",
+    "go, eat, see, have, buy의 과거형을 소리 내어 5번씩 말해 보세요."
+   ]
+  },
+  {
+   "id": "L0-6",
+   "lv": 0,
+   "title": "질문하기: Do you ~? / What do you ~?",
+   "explain": [
+    "왜 필요할까요? OPIc 롤플레이에서는 내가 상대에게 질문을 3~4개 해야 해요. 질문을 못 만들면 그 문항은 통째로 점수를 잃어요.",
+    "한국어는 끝을 올려서(좋아해요?) 질문을 만들지만, 영어는 맨 앞에 '질문 깃발'을 꽂아요. 행동 문장은 Do를 앞에: You like movies → Do you like movies? 상태 문장은 순서만 바꿔요: You are free → Are you free?",
+    "무엇·어디·언제를 묻고 싶으면 깃발 앞에 의문사를 하나 더 붙여요: What do you do on weekends? / Where do you usually go?"
+   ],
+   "frames": [
+    [
+     "Do you ___?",
+     "___ 하세요?",
+     [
+      "like action movies",
+      "have time this weekend",
+      "live near here"
+     ]
+    ],
+    [
+     "What do you ___?",
+     "무엇을 ___?",
+     [
+      "usually do on weekends",
+      "want to watch",
+      "recommend"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "Do you like action movies?",
+     "액션 영화 좋아해요?"
+    ],
+    [
+     "Are you free this Saturday?",
+     "이번 토요일에 시간 있어요?"
+    ],
+    [
+     "What do you usually do on weekends?",
+     "주말에 보통 뭐 해요?"
+    ],
+    [
+     "Where do you go jogging?",
+     "어디서 조깅해요?"
+    ],
+    [
+     "What time do you open?",
+     "몇 시에 문 열어요?"
+    ],
+    [
+     "Do you have this in a smaller size?",
+     "이거 더 작은 사이즈 있어요?"
+    ]
+   ],
+   "speak": [
+    "친구에게 주말 계획을 묻는 질문 3개를 'Do you / What do you / Where do you'로 만들어 보세요.",
+    "'You live near here.'를 질문으로 바꿔 말해 보세요. (정답: Do you live near here?)"
+   ]
+  },
+  {
+   "id": "L0-7",
+   "lv": 0,
+   "title": "숫자·시간 말하기",
+   "explain": [
+    "왜 필요할까요? '얼마나 자주, 몇 시에, 몇 년 동안' 같은 숫자가 들어가면 답이 구체적으로 들려요. 채점자는 구체적인 답을 높게 쳐요.",
+    "시각: 7시 = at seven, 7시 반 = at seven thirty, 저녁 7시 = at seven in the evening. 기간: 30분 동안 = for thirty minutes, 3년 동안 = for three years. '~시에'는 at, '~동안'은 for라고 짝지어 외우세요.",
+    "헷갈리는 소리: 13(thirteen)과 30(thirty). -teen은 뒤를 길고 세게 '써r티~인', -ty는 앞을 세게 '써r리'. 연도는 두 자리씩 끊어 읽어요: 2024 = twenty twenty-four."
+   ],
+   "frames": [
+    [
+     "I usually get up at ___.",
+     "나는 보통 ___에 일어나요.",
+     [
+      "seven",
+      "seven thirty",
+      "eight"
+     ]
+    ],
+    [
+     "I walk for ___ minutes.",
+     "나는 ___분 동안 걸어요.",
+     [
+      "thirty",
+      "twenty",
+      "forty"
+     ]
+    ],
+    [
+     "I've lived here for ___.",
+     "여기 산 지 ___ 됐어요.",
+     [
+      "three years",
+      "about three years",
+      "a long time"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I usually get up at seven thirty.",
+     "나는 보통 7시 반에 일어나요."
+    ],
+    [
+     "I walk for thirty minutes every evening.",
+     "매일 저녁 30분 동안 걸어요."
+    ],
+    [
+     "The park is a five-minute walk from my place.",
+     "공원은 우리 집에서 걸어서 5분이에요."
+    ],
+    [
+     "I've lived here for three years.",
+     "여기 산 지 3년 됐어요."
+    ],
+    [
+     "I go to the movies once or twice a month.",
+     "한 달에 한두 번 극장에 가요."
+    ],
+    [
+     "My apartment is on the third floor.",
+     "우리 집은 3층이에요."
+    ]
+   ],
+   "speak": [
+    "내 하루를 숫자로 말해 보세요: 일어나는 시간, 걷는 시간, 자는 시간.",
+    "13 / 30, 14 / 40, 15 / 50을 번갈아 소리 내어 구분해 보세요."
+   ]
+  },
+  {
+   "id": "L0-8",
+   "lv": 0,
+   "title": "나를 소개하는 5문장",
+   "explain": [
+    "왜 미리 외울까요? OPIc 첫 질문은 거의 항상 'Tell me about yourself(자기소개)'예요. 이 답을 외워 두면 시험 시작부터 긴장이 풀려요. 그동안 배운 뼈대로 5문장만 만들면 됩니다.",
+    "주의: 이 앱의 '나'는 직업·학교 이야기를 하지 않아요(설문에서 '일 경험 없음'을 골랐기 때문). 대신 사는 곳, 성격, 좋아하는 것, 주말에 하는 일로 채워요.",
+    "순서: ① 사는 곳 → ② 누구와 사는지 → ③ 성격 → ④ 좋아하는 것 → ⑤ 주말 습관. 집 → 사람 → 취미로 흘러가서 듣기에도 자연스러워요."
+   ],
+   "frames": [
+    [
+     "I live in ___.",
+     "나는 ___에 살아요.",
+     [
+      "Seoul",
+      "a small apartment in Seoul"
+     ]
+    ],
+    [
+     "I'm a ___ person.",
+     "나는 ___ 사람이에요.",
+     [
+      "calm",
+      "friendly",
+      "positive"
+     ]
+    ],
+    [
+     "In my free time, I ___.",
+     "여가 시간에 나는 ___.",
+     [
+      "watch movies",
+      "listen to music",
+      "walk in the park"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "Hi, I live in a small apartment in Seoul.",
+     "안녕하세요, 저는 서울의 작은 아파트에 살아요."
+    ],
+    [
+     "I live alone, and I've lived there for three years.",
+     "혼자 살고, 거기 산 지 3년 됐어요."
+    ],
+    [
+     "I'm a pretty calm and friendly person.",
+     "저는 꽤 차분하고 친근한 사람이에요."
+    ],
+    [
+     "I like movies, music, and walking.",
+     "영화, 음악, 걷기를 좋아해요."
+    ],
+    [
+     "On weekends, I usually go jogging at the Han River park.",
+     "주말엔 보통 한강 공원에서 조깅해요."
+    ],
+    [
+     "That's a little about me.",
+     "저는 대충 이런 사람이에요."
+    ]
+   ],
+   "speak": [
+    "예문 6문장을 보지 않고 순서대로 말해 보세요.",
+    "빈칸을 내 이야기로 바꿔서 5문장 자기소개를 녹음해 보세요."
+   ]
+  },
+  {
+   "id": "L1-1",
+   "lv": 1,
+   "title": "묘사 한 문장: It's ~ / There is·are ~",
+   "explain": [
+    "왜 중요할까요? '집·공원·동네를 묘사해 주세요'는 OPIc에서 가장 자주 나오는 질문이에요. 두 가지 틀이면 대부분 해결돼요: It's ___(그곳은 ~해요)로 모습을, There's/There are ___(~이 있어요)로 무엇이 있는지 말해요.",
+    "There's는 하나, There are는 여러 개: There's a big window. / There are some plants. 한국어 '~가 있어요'를 'I have'로만 말하지 말고, 장소를 소개할 때는 There is/are를 쓰면 훨씬 자연스러워요.",
+    "끝에 위치를 붙이면 듣는 사람 머릿속에 그림이 그려져요: There's a big TV in the living room. / There's a park near my place."
+   ],
+   "frames": [
+    [
+     "There's a ___ in my room.",
+     "내 방에 ___이(가) 있어요.",
+     [
+      "gray sofa",
+      "big TV",
+      "big window"
+     ]
+    ],
+    [
+     "There are ___ near my place.",
+     "우리 집 근처에 ___이(가) 있어요.",
+     [
+      "a lot of cafes",
+      "some nice restaurants",
+      "walking paths"
+     ]
+    ],
+    [
+     "It's ___.",
+     "그곳은 ___해요.",
+     [
+      "small but cozy",
+      "quiet and clean",
+      "big and bright"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "My apartment is small, but it's cozy.",
+     "우리 집은 작지만 아늑해요."
+    ],
+    [
+     "There's a big window in my room.",
+     "내 방에 큰 창문이 있어요."
+    ],
+    [
+     "There are a few plants by the window.",
+     "창가에 화분이 몇 개 있어요."
+    ],
+    [
+     "There's a big park near my place.",
+     "우리 집 근처에 큰 공원이 있어요."
+    ],
+    [
+     "The walls are white, so it looks bright.",
+     "벽이 하얘서 밝아 보여요."
+    ],
+    [
+     "There are a lot of people at the park on weekends.",
+     "주말엔 공원에 사람이 많아요."
+    ]
+   ],
+   "speak": [
+    "내 방에 있는 물건 3가지를 'There's ___.'로 말해 보세요.",
+    "우리 동네를 'It's ___.' 한 문장과 'There are ___.' 한 문장으로 말해 보세요."
+   ]
+  },
+  {
+   "id": "L1-2",
+   "lv": 1,
+   "title": "좋아하는 것과 이유: because",
+   "explain": [
+    "왜 이유를 붙일까요? 'I like movies.'만 말하면 대화가 끝나 버려요. 'because ~'로 이유를 하나 붙이면 문장이 두 배로 길어지고, 채점자에게 '생각을 설명할 줄 안다'는 인상을 줘요.",
+    "모양: [좋아하는 것] + because + [누가 + 한다]. because 뒤에는 문장이 와야 해요: I like walking because it helps me relax. 한국어 '~하니까요'를 문장 뒤에 붙이는 느낌이에요.",
+    "이유가 생각 안 날 때 쓰는 만능 이유: it's fun / it's relaxing / it's good for my health / it's cheap and easy. 이 네 가지만 외워 두세요."
+   ],
+   "frames": [
+    [
+     "I like ___ because it's ___.",
+     "___이(가) ___해서 좋아해요.",
+     [
+      "walking / relaxing",
+      "action movies / exciting",
+      "online shopping / easy"
+     ]
+    ],
+    [
+     "I love ___ because ___.",
+     "___을(를) 좋아하는 이유는 ___ 때문이에요.",
+     [
+      "music / it makes me happy",
+      "the park / it's close to my place",
+      "Netflix / I can watch anytime"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I like walking because it helps me relax.",
+     "걷기를 좋아해요, 마음이 편해지거든요."
+    ],
+    [
+     "I love action movies because they're exciting.",
+     "액션 영화를 좋아해요, 신나니까요."
+    ],
+    [
+     "I like online shopping because it's so easy.",
+     "온라인 쇼핑이 좋아요, 정말 편하거든요."
+    ],
+    [
+     "I enjoy jogging because it's good for my health.",
+     "조깅을 즐겨요, 건강에 좋으니까요."
+    ],
+    [
+     "I like ballads because they're calm and touching.",
+     "발라드를 좋아해요, 잔잔하고 감동적이라서요."
+    ]
+   ],
+   "speak": [
+    "좋아하는 것 3가지를 말하고, 각각 because로 이유를 붙여 보세요.",
+    "만능 이유 4개(fun / relaxing / good for my health / cheap and easy)를 하나씩 써서 문장을 만들어 보세요."
+   ]
+  },
+  {
+   "id": "L1-3",
+   "lv": 1,
+   "title": "빈도: usually, often, on weekends",
+   "explain": [
+    "왜 필요할까요? 루틴 질문('보통 언제 ~해요?')에는 '얼마나 자주'가 꼭 들어가야 답다워져요. 빈도 단어 하나로 '이건 습관이에요'라는 신호를 줄 수 있어요.",
+    "빈도 단어 자리: 동사 바로 앞이에요. I usually walk. / I often watch movies. 단, be동사는 뒤에: It's usually quiet. 한국어로 '보통 걸어요'처럼 동사 앞에 두는 것과 같아요.",
+    "숫자로 말하는 빈도는 문장 끝에: every evening(매일 저녁), on weekends(주말마다), once a week(일주일에 한 번), once or twice a month(한 달에 한두 번)."
+   ],
+   "frames": [
+    [
+     "I usually ___ on weekends.",
+     "나는 주말에 보통 ___해요.",
+     [
+      "go jogging",
+      "clean my apartment",
+      "watch movies"
+     ]
+    ],
+    [
+     "I ___ once or twice a month.",
+     "나는 한 달에 한두 번 ___해요.",
+     [
+      "go to the movies",
+      "go shopping",
+      "eat out with friends"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I usually walk along the river every evening.",
+     "보통 매일 저녁 강을 따라 걸어요."
+    ],
+    [
+     "I often watch movies on Netflix at night.",
+     "밤에 넷플릭스로 영화를 자주 봐요."
+    ],
+    [
+     "On weekends, I go jogging in the morning.",
+     "주말엔 아침에 조깅을 해요."
+    ],
+    [
+     "I go to the movies once or twice a month.",
+     "한 달에 한두 번 극장에 가요."
+    ],
+    [
+     "I sometimes shop at the department store.",
+     "가끔 백화점에서 쇼핑해요."
+    ],
+    [
+     "It's usually quiet in the morning.",
+     "아침엔 보통 조용해요."
+    ]
+   ],
+   "speak": [
+    "always / usually / often / sometimes / never를 하나씩 넣어 내 습관 5문장을 말해 보세요.",
+    "'얼마나 자주 공원에 가요?'에 숫자 빈도(every evening, once a week ...)로 대답해 보세요."
+   ]
+  },
+  {
+   "id": "L1-4",
+   "lv": 1,
+   "title": "과거 한 문장: Last weekend, I ~",
+   "explain": [
+    "왜 중요할까요? OPIc 15문항 중 서너 개는 과거 경험 질문이에요. 과거 질문에 현재형으로 답하는 것이 한국인이 가장 많이 잃는 점수예요.",
+    "요령: 문장 맨 앞에 '언제'를 먼저 말하세요. Last weekend, / Yesterday, / Two years ago, 이렇게 시간을 먼저 말하면 뇌가 '아, 과거구나' 하고 동사를 과거형으로 바꿔 줘요. 내비게이션에 목적지를 먼저 찍는 것과 같아요.",
+    "한 번 과거로 시작했으면 끝까지 과거형을 유지하세요. went로 시작해 놓고 중간에 go로 돌아가면 듣는 사람이 헷갈려요."
+   ],
+   "frames": [
+    [
+     "Last weekend, I ___.",
+     "지난 주말에 나는 ___.",
+     [
+      "went to the movies with Minsu",
+      "cleaned my whole apartment",
+      "went jogging by the river"
+     ]
+    ],
+    [
+     "___ ago, I ___.",
+     "___ 전에 나는 ___.",
+     [
+      "Two years / went to Jeju with my family",
+      "A few months / ordered a coat online",
+      "Last year / traveled to Osaka"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "Last weekend, I went to the movies with Minsu.",
+     "지난 주말에 민수랑 영화 보러 갔어요."
+    ],
+    [
+     "Yesterday, I walked by the river for an hour.",
+     "어제 강가를 한 시간 걸었어요."
+    ],
+    [
+     "Two years ago, I went to Jeju with my family.",
+     "2년 전에 가족이랑 제주도에 갔어요."
+    ],
+    [
+     "Last winter, I traveled to Osaka with two friends.",
+     "작년 겨울에 친구 둘이랑 오사카 여행을 갔어요."
+    ],
+    [
+     "A few months ago, I ordered a coat online.",
+     "몇 달 전에 온라인으로 코트를 주문했어요."
+    ],
+    [
+     "I stayed home and binge-watched a TV show.",
+     "집에 있으면서 드라마를 몰아 봤어요."
+    ]
+   ],
+   "speak": [
+    "'Last weekend, I ___.'로 지난 주말 한 일을 3문장 말해 보세요. 동사가 모두 과거형인지 확인!",
+    "'Two years ago / Last year / Last winter'로 시작하는 문장을 하나씩 만들어 보세요."
+   ]
+  },
+  {
+   "id": "L1-5",
+   "lv": 1,
+   "title": "미래: I'm going to ~",
+   "explain": [
+    "왜 필요할까요? '다음 휴가에 뭐 할 거예요?' 같은 계획 질문이 나오고, 롤플레이에서도 약속을 정할 때 써요. 현재·과거·미래를 다 쓸 수 있으면 채점자는 '시제를 다룰 줄 안다'고 봐요.",
+    "가장 쉬운 미래: I'm going to + 동사 기본형. '~할 거예요(이미 정한 계획)'라는 뜻이에요. 말할 때는 I'm gonna처럼 빠르게 들려요.",
+    "will도 미래지만 느낌이 달라요. 'I'll ~'은 지금 막 결정한 것('그럼 내가 할게요'), 'I'm going to ~'는 이미 계획한 것. 헷갈리면 계획은 going to로 통일하세요."
+   ],
+   "frames": [
+    [
+     "This weekend, I'm going to ___.",
+     "이번 주말에 나는 ___할 거예요.",
+     [
+      "see a movie",
+      "go jogging",
+      "clean my apartment"
+     ]
+    ],
+    [
+     "Next ___, I'm going to ___.",
+     "다음 ___에 나는 ___할 거예요.",
+     [
+      "vacation / visit Busan",
+      "month / buy a new lamp",
+      "summer / travel to Japan again"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "This weekend, I'm going to see a new Marvel movie.",
+     "이번 주말에 새 마블 영화를 볼 거예요."
+    ],
+    [
+     "I'm going to meet Minsu on Saturday.",
+     "토요일에 민수를 만날 거예요."
+    ],
+    [
+     "Next summer, I'm going to visit Busan.",
+     "내년 여름엔 부산에 갈 거예요."
+    ],
+    [
+     "I'm going to stay home and relax.",
+     "집에서 쉴 거예요."
+    ],
+    [
+     "I think I'll order pizza tonight.",
+     "오늘 밤엔 피자 시킬 것 같아요."
+    ]
+   ],
+   "speak": [
+    "이번 주말 계획 3가지를 'I'm going to ___.'로 말해 보세요.",
+    "같은 동사로 과거·현재·미래 문장을 하나씩 만들어 보세요. (I went / I go / I'm going to go)"
+   ]
+  },
+  {
+   "id": "L1-6",
+   "lv": 1,
+   "title": "감정: It was fun / I felt ~",
+   "explain": [
+    "왜 감정을 말할까요? 과거 이야기는 '무슨 일이 있었는지'만 말하면 뉴스처럼 들려요. 마지막에 '그래서 어땠는지' 감정 한 문장을 붙이면 이야기가 살아나요. 채점자가 가장 좋아하는 마무리예요.",
+    "두 가지 틀: ① It was ___(그 일이 ~했어요): It was fun / amazing / scary. ② I was / I felt ___(내가 ~했어요): I was so happy / I felt relieved.",
+    "꿀팁: 감정 앞에 so, really, a little을 붙이면 훨씬 자연스러워요. It was so much fun. / I was a little nervous."
+   ],
+   "frames": [
+    [
+     "It was ___.",
+     "그건 ___했어요.",
+     [
+      "so much fun",
+      "amazing",
+      "really scary"
+     ]
+    ],
+    [
+     "I was ___.",
+     "나는 ___했어요.",
+     [
+      "so happy",
+      "really surprised",
+      "a little nervous"
+     ]
+    ],
+    [
+     "I felt ___.",
+     "나는 ___ 느낌이었어요.",
+     [
+      "relieved",
+      "refreshed",
+      "so tired"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "It was so much fun.",
+     "정말 재미있었어요."
+    ],
+    [
+     "I was really surprised.",
+     "정말 놀랐어요."
+    ],
+    [
+     "I felt so relieved when I found my phone.",
+     "휴대폰을 찾았을 때 정말 안심됐어요."
+    ],
+    [
+     "The concert was amazing, and I got goosebumps.",
+     "콘서트가 대단해서 소름이 돋았어요."
+    ],
+    [
+     "I was a little disappointed at first.",
+     "처음엔 좀 실망했어요."
+    ],
+    [
+     "After jogging, I felt really refreshed.",
+     "조깅하고 나니 정말 상쾌했어요."
+    ]
+   ],
+   "speak": [
+    "지난 주말 한 일 하나를 말하고 'It was ___.'로 감정을 붙여 보세요.",
+    "happy / surprised / nervous / relieved를 'I was ___ because ___.'로 한 문장씩 말해 보세요."
+   ]
+  },
+  {
+   "id": "L1-7",
+   "lv": 1,
+   "title": "비교: bigger than / better than",
+   "explain": [
+    "왜 필요할까요? OPIc에는 '예전과 지금 무엇이 달라졌나요?' 같은 비교 질문이 꼭 나와요. 비교 표현이 있어야 이 질문에 제대로 답할 수 있어요.",
+    "짧은 단어는 끝에 -er + than: big → bigger than, cheap → cheaper than. 긴 단어는 앞에 more: more convenient than. 불규칙 두 개는 꼭 외우세요: good → better, bad → worse.",
+    "한국어 '~보다 더'에서 '더'는 -er/more, '~보다'는 than이에요. 순서만 바뀌어요: '이 공원이 저 공원보다 더 커요' → This park is bigger than that one."
+   ],
+   "frames": [
+    [
+     "It's ___ than before.",
+     "예전보다 더 ___해요.",
+     [
+      "bigger",
+      "busier",
+      "more convenient"
+     ]
+    ],
+    [
+     "I think ___ is better than ___.",
+     "___이(가) ___보다 낫다고 생각해요.",
+     [
+      "Netflix / the theater",
+      "walking / running",
+      "online shopping / going to the mall"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "My place now is bigger than my old one.",
+     "지금 집이 예전 집보다 커요."
+    ],
+    [
+     "Online shopping is more convenient than going to the mall.",
+     "온라인 쇼핑이 쇼핑몰 가는 것보다 편해요."
+    ],
+    [
+     "The park is much cleaner than before.",
+     "공원이 예전보다 훨씬 깨끗해요."
+    ],
+    [
+     "Movie tickets are more expensive these days.",
+     "요즘 영화표가 더 비싸요."
+    ],
+    [
+     "I think watching at home is better than going out.",
+     "집에서 보는 게 밖에 나가는 것보다 낫다고 생각해요."
+    ],
+    [
+     "The weather was worse than I expected.",
+     "날씨가 예상보다 나빴어요."
+    ]
+   ],
+   "speak": [
+    "우리 집과 예전 집(또는 상상의 집)을 '-er than'으로 2문장 비교해 보세요.",
+    "극장 vs 넷플릭스 중 뭐가 더 좋은지 'I think ___ is better than ___ because ___.'로 말해 보세요."
+   ]
+  },
+  {
+   "id": "L1-8",
+   "lv": 1,
+   "title": "질문 만들기: Can I / Could you / How much",
+   "explain": [
+    "왜 필요할까요? 롤플레이 문항에서는 가게·극장·여행사에 전화해서 질문 3~4개를 해야 해요. 정중한 질문 틀 몇 개만 외우면 어떤 상황이든 쓸 수 있어요.",
+    "Can I ~? = 제가 ~해도 돼요? / Could you ~? = ~해 주실 수 있나요?(더 공손) / How much is ~? = ~는 얼마예요? / What time ~? = 몇 시에 ~? / Is there ~? = ~이 있나요?",
+    "비유하면, 이 틀들은 '만능 열쇠'예요. 빈칸만 바꾸면 영화관, 옷 가게, 호텔 어디서든 문이 열려요. 마지막엔 Thank you so much.로 공손하게 마무리!"
+   ],
+   "frames": [
+    [
+     "Can I ___?",
+     "___해도 될까요?",
+     [
+      "try this on",
+      "make a reservation",
+      "get a refund"
+     ]
+    ],
+    [
+     "Could you ___?",
+     "___해 주실 수 있나요?",
+     [
+      "tell me the price",
+      "recommend a good movie",
+      "check my order"
+     ]
+    ],
+    [
+     "How much is ___?",
+     "___은(는) 얼마예요?",
+     [
+      "a ticket",
+      "this jacket",
+      "the delivery fee"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "Hi, can I ask you a few questions?",
+     "안녕하세요, 몇 가지 여쭤봐도 될까요?"
+    ],
+    [
+     "How much is a ticket for the evening show?",
+     "저녁 공연 표는 얼마예요?"
+    ],
+    [
+     "Could you tell me what time the movie starts?",
+     "영화가 몇 시에 시작하는지 알려 주실 수 있나요?"
+    ],
+    [
+     "Is there a discount for the morning show?",
+     "조조 상영 할인 있나요?"
+    ],
+    [
+     "Can I try this on?",
+     "이거 입어 봐도 돼요?"
+    ],
+    [
+     "Thank you so much for your help.",
+     "도와주셔서 정말 감사해요."
+    ]
+   ],
+   "speak": [
+    "영화관에 전화했다고 생각하고 질문 3개를 만들어 보세요. (가격, 시간, 좌석)",
+    "Can I / Could you / How much를 각각 한 번씩 써서 옷 가게 질문을 해 보세요."
+   ]
+  },
+  {
+   "id": "L2-1",
+   "lv": 2,
+   "title": "이어 주는 말: and, but, so, because, then, after that",
+   "explain": [
+    "왜 이게 IM의 핵심일까요? 문장을 하나씩 끊어 말하면 아무리 정확해도 IL(초급)처럼 들려요. 연결어로 이으면 '말이 흐른다'는 느낌을 줘서 IM으로 올라가요. 구슬(문장)을 실(연결어)로 꿰어야 목걸이가 되는 것과 같아요.",
+    "6개만 먼저: and(그리고·더하기), but(하지만·반대), so(그래서·결과), because(왜냐하면·이유), then(그다음·순서), after that(그 후에·순서).",
+    "요령: so와 because는 방향이 반대예요. 'It rained, so we stayed inside.'(원인 → 결과) / 'We stayed inside because it rained.'(결과 → 원인). 둘 다 맞으니 편한 쪽 하나만 먼저 입에 붙이세요."
+   ],
+   "frames": [
+    [
+     "I ___, and I ___.",
+     "나는 ___하고, ___해요.",
+     [
+      "walk in the evening / jog on weekends",
+      "live alone / I like it"
+     ]
+    ],
+    [
+     "It's ___, but ___.",
+     "___하지만 ___해요.",
+     [
+      "small / it's really cozy",
+      "a little far / it's worth it"
+     ]
+    ],
+    [
+     "___, so I ___.",
+     "___해서 나는 ___했어요.",
+     [
+      "It was raining / stayed home",
+      "I was tired / went to bed early"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "My apartment is small, but it's really cozy.",
+     "우리 집은 작지만 정말 아늑해요."
+    ],
+    [
+     "It was raining, so we went to a small cafe.",
+     "비가 와서 작은 카페에 갔어요."
+    ],
+    [
+     "I like this park because it's close to my place.",
+     "이 공원이 좋아요, 우리 집에서 가깝거든요."
+    ],
+    [
+     "I watched a movie, and then I ordered some food.",
+     "영화를 보고 나서 음식을 시켰어요."
+    ],
+    [
+     "After that, we walked along the river.",
+     "그 후에 강을 따라 걸었어요."
+    ]
+   ],
+   "speak": [
+    "'I like ___.' 한 문장에 because, but, so를 차례로 붙여 3문장으로 늘려 보세요.",
+    "어제 한 일 두 가지를 'and then'으로 이어 말해 보세요."
+   ]
+  },
+  {
+   "id": "L2-2",
+   "lv": 2,
+   "title": "시간 순서로 말하기: First, Then, Finally",
+   "explain": [
+    "왜 필요할까요? '하루 일과를 말해 주세요', '그날 무슨 일이 있었는지 처음부터 말해 주세요' 같은 질문에는 순서가 생명이에요. 순서 표시어가 있으면 듣는 사람이 길을 잃지 않아요.",
+    "4단 사다리: First,(먼저) → Then,(그다음) → After that,(그 후에) → Finally,(마지막으로). 각 단어 뒤에 쉼표(살짝 쉼)를 두고 문장을 이어요.",
+    "비유하면 라면 끓이는 순서를 설명하는 것과 같아요. '먼저 물 끓이고, 그다음 면 넣고, 마지막에 계란.' 이렇게 순서 단어만 붙여도 1분 답변의 반이 채워져요."
+   ],
+   "frames": [
+    [
+     "First, I ___.",
+     "먼저 나는 ___해요.",
+     [
+      "get up and drink some water",
+      "stretch for five minutes",
+      "put on my running shoes"
+     ]
+    ],
+    [
+     "Then, I ___.",
+     "그다음에 ___해요.",
+     [
+      "walk to the park",
+      "jog along the river",
+      "listen to music"
+     ]
+    ],
+    [
+     "Finally, I ___.",
+     "마지막으로 ___해요.",
+     [
+      "come home and take a shower",
+      "have a big breakfast",
+      "relax on my sofa"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "First, I put on my earphones and stretch a little.",
+     "먼저 이어폰을 끼고 스트레칭을 조금 해요."
+    ],
+    [
+     "Then, I walk to the Han River park.",
+     "그다음 한강 공원까지 걸어가요."
+    ],
+    [
+     "After that, I jog along the river for about thirty minutes.",
+     "그 후에 30분 정도 강을 따라 조깅해요."
+    ],
+    [
+     "Finally, I come home and take a shower.",
+     "마지막으로 집에 와서 샤워해요."
+    ],
+    [
+     "It's the best part of my weekend.",
+     "그게 제 주말의 가장 좋은 부분이에요."
+    ]
+   ],
+   "speak": [
+    "주말 아침 루틴을 First → Then → After that → Finally로 4문장 말해 보세요.",
+    "지난 주말 하루를 같은 순서 단어로 과거형으로 말해 보세요."
+   ]
+  },
+  {
+   "id": "L2-3",
+   "lv": 2,
+   "title": "묘사 3문장 틀: 위치 → 모습 → 느낌",
+   "explain": [
+    "왜 틀이 필요할까요? 묘사 질문을 받으면 '뭐부터 말하지?' 하다가 시간이 다 가요. 순서를 미리 정해 두면 어떤 장소든 바로 시작할 수 있어요.",
+    "3단 틀: ① 위치(어디에 있나) → ② 모습(크기·색·안에 있는 것) → ③ 느낌(내 생각·좋은 점). 카메라로 비유하면 멀리서(위치) → 가까이(모습) → 내 표정(느낌) 순서예요.",
+    "이 틀은 집, 공원, 동네, 극장, 쇼핑몰, 여행지 모두에 똑같이 써요. 각 칸을 1~2문장으로 늘리면 그대로 IM2 답변이 돼요."
+   ],
+   "frames": [
+    [
+     "It's located ___.",
+     "그곳은 ___에 있어요.",
+     [
+      "near the Han River",
+      "in the middle of my neighborhood",
+      "on the third floor"
+     ]
+    ],
+    [
+     "It's ___, and there's ___.",
+     "___하고, ___이(가) 있어요.",
+     [
+      "small / a gray sofa",
+      "big / a long walking path",
+      "bright / a big window"
+     ]
+    ],
+    [
+     "I love it because ___.",
+     "___라서 정말 좋아요.",
+     [
+      "it's so peaceful",
+      "it feels like home",
+      "I can relax there"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "The Han River park is about five minutes from my place.",
+     "한강 공원은 우리 집에서 5분 정도 거리예요."
+    ],
+    [
+     "It's really big, and there's a long path along the river.",
+     "정말 크고, 강을 따라 긴 길이 있어요."
+    ],
+    [
+     "There are lots of trees, benches, and bike paths.",
+     "나무, 벤치, 자전거 길이 많아요."
+    ],
+    [
+     "I love it because it's so peaceful in the evening.",
+     "저녁에 정말 평화로워서 좋아요."
+    ],
+    [
+     "It's my favorite place in my neighborhood.",
+     "우리 동네에서 제일 좋아하는 곳이에요."
+    ]
+   ],
+   "speak": [
+    "우리 집을 위치 → 모습 → 느낌 3문장으로 말해 보세요.",
+    "같은 틀로 자주 가는 곳(공원, 극장, 쇼핑몰) 하나를 묘사해 보세요."
+   ]
+  },
+  {
+   "id": "L2-4",
+   "lv": 2,
+   "title": "습관 3문장 틀: 언제 → 무엇을 → 왜",
+   "explain": [
+    "왜 틀이 필요할까요? '보통 ~할 때 뭐 해요?' 같은 루틴 질문은 현재형 습관으로 답해야 해요. 틀을 정해 두면 시제가 흔들리지 않아요.",
+    "3단 틀: ① 언제·얼마나 자주(I usually ~ on weekends) → ② 무엇을 어떻게(I ~ with ~ / for ~ minutes) → ③ 왜·느낌(because ~ / It helps me ~). 일기 쓰듯 '언제, 뭐, 왜'를 차례로 채워요.",
+    "주의: 습관은 현재형이에요. 'I went'가 아니라 'I go'. 마지막에 'That's my routine.'처럼 한 줄로 정리하면 깔끔해요."
+   ],
+   "frames": [
+    [
+     "I usually ___ ___.",
+     "나는 보통 ___ ___해요.",
+     [
+      "go jogging / on Saturday mornings",
+      "watch movies / on Friday nights",
+      "clean my apartment / on Sundays"
+     ]
+    ],
+    [
+     "I ___ for about ___.",
+     "나는 ___을(를) ___ 정도 해요.",
+     [
+      "jog / thirty minutes",
+      "walk / an hour",
+      "listen to music / an hour"
+     ]
+    ],
+    [
+     "It helps me ___.",
+     "그게 ___하는 데 도움이 돼요.",
+     [
+      "relax",
+      "sleep better",
+      "clear my head"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "I usually go jogging on Saturday mornings.",
+     "보통 토요일 아침에 조깅을 해요."
+    ],
+    [
+     "I jog along the river for about thirty minutes.",
+     "강을 따라 30분 정도 뛰어요."
+    ],
+    [
+     "I always listen to pop music while I run.",
+     "뛸 때는 항상 팝송을 들어요."
+    ],
+    [
+     "It helps me clear my head.",
+     "머리가 맑아지는 데 도움이 돼요."
+    ],
+    [
+     "That's my weekend routine.",
+     "그게 제 주말 루틴이에요."
+    ]
+   ],
+   "speak": [
+    "음악 듣는 습관을 언제 → 무엇을 → 왜 3문장으로 말해 보세요.",
+    "집에서 쉬는 날 하는 일을 같은 틀로 말하고, 동사가 모두 현재형인지 확인하세요."
+   ]
+  },
+  {
+   "id": "L2-5",
+   "lv": 2,
+   "title": "경험 3문장 틀: 언제 → 무슨 일 → 느낌",
+   "explain": [
+    "왜 틀이 필요할까요? '기억에 남는 경험을 말해 주세요'는 OPIc의 단골 질문이고, 점수 차이가 가장 크게 나는 유형이에요. 순서만 지키면 짧아도 이야기처럼 들려요.",
+    "3단 틀: ① 언제·어디서·누구와(Two years ago, I went to Jeju with my family.) → ② 무슨 일(But on the second day, it rained really hard.) → ③ 느낌·지금 생각(It was the most memorable day of the trip.). 모든 동사는 과거형!",
+    "이 앱의 이야기 은행(S1~S6)이 바로 이 틀로 만들어져 있어요. 이야기 하나를 외워 두면 여행·날씨·가족·실수 등 여러 질문에 돌려 쓸 수 있어요."
+   ],
+   "frames": [
+    [
+     "___ ago, I went to ___ with ___.",
+     "___ 전에 ___와(과) ___에 갔어요.",
+     [
+      "Two years / Jeju / my family",
+      "About five years / a concert / Minsu"
+     ]
+    ],
+    [
+     "But ___.",
+     "그런데 ___.",
+     [
+      "it started to rain really hard",
+      "I lost my phone at the station",
+      "I slipped and hurt my ankle"
+     ]
+    ],
+    [
+     "It was ___.",
+     "그건 ___였어요.",
+     [
+      "the most memorable day",
+      "a little scary, but fine in the end",
+      "a good lesson for me"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "Two years ago, I went to Jeju with my family.",
+     "2년 전에 가족이랑 제주도에 갔어요."
+    ],
+    [
+     "On the second day, it rained really hard.",
+     "둘째 날 비가 정말 많이 왔어요."
+    ],
+    [
+     "So we went to a small cafe and an indoor museum.",
+     "그래서 작은 카페랑 실내 박물관에 갔어요."
+    ],
+    [
+     "Surprisingly, it was the best day of the trip.",
+     "놀랍게도 그게 여행에서 최고의 날이었어요."
+    ],
+    [
+     "I still talk about it with my family.",
+     "지금도 가족이랑 그 얘기를 해요."
+    ]
+   ],
+   "speak": [
+    "이야기 은행 S1~S6 중 하나를 골라 언제 → 무슨 일 → 느낌 3문장으로 말해 보세요.",
+    "말한 뒤 동사를 하나씩 확인하세요. 모두 과거형인가요?"
+   ]
+  },
+  {
+   "id": "L2-6",
+   "lv": 2,
+   "title": "비교 3문장 틀: 예전 → 지금 → 내 생각",
+   "explain": [
+    "왜 틀이 필요할까요? '예전과 비교해 무엇이 달라졌나요?' 질문은 시제가 왔다 갔다 해서 가장 헷갈려요. 칸마다 시제를 정해 두면 실수가 줄어요.",
+    "3단 틀: ① 예전(과거형): In the past, I used to ~ / A few years ago, ~ was ~ → ② 지금(현재형): But these days, ~ → ③ 내 생각: I think it's better now because ~.",
+    "비유하면 '전/후 사진'을 나란히 보여 주는 거예요. used to(예전엔 ~하곤 했다)와 these days(요즘은)가 두 사진의 제목이에요."
+   ],
+   "frames": [
+    [
+     "In the past, I used to ___.",
+     "예전엔 ___하곤 했어요.",
+     [
+      "go to the theater a lot",
+      "shop at the mall",
+      "stay up late"
+     ]
+    ],
+    [
+     "But these days, I ___.",
+     "하지만 요즘은 ___해요.",
+     [
+      "watch movies on Netflix",
+      "shop online",
+      "go to bed early"
+     ]
+    ],
+    [
+     "I think ___.",
+     "나는 ___라고 생각해요.",
+     [
+      "it's more convenient now",
+      "I like it better this way",
+      "both have good points"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "In the past, I used to go to the movie theater a lot.",
+     "예전엔 극장에 자주 갔어요."
+    ],
+    [
+     "But these days, I mostly watch movies on Netflix.",
+     "하지만 요즘은 주로 넷플릭스로 봐요."
+    ],
+    [
+     "It's cheaper, and I can watch anytime.",
+     "더 싸고 아무 때나 볼 수 있거든요."
+    ],
+    [
+     "Still, I go to the theater for big Marvel movies.",
+     "그래도 큰 마블 영화는 극장에서 봐요."
+    ],
+    [
+     "I think both have good points.",
+     "둘 다 장점이 있다고 생각해요."
+    ]
+   ],
+   "speak": [
+    "쇼핑 습관을 예전 → 지금 → 내 생각 3문장으로 비교해 보세요.",
+    "'used to'와 'these days'를 꼭 한 번씩 넣었는지 확인하세요."
+   ]
+  },
+  {
+   "id": "L2-7",
+   "lv": 2,
+   "title": "시간 벌기: Well, Let me think, That's a good question",
+   "explain": [
+    "왜 필요할까요? 질문을 듣고 머릿속이 하얘질 때 침묵하면 '말을 못 하는 사람'으로 보여요. 원어민도 생각할 시간을 벌 때 쓰는 말이 있어요. 이걸 쓰면 침묵 대신 '생각 중인 사람'이 돼요.",
+    "한국어로 '음…', '글쎄요…', '좋은 질문이네요'라고 하는 것과 똑같아요. Well, / Let me think. / Hmm, let me see. / That's a good question. / To be honest,",
+    "주의: 너무 자주 쓰면 오히려 어색해요. 답변 하나에 한두 번, 주로 맨 처음이나 막힌 순간에만 쓰세요."
+   ],
+   "frames": [
+    [
+     "Well, ___.",
+     "음, ___.",
+     [
+      "I'd say I go there once a week",
+      "I'm not really sure, but maybe twice a month"
+     ]
+    ],
+    [
+     "That's a good question. ___",
+     "좋은 질문이네요. ___",
+     [
+      "I've never thought about it.",
+      "Let me think for a second."
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "Well, let me think.",
+     "음, 생각 좀 해 볼게요."
+    ],
+    [
+     "That's a good question.",
+     "좋은 질문이네요."
+    ],
+    [
+     "Hmm, how can I put it?",
+     "음, 뭐라고 해야 할까요?"
+    ],
+    [
+     "To be honest, I've never really thought about it.",
+     "솔직히 그건 깊이 생각해 본 적이 없어요."
+    ],
+    [
+     "Let me see... it was about two years ago.",
+     "어디 보자… 2년 전쯤이었어요."
+    ],
+    [
+     "You know, it's hard to explain, but I'll try.",
+     "있잖아요, 설명하기 어렵지만 해 볼게요."
+    ]
+   ],
+   "speak": [
+    "어려운 질문을 들었다고 생각하고 시간 벌기 표현 하나 + 대답 한 문장을 말해 보세요.",
+    "시간 벌기 표현 6개를 3초 안에 바로 나오도록 소리 내어 반복해 보세요."
+   ]
+  },
+  {
+   "id": "L2-8",
+   "lv": 2,
+   "title": "마무리 표현: That's about it, Anyway, that's my ~",
+   "explain": [
+    "왜 필요할까요? 답변이 '…' 하고 흐지부지 끝나면 아직 말하는 중인지 끝났는지 알 수 없어요. 마무리 한 문장이 있으면 '답을 완성했다'는 인상을 줘요. 편지 끝의 '그럼 이만'과 같은 역할이에요.",
+    "3가지만 외우세요: That's about it.(이 정도예요) / Anyway, that's my ___.(아무튼 그게 제 ___예요) / So, that's why I ___.(그래서 제가 ___하는 거예요).",
+    "마무리는 처음 질문을 한 번 더 짚어 주면 가장 좋아요. 집 묘사였다면 'Anyway, that's my home.' 경험이었다면 'That's why I'll never forget that trip.'"
+   ],
+   "frames": [
+    [
+     "Anyway, that's my ___.",
+     "아무튼 그게 제 ___예요.",
+     [
+      "home",
+      "favorite park",
+      "weekend routine"
+     ]
+    ],
+    [
+     "So, that's why I ___.",
+     "그래서 제가 ___하는 거예요.",
+     [
+      "love this park",
+      "always check the size chart",
+      "only jog when it's bright"
+     ]
+    ]
+   ],
+   "ex": [
+    [
+     "That's about it.",
+     "이 정도예요."
+    ],
+    [
+     "Anyway, that's my home.",
+     "아무튼 그게 우리 집이에요."
+    ],
+    [
+     "So, that's why I love walking by the river.",
+     "그래서 제가 강변 걷기를 좋아해요."
+    ],
+    [
+     "That's why I'll never forget that trip.",
+     "그래서 그 여행을 절대 못 잊어요."
+    ],
+    [
+     "Anyway, I really want to go back someday.",
+     "아무튼 언젠가 꼭 다시 가고 싶어요."
+    ]
+   ],
+   "speak": [
+    "L2-3에서 만든 묘사 답변 끝에 'Anyway, that's my ___.'를 붙여 다시 말해 보세요.",
+    "이야기 은행 하나를 말하고 'That's why ___.'로 끝내 보세요."
+   ]
+  }
+ ],
+ "tools": [
+  {
+   "id": "T1",
+   "name": "현재형 (습관)",
+   "when": "루틴·습관 질문 (주말에 보통 뭐 해요? / 공원에서 주로 뭐 해요?)",
+   "explain": "'평소에 늘 그렇다'를 말할 때는 동사 기본형을 그대로 써요. 한국어 '나는 매일 걸어요'의 '걸어요'처럼 지금 이 순간이 아니라 반복되는 일을 뜻해요. usually, every evening, on weekends 같은 빈도 표현과 짝꿍이에요. 루틴 질문에서 과거형이나 -ing로 답하면 질문을 잘못 이해한 것처럼 들려요.",
+   "ex": [
+    [
+     "I walk by the river every evening.",
+     "매일 저녁 강가를 걸어요."
+    ],
+    [
+     "I usually clean my apartment on Sundays.",
+     "보통 일요일에 집 청소를 해요."
+    ],
+    [
+     "I listen to music when I clean.",
+     "청소할 때 음악을 들어요."
+    ]
+   ],
+   "mistake": "'I am walk every day'처럼 be동사와 일반동사를 같이 쓰는 실수 → I walk every day."
+  },
+  {
+   "id": "T2",
+   "name": "3인칭 -s (그/그녀/친구가 ~해요)",
+   "when": "친구·가족을 소개하거나 그들의 습관을 말할 때 (민수는 어떤 영화를 좋아해요?)",
+   "explain": "나(I)도 너(you)도 아닌 '한 사람·한 개'가 주인공이면 현재형 동사 끝에 -s를 붙여요. Minsu likes, my mom cooks, the park opens. 한국어엔 없는 규칙이라 가장 자주 빠뜨려요. '제3자에게는 꼬리표 -s를 달아 준다'고 기억하세요. have는 has, do는 does, go는 goes로 바뀌어요.",
+   "ex": [
+    [
+     "Minsu likes action movies.",
+     "민수는 액션 영화를 좋아해요."
+    ],
+    [
+     "My mom cooks really well.",
+     "엄마는 요리를 정말 잘해요."
+    ],
+    [
+     "The store closes at ten.",
+     "그 가게는 10시에 닫아요."
+    ]
+   ],
+   "mistake": "'My friend like movies'처럼 -s를 빠뜨림 → My friend likes movies."
+  },
+  {
+   "id": "T3",
+   "name": "현재진행 (지금 ~하는 중)",
+   "when": "요즘 하고 있는 일, 사진·장면 묘사, 롤플레이에서 지금 상황 설명",
+   "explain": "'지금 이 순간 ~하고 있어요'는 am/is/are + 동사-ing로 말해요. 한국어 '-고 있어요'와 같아요. 요즘 잠깐 하고 있는 일에도 써요(I'm learning English these days). 롤플레이에서 '지금 가게 앞에 있어요'처럼 상황을 설명할 때도 유용해요. 단, 평소 습관에는 쓰지 않아요.",
+   "ex": [
+    [
+     "I'm calling about my order.",
+     "주문 건으로 전화드렸어요."
+    ],
+    [
+     "I'm trying to jog more these days.",
+     "요즘 조깅을 더 하려고 하고 있어요."
+    ],
+    [
+     "A lot of people are walking their dogs.",
+     "많은 사람들이 개를 산책시키고 있어요."
+    ]
+   ],
+   "mistake": "습관을 진행형으로 말함 'I'm jogging every weekend' → I jog every weekend."
+  },
+  {
+   "id": "T4",
+   "name": "과거형 규칙 (-ed, 했어요)",
+   "when": "과거 경험 질문 (최근에 ~한 게 언제예요? 무슨 일이 있었나요?)",
+   "explain": "이미 끝난 일은 동사 끝에 -ed를 붙여요. watch → watched, stay → stayed, try → tried. 한국어 '했다'의 'ㅆ'처럼 '끝났음' 도장이에요. 소리는 세 가지: watched(-트), stayed(-드), visited(-이드). 과거 이야기를 시작했으면 끝까지 과거형을 유지해야 점수가 안정돼요.",
+   "ex": [
+    [
+     "I stayed home and watched movies all day.",
+     "하루 종일 집에서 영화를 봤어요."
+    ],
+    [
+     "We visited a small museum.",
+     "작은 박물관을 방문했어요."
+    ],
+    [
+     "I tried a new cafe last weekend.",
+     "지난 주말에 새 카페에 가 봤어요."
+    ]
+   ],
+   "mistake": "과거 이야기를 하다가 현재형으로 돌아감 'Yesterday I watch a movie' → Yesterday I watched a movie."
+  },
+  {
+   "id": "T5",
+   "name": "과거형 불규칙 (went, ate, saw)",
+   "when": "모든 과거 경험 질문, 특히 여행·쇼핑·사건 이야기",
+   "explain": "자주 쓰는 동사일수록 과거형 모양이 제멋대로예요. go → went, eat → ate, see → saw, buy → bought, lose → lost, find → found. 한국어 '가다 → 갔다'는 규칙적이지만, 영어는 '옷을 갈아입는' 동사들이 있다고 생각하세요. 동사표 상위 20개만 입에 붙여도 과거 이야기의 대부분이 해결돼요.",
+   "ex": [
+    [
+     "I lost my phone at the station.",
+     "역에서 휴대폰을 잃어버렸어요."
+    ],
+    [
+     "The next day, I found it at the lost and found.",
+     "다음 날 분실물 센터에서 찾았어요."
+    ],
+    [
+     "We ate ramen and saw the castle.",
+     "라멘을 먹고 성을 봤어요."
+    ]
+   ],
+   "mistake": "'goed', 'buyed'처럼 -ed를 붙임 → went, bought."
+  },
+  {
+   "id": "T6",
+   "name": "과거진행 (was -ing, ~하고 있었는데)",
+   "when": "사건이 일어난 배경을 말할 때 (경험 이야기의 '그때' 장면)",
+   "explain": "'~하고 있었는데, 그때 ~했어요'처럼 사건의 배경을 깔 때 was/were + -ing를 써요. 영화로 치면 배경 화면(was jogging)이 깔린 상태에서 사건(slipped)이 '탁' 일어나는 구조예요. 배경은 과거진행, 사건은 과거형. 이 조합 하나로 이야기가 훨씬 생생해져요.",
+   "ex": [
+    [
+     "I was jogging by the river when I slipped.",
+     "강가에서 조깅하고 있었는데 미끄러졌어요."
+    ],
+    [
+     "It was raining when we got to the cafe.",
+     "카페에 도착했을 때 비가 오고 있었어요."
+    ],
+    [
+     "We were looking for the exit, and I lost my phone.",
+     "출구를 찾고 있었는데 휴대폰을 잃어버렸어요."
+    ]
+   ],
+   "mistake": "배경과 사건을 모두 과거형으로만 말해 밋밋해짐 → 배경은 was -ing로."
+  },
+  {
+   "id": "T7",
+   "name": "현재완료 경험 (I've been to ~)",
+   "when": "'~해 본 적 있어요?', 여행 경험, IH판에서 시제 넘나들 때",
+   "explain": "'(살면서) ~해 본 적 있다'는 have + 과거분사로 말해요. I've been to Osaka.(오사카에 가 본 적 있어요) 한국어 '-ㄴ 적 있다'에 딱 맞는 표현이에요. 단, 'last year'처럼 정확한 과거 시점을 붙이면 과거형을 써야 해요. '경험의 유무'는 현재완료, '언제 그랬는지'는 과거형이라고 나누세요.",
+   "ex": [
+    [
+     "I've been to Osaka once.",
+     "오사카에 한 번 가 봤어요."
+    ],
+    [
+     "I've never tried skydiving.",
+     "스카이다이빙은 해 본 적이 없어요."
+    ],
+    [
+     "I've lived here for three years.",
+     "여기 산 지 3년 됐어요."
+    ]
+   ],
+   "mistake": "'I've been to Osaka last year'처럼 과거 시점과 같이 씀 → I went to Osaka last year."
+  },
+  {
+   "id": "T8",
+   "name": "used to (예전엔 ~하곤 했다)",
+   "when": "과거와 현재 비교 질문 (예전과 지금 무엇이 달라졌나요?)",
+   "explain": "'예전엔 ~했는데 지금은 안 한다'를 한 단어로 보여 주는 표현이에요. used to + 동사 기본형. 한국어 '예전엔 ~하곤 했어요'와 같아요. 비교 질문에서 이걸 쓰면 채점자가 '과거와 현재를 구분할 줄 안다'고 바로 알아봐요. 짝꿍은 'but now / but these days'.",
+   "ex": [
+    [
+     "I used to go to the theater every week.",
+     "예전엔 매주 극장에 갔어요."
+    ],
+    [
+     "I used to shop at the mall, but now I shop online.",
+     "예전엔 쇼핑몰에서 샀는데 지금은 온라인으로 사요."
+    ],
+    [
+     "The park used to be really dark at night.",
+     "그 공원은 예전엔 밤에 정말 어두웠어요."
+    ]
+   ],
+   "mistake": "'I use to'로 -d를 빠뜨리거나 'used to going'으로 씀 → I used to go."
+  },
+  {
+   "id": "T9",
+   "name": "미래 will / be going to",
+   "when": "계획 질문 (다음 휴가에 뭐 할 거예요?), 롤플레이 약속·제안",
+   "explain": "미래는 두 가지예요. be going to는 '이미 정해 둔 계획'(I'm going to visit Busan next month), will은 '지금 막 정한 결심이나 약속'(Okay, I'll call you back). 한국어로 치면 '~할 예정이에요' vs '~할게요'. 헷갈리면 계획은 going to, 롤플레이에서 약속은 I'll로 쓰세요.",
+   "ex": [
+    [
+     "I'm going to visit Busan next month.",
+     "다음 달에 부산에 갈 거예요."
+    ],
+    [
+     "Okay, I'll wait for your call.",
+     "알겠어요, 전화 기다릴게요."
+    ],
+    [
+     "I think it'll be fun.",
+     "재미있을 것 같아요."
+    ]
+   ],
+   "mistake": "'I will going to'처럼 둘을 섞음 → I'm going to go / I'll go."
+  },
+  {
+   "id": "T10",
+   "name": "비교급 (-er than, more ~ than)",
+   "when": "비교 질문, 롤플레이에서 다른 상품·옵션 요청할 때",
+   "explain": "두 개를 비교할 때 짧은 단어는 -er, 긴 단어는 more를 앞에 붙이고 than(~보다)으로 이어요. bigger than, cheaper than, more convenient than. 불규칙 good → better, bad → worse는 꼭 외우세요. much를 앞에 붙이면 '훨씬': much better.",
+   "ex": [
+    [
+     "My place is bigger than my old one.",
+     "지금 집이 예전 집보다 커요."
+    ],
+    [
+     "Online shopping is more convenient than going to stores.",
+     "온라인 쇼핑이 가게 가는 것보다 편해요."
+    ],
+    [
+     "Do you have a cheaper one?",
+     "더 싼 거 있어요?"
+    ]
+   ],
+   "mistake": "'more bigger', 'more better'처럼 두 번 비교함 → bigger, better."
+  },
+  {
+   "id": "T11",
+   "name": "최상급 (the -est, the most ~)",
+   "when": "'가장 기억에 남는 ~', '제일 좋아하는 ~' 질문",
+   "explain": "셋 이상 중에서 '가장 ~한'은 the + -est 또는 the most ~예요. the best, the biggest, the most memorable. OPIc의 'most memorable experience(가장 기억에 남는 경험)' 질문에 그대로 돌려줄 수 있어요. 질문에 나온 말을 답에 다시 쓰면 '질문을 이해했다'는 증거가 돼요.",
+   "ex": [
+    [
+     "It was the most memorable trip of my life.",
+     "제 인생에서 가장 기억에 남는 여행이었어요."
+    ],
+    [
+     "The Han River park is the best place to jog.",
+     "한강 공원이 조깅하기 제일 좋은 곳이에요."
+    ],
+    [
+     "That was the biggest mistake I made.",
+     "그게 제가 한 가장 큰 실수였어요."
+    ]
+   ],
+   "mistake": "the를 빠뜨림 'It was best day' → It was the best day."
+  },
+  {
+   "id": "T12",
+   "name": "There is / There are (~이 있어요)",
+   "when": "묘사 질문 (집·공원·동네·가게를 묘사해 주세요)",
+   "explain": "장소에 무엇이 있는지 소개할 때 쓰는 문장 틀이에요. 하나면 There's, 여럿이면 There are. 한국어 '~가 있어요'를 'I have'나 'It has'로만 말하면 어색할 때가 많아요. 묘사 답변은 There is/are를 2~3번 써서 '무엇이 있는지'를 채우고, 위치(in, near, next to)를 붙이면 완성이에요.",
+   "ex": [
+    [
+     "There's a big window in my living room.",
+     "거실에 큰 창문이 있어요."
+    ],
+    [
+     "There are a lot of cafes near my place.",
+     "우리 집 근처에 카페가 많아요."
+    ],
+    [
+     "There wasn't anyone at the station.",
+     "역에 아무도 없었어요."
+    ]
+   ],
+   "mistake": "'In my room have a sofa'처럼 have로 장소를 소개 → There's a sofa in my room."
+  },
+  {
+   "id": "T13",
+   "name": "의문문 만들기 (Do you / Is it / What)",
+   "when": "롤플레이 질문하기 (질문 3~4개 필수), 면접관에게 질문하기",
+   "explain": "행동을 물을 땐 Do/Does를 맨 앞에, 상태를 물을 땐 be동사를 맨 앞으로 보내요. 의문사(What, When, Where, How)는 그 앞에 하나 더 붙여요. 한국어처럼 끝만 올려 말하는 질문(You like it?)도 일상에선 쓰지만, 시험에서는 정식 질문 모양이 점수를 받아요. 질문 3~4개를 다른 의문사로 바꿔 가며 하면 더 좋아요.",
+   "ex": [
+    [
+     "Do you have any seats left for tonight?",
+     "오늘 밤 남은 좌석 있나요?"
+    ],
+    [
+     "Is it far from the station?",
+     "역에서 멀어요?"
+    ],
+    [
+     "What time does the show start?",
+     "공연이 몇 시에 시작해요?"
+    ]
+   ],
+   "mistake": "'What time the show starts?'처럼 does를 빠뜨림 → What time does the show start?"
+  },
+  {
+   "id": "T14",
+   "name": "부탁 Can I / Could I / Could you",
+   "when": "롤플레이 (예약·교환·환불·정보 요청)",
+   "explain": "부탁할 때는 Can I ~?(제가 ~해도 돼요?), Could you ~?(~해 주실 수 있나요?)를 써요. could가 can보다 한 단계 공손해요. 한국어 '~해 주세요'를 'Give me ~'로 직역하면 명령처럼 들려서 무례해요. 앞에 Could you를 붙이는 것만으로 존댓말이 돼요.",
+   "ex": [
+    [
+     "Could I exchange this for a smaller size?",
+     "이거 더 작은 사이즈로 교환할 수 있을까요?"
+    ],
+    [
+     "Could you check my order, please?",
+     "제 주문 좀 확인해 주실 수 있나요?"
+    ],
+    [
+     "Can I make a reservation for two?",
+     "두 명 예약할 수 있나요?"
+    ]
+   ],
+   "mistake": "'Give me a refund'처럼 명령형으로 말함 → Could I get a refund, please?"
+  },
+  {
+   "id": "T15",
+   "name": "제안 How about / Why don't we",
+   "when": "롤플레이 문제 해결 (대안 2~3개 제시), 친구와 약속 바꾸기",
+   "explain": "'~하는 게 어때요?'는 How about + -ing/명사, '우리 ~하는 게 어때?'는 Why don't we + 동사. 문제 해결 롤플레이에서는 대안을 2~3개 내야 하는데, 이 두 틀과 Maybe we can ~을 번갈아 쓰면 쉽게 채워져요. 한국어 '그럼 ~는 어때요?'처럼 부드럽게 들려요.",
+   "ex": [
+    [
+     "How about next Saturday instead?",
+     "대신 다음 주 토요일은 어때요?"
+    ],
+    [
+     "Why don't we watch it at my place?",
+     "우리 집에서 보는 게 어때?"
+    ],
+    [
+     "Maybe we can go to a later show.",
+     "더 늦은 회차로 가면 될 것 같아요."
+    ]
+   ],
+   "mistake": "'How about go to the movies?' → How about going to the movies?"
+  },
+  {
+   "id": "T16",
+   "name": "조건 if (만약 ~라면)",
+   "when": "롤플레이 대안 제시, 계획 질문, 조언할 때",
+   "explain": "'만약 ~라면, ~할게요'는 If + 현재형, 주절은 will/can. If it rains, we can go to a museum. 주의할 점은 미래 이야기여도 if 쪽은 현재형이라는 것(If it will rain ✗). 한국어 '비가 오면'도 '올 것이면'이라고 안 하죠? 같은 원리예요.",
+   "ex": [
+    [
+     "If it rains, we can go to a museum.",
+     "비가 오면 박물관에 가면 돼요."
+    ],
+    [
+     "If that size isn't available, I'd like a refund.",
+     "그 사이즈가 없으면 환불받고 싶어요."
+    ],
+    [
+     "If you're free, let's grab dinner.",
+     "시간 되면 저녁 먹자."
+    ]
+   ],
+   "mistake": "if 쪽에 will을 씀 'If it will rain' → If it rains."
+  },
+  {
+   "id": "T17",
+   "name": "이유와 결과 because / so",
+   "when": "거의 모든 질문 (좋아하는 이유, 왜 그렇게 했는지)",
+   "explain": "because는 '왜냐하면'(뒤에 이유), so는 '그래서'(뒤에 결과)예요. 방향이 반대라서 'It rained, so we stayed in.' = 'We stayed in because it rained.' 둘 다 뒤에 완전한 문장(누가 + 한다)이 와야 해요. 이유 하나만 붙여도 답변 길이가 두 배가 되는 가장 가성비 좋은 도구예요.",
+   "ex": [
+    [
+     "I love this park because it's so close.",
+     "이 공원이 좋아요, 정말 가깝거든요."
+    ],
+    [
+     "The coat was too big, so I asked for an exchange.",
+     "코트가 너무 커서 교환을 요청했어요."
+    ],
+    [
+     "I only jog in the daytime because of my ankle.",
+     "발목 때문에 낮에만 조깅해요."
+    ]
+   ],
+   "mistake": "because 뒤에 명사만 둠 'because my ankle' → because of my ankle / because my ankle hurt."
+  },
+  {
+   "id": "T18",
+   "name": "시간 when / while / after",
+   "when": "경험 이야기, 루틴 설명 (언제 ~하나요? 그때 무슨 일이?)",
+   "explain": "두 문장을 '시간'으로 이어 주는 말이에요. when(~할 때), while(~하는 동안), after(~한 후에), before(~하기 전에). 한국어 '~할 때', '~하면서', '~하고 나서'와 같아요. 이걸 쓰면 짧은 문장 두 개가 한 문장으로 합쳐져서 IM 느낌이 확 나요.",
+   "ex": [
+    [
+     "I listen to music while I clean.",
+     "청소하면서 음악을 들어요."
+    ],
+    [
+     "When I got to the station, my phone was gone.",
+     "역에 도착했을 때 휴대폰이 없었어요."
+    ],
+    [
+     "After the movie, we grabbed something to eat.",
+     "영화 끝나고 뭘 좀 먹었어요."
+    ]
+   ],
+   "mistake": "'When I will go'처럼 when 뒤에 will → When I go."
+  },
+  {
+   "id": "T19",
+   "name": "감정 형용사 -ed / -ing (bored vs boring)",
+   "when": "경험의 느낌, 영화·공연 소감 말할 때",
+   "explain": "-ed는 '내가 느낀 감정', -ing는 '그것이 주는 성질'이에요. I was bored.(나 지루했어) / The movie was boring.(영화가 지루했어) 한국어로 '내가 ~했다' vs '그게 ~하게 만들었다'예요. 사람 주어 + -ed, 물건·일 주어 + -ing로 외우면 거의 틀리지 않아요.",
+   "ex": [
+    [
+     "I was so excited before the concert.",
+     "콘서트 전에 정말 신났어요."
+    ],
+    [
+     "The concert was really exciting.",
+     "콘서트가 정말 신났어요."
+    ],
+    [
+     "I was a little disappointed with the size.",
+     "사이즈 때문에 좀 실망했어요."
+    ]
+   ],
+   "mistake": "'I was boring'(나는 지루한 사람이었다) → I was bored."
+  },
+  {
+   "id": "T20",
+   "name": "관계 that / which (간단히)",
+   "when": "묘사에 정보를 덧붙일 때, IH판에서 문장 길게 만들 때",
+   "explain": "명사 뒤에 that/which를 붙이면 그 명사를 한 번 더 설명할 수 있어요. a park that is close to my place(우리 집에서 가까운 공원). 한국어는 '가까운 공원'처럼 설명이 앞에 오지만, 영어는 '공원, 그런데 그건 가까운'처럼 뒤에 붙어요. 문장 끝에 ', which was ~'를 붙이면 앞 내용 전체에 감상을 더할 수도 있어요.",
+   "ex": [
+    [
+     "It's a small cafe that has great desserts.",
+     "디저트가 맛있는 작은 카페예요."
+    ],
+    [
+     "I bought a coat that was way too big.",
+     "너무 큰 코트를 샀어요."
+    ],
+    [
+     "We went to a museum, which was actually really fun.",
+     "박물관에 갔는데, 그게 사실 정말 재미있었어요."
+    ]
+   ],
+   "mistake": "한국어 순서대로 설명을 앞에 붙임 'a close to my house park' → a park that's close to my house."
+  }
+ ],
+ "chunks": [
+  [
+   "Sure, I'd love to talk about that.",
+   "물론이죠, 그 얘기라면 좋아요.",
+   "시작하기"
+  ],
+  [
+   "Okay, let me tell you about my ___.",
+   "좋아요, 제 ___에 대해 말해 볼게요.",
+   "시작하기"
+  ],
+  [
+   "As I said in the survey,",
+   "설문에서 말했듯이,",
+   "시작하기"
+  ],
+  [
+   "That's an easy one for me.",
+   "그건 저한테 쉬운 질문이네요.",
+   "시작하기"
+  ],
+  [
+   "Oh, I love this topic.",
+   "오, 이 주제 정말 좋아요.",
+   "시작하기"
+  ],
+  [
+   "Let me start with ___.",
+   "___부터 말해 볼게요.",
+   "시작하기"
+  ],
+  [
+   "There are a few things I want to say.",
+   "말하고 싶은 게 몇 가지 있어요.",
+   "시작하기"
+  ],
+  [
+   "To answer your question,",
+   "질문에 답하자면,",
+   "시작하기"
+  ],
+  [
+   "First of all, I should say that ___.",
+   "우선 ___라는 것부터 말씀드릴게요.",
+   "시작하기"
+  ],
+  [
+   "I've never really thought about it, but",
+   "깊이 생각해 본 적은 없지만",
+   "시작하기"
+  ],
+  [
+   "Actually, I have a good story about that.",
+   "사실 그거에 관한 좋은 이야기가 있어요.",
+   "시작하기"
+  ],
+  [
+   "Well,",
+   "음,",
+   "시간 벌기"
+  ],
+  [
+   "Let me think.",
+   "생각 좀 해 볼게요.",
+   "시간 벌기"
+  ],
+  [
+   "That's a good question.",
+   "좋은 질문이네요.",
+   "시간 벌기"
+  ],
+  [
+   "Hmm, how can I put it?",
+   "음, 뭐라고 해야 할까요?",
+   "시간 벌기"
+  ],
+  [
+   "Let me see.",
+   "어디 보자.",
+   "시간 벌기"
+  ],
+  [
+   "You know,",
+   "있잖아요,",
+   "시간 벌기"
+  ],
+  [
+   "I mean,",
+   "그러니까 제 말은,",
+   "시간 벌기"
+  ],
+  [
+   "To be honest,",
+   "솔직히 말하면,",
+   "시간 벌기"
+  ],
+  [
+   "What else?",
+   "또 뭐가 있더라?",
+   "시간 벌기"
+  ],
+  [
+   "Oh, and one more thing.",
+   "아, 그리고 하나 더요.",
+   "시간 벌기"
+  ],
+  [
+   "It's hard to say exactly, but",
+   "정확히 말하긴 어렵지만",
+   "시간 벌기"
+  ],
+  [
+   "and also",
+   "그리고 또",
+   "이어 주기"
+  ],
+  [
+   "but",
+   "하지만",
+   "이어 주기"
+  ],
+  [
+   "so",
+   "그래서",
+   "이어 주기"
+  ],
+  [
+   "because",
+   "왜냐하면",
+   "이어 주기"
+  ],
+  [
+   "That's why ___.",
+   "그래서 ___한 거예요.",
+   "이어 주기"
+  ],
+  [
+   "Plus,",
+   "게다가,",
+   "이어 주기"
+  ],
+  [
+   "On top of that,",
+   "그뿐 아니라,",
+   "이어 주기"
+  ],
+  [
+   "Also,",
+   "또,",
+   "이어 주기"
+  ],
+  [
+   "Other than that,",
+   "그 외에는,",
+   "이어 주기"
+  ],
+  [
+   "Not only that, but",
+   "그것뿐만 아니라",
+   "이어 주기"
+  ],
+  [
+   "which is why",
+   "그래서 (앞 문장 전체를 받아)",
+   "이어 주기"
+  ],
+  [
+   "First,",
+   "먼저,",
+   "시간 순서"
+  ],
+  [
+   "Then,",
+   "그다음에,",
+   "시간 순서"
+  ],
+  [
+   "After that,",
+   "그 후에,",
+   "시간 순서"
+  ],
+  [
+   "Finally,",
+   "마지막으로,",
+   "시간 순서"
+  ],
+  [
+   "At first,",
+   "처음에는,",
+   "시간 순서"
+  ],
+  [
+   "Later,",
+   "나중에,",
+   "시간 순서"
+  ],
+  [
+   "The next day,",
+   "다음 날,",
+   "시간 순서"
+  ],
+  [
+   "In the end,",
+   "결국에는,",
+   "시간 순서"
+  ],
+  [
+   "As soon as I got there,",
+   "거기 도착하자마자,",
+   "시간 순서"
+  ],
+  [
+   "Before that,",
+   "그 전에,",
+   "시간 순서"
+  ],
+  [
+   "Eventually,",
+   "마침내, 결국,",
+   "시간 순서"
+  ],
+  [
+   "It's located ___.",
+   "___에 위치해 있어요.",
+   "묘사"
+  ],
+  [
+   "It's not that big, but it's cozy.",
+   "그렇게 크진 않지만 아늑해요.",
+   "묘사"
+  ],
+  [
+   "It's really close to my place.",
+   "우리 집에서 정말 가까워요.",
+   "묘사"
+  ],
+  [
+   "It looks like ___.",
+   "___처럼 보여요.",
+   "묘사"
+  ],
+  [
+   "There's a ___ next to the ___.",
+   "___ 옆에 ___이(가) 있어요.",
+   "묘사"
+  ],
+  [
+   "The first thing you see is ___.",
+   "들어가면 제일 먼저 보이는 건 ___예요.",
+   "묘사"
+  ],
+  [
+   "It's always clean and quiet.",
+   "항상 깨끗하고 조용해요.",
+   "묘사"
+  ],
+  [
+   "It has a great view of ___.",
+   "___이(가) 잘 보여요.",
+   "묘사"
+  ],
+  [
+   "It's about a five-minute walk from my place.",
+   "우리 집에서 걸어서 5분 정도예요.",
+   "묘사"
+  ],
+  [
+   "It's the kind of place where ___.",
+   "___하는 그런 곳이에요.",
+   "묘사"
+  ],
+  [
+   "It's pretty crowded on weekends.",
+   "주말엔 꽤 붐벼요.",
+   "묘사"
+  ],
+  [
+   "I'm really into ___.",
+   "___에 푹 빠져 있어요.",
+   "좋고 싫음"
+  ],
+  [
+   "I'm a big fan of ___.",
+   "___을(를) 정말 좋아해요.",
+   "좋고 싫음"
+  ],
+  [
+   "___ is my favorite.",
+   "___이(가) 제일 좋아요.",
+   "좋고 싫음"
+  ],
+  [
+   "I enjoy ___ing.",
+   "___하는 걸 즐겨요.",
+   "좋고 싫음"
+  ],
+  [
+   "I'm crazy about ___.",
+   "___에 완전 빠져 있어요.",
+   "좋고 싫음"
+  ],
+  [
+   "I prefer ___ to ___.",
+   "___보다 ___을(를) 더 좋아해요.",
+   "좋고 싫음"
+  ],
+  [
+   "I'm not a big fan of ___.",
+   "___은(는) 별로 안 좋아해요.",
+   "좋고 싫음"
+  ],
+  [
+   "I don't really like ___.",
+   "___은(는) 그다지 안 좋아해요.",
+   "좋고 싫음"
+  ],
+  [
+   "It's not really my thing.",
+   "그건 제 취향이 아니에요.",
+   "좋고 싫음"
+  ],
+  [
+   "I can't stand ___.",
+   "___은(는) 정말 못 참겠어요.",
+   "좋고 싫음"
+  ],
+  [
+   "___ is okay, but ___ is better.",
+   "___도 괜찮지만 ___이(가) 더 좋아요.",
+   "좋고 싫음"
+  ],
+  [
+   "It was so much fun.",
+   "정말 재미있었어요.",
+   "감정"
+  ],
+  [
+   "I was really excited.",
+   "정말 신났어요.",
+   "감정"
+  ],
+  [
+   "I was so nervous.",
+   "정말 긴장됐어요.",
+   "감정"
+  ],
+  [
+   "I was really surprised.",
+   "정말 놀랐어요.",
+   "감정"
+  ],
+  [
+   "I felt so relieved.",
+   "정말 안심됐어요.",
+   "감정"
+  ],
+  [
+   "I was a little disappointed.",
+   "좀 실망했어요.",
+   "감정"
+  ],
+  [
+   "I got goosebumps.",
+   "소름이 돋았어요.",
+   "감정"
+  ],
+  [
+   "I was totally exhausted.",
+   "완전히 녹초가 됐어요.",
+   "감정"
+  ],
+  [
+   "It made me so happy.",
+   "그게 저를 정말 행복하게 했어요.",
+   "감정"
+  ],
+  [
+   "I was so embarrassed.",
+   "정말 창피했어요.",
+   "감정"
+  ],
+  [
+   "I felt so refreshed.",
+   "정말 상쾌했어요.",
+   "감정"
+  ],
+  [
+   "I'll never forget it.",
+   "절대 못 잊을 거예요.",
+   "감정"
+  ],
+  [
+   "The main reason is ___.",
+   "가장 큰 이유는 ___예요.",
+   "이유"
+  ],
+  [
+   "It helps me relax.",
+   "마음이 편해지는 데 도움이 돼요.",
+   "이유"
+  ],
+  [
+   "It's a good way to ___.",
+   "___하기 좋은 방법이에요.",
+   "이유"
+  ],
+  [
+   "It's cheap and easy.",
+   "싸고 간편해요.",
+   "이유"
+  ],
+  [
+   "I can do it anytime.",
+   "아무 때나 할 수 있어요.",
+   "이유"
+  ],
+  [
+   "Since ___,",
+   "___이니까,",
+   "이유"
+  ],
+  [
+   "For me, ___ is really important.",
+   "저한테는 ___이(가) 정말 중요해요.",
+   "이유"
+  ],
+  [
+   "One reason is that ___.",
+   "한 가지 이유는 ___라는 거예요.",
+   "이유"
+  ],
+  [
+   "It's good for my health.",
+   "건강에 좋아요.",
+   "이유"
+  ],
+  [
+   "It clears my head.",
+   "머리가 맑아져요.",
+   "이유"
+  ],
+  [
+   "because of ___",
+   "___ 때문에",
+   "이유"
+  ],
+  [
+   "It's much better than before.",
+   "예전보다 훨씬 나아요.",
+   "비교"
+  ],
+  [
+   "Compared to ___,",
+   "___와(과) 비교하면,",
+   "비교"
+  ],
+  [
+   "In the past,",
+   "예전에는,",
+   "비교"
+  ],
+  [
+   "These days,",
+   "요즘은,",
+   "비교"
+  ],
+  [
+   "I used to ___, but now I ___.",
+   "예전엔 ___했는데, 지금은 ___해요.",
+   "비교"
+  ],
+  [
+   "It's not as ___ as it used to be.",
+   "예전만큼 ___하지 않아요.",
+   "비교"
+  ],
+  [
+   "The biggest difference is ___.",
+   "가장 큰 차이는 ___예요.",
+   "비교"
+  ],
+  [
+   "It has changed a lot.",
+   "많이 바뀌었어요.",
+   "비교"
+  ],
+  [
+   "It hasn't changed much.",
+   "별로 안 바뀌었어요.",
+   "비교"
+  ],
+  [
+   "Things are a lot easier now.",
+   "지금은 훨씬 편해졌어요.",
+   "비교"
+  ],
+  [
+   "Both have good points.",
+   "둘 다 장점이 있어요.",
+   "비교"
+  ],
+  [
+   "I remember when ___.",
+   "___했던 때가 기억나요.",
+   "과거 경험"
+  ],
+  [
+   "It happened about two years ago.",
+   "2년 전쯤 있었던 일이에요.",
+   "과거 경험"
+  ],
+  [
+   "I'll never forget the time ___.",
+   "___했던 때를 절대 못 잊어요.",
+   "과거 경험"
+  ],
+  [
+   "One day,",
+   "어느 날,",
+   "과거 경험"
+  ],
+  [
+   "I was ___ing when ___.",
+   "___하고 있었는데 ___했어요.",
+   "과거 경험"
+  ],
+  [
+   "All of a sudden,",
+   "갑자기,",
+   "과거 경험"
+  ],
+  [
+   "Luckily,",
+   "다행히,",
+   "과거 경험"
+  ],
+  [
+   "Unfortunately,",
+   "안타깝게도,",
+   "과거 경험"
+  ],
+  [
+   "It turned out ___.",
+   "알고 보니 ___였어요.",
+   "과거 경험"
+  ],
+  [
+   "That was the first time I ___.",
+   "그때 처음으로 ___해 봤어요.",
+   "과거 경험"
+  ],
+  [
+   "Looking back,",
+   "돌이켜 보면,",
+   "과거 경험"
+  ],
+  [
+   "Hi, I'm calling to ask about ___.",
+   "안녕하세요, ___에 대해 여쭤보려고 전화드렸어요.",
+   "롤플레이 질문"
+  ],
+  [
+   "Can I ask you a few questions?",
+   "몇 가지 여쭤봐도 될까요?",
+   "롤플레이 질문"
+  ],
+  [
+   "Do you have ___?",
+   "___ 있나요?",
+   "롤플레이 질문"
+  ],
+  [
+   "How much is ___?",
+   "___은(는) 얼마예요?",
+   "롤플레이 질문"
+  ],
+  [
+   "What time do you open?",
+   "몇 시에 문 열어요?",
+   "롤플레이 질문"
+  ],
+  [
+   "Is there a discount?",
+   "할인 있나요?",
+   "롤플레이 질문"
+  ],
+  [
+   "Can I make a reservation for ___?",
+   "___ 예약할 수 있나요?",
+   "롤플레이 질문"
+  ],
+  [
+   "How long does it take?",
+   "얼마나 걸려요?",
+   "롤플레이 질문"
+  ],
+  [
+   "Is it possible to ___?",
+   "___하는 게 가능한가요?",
+   "롤플레이 질문"
+  ],
+  [
+   "What do you recommend?",
+   "뭘 추천하세요?",
+   "롤플레이 질문"
+  ],
+  [
+   "Thank you for your help.",
+   "도와주셔서 감사해요.",
+   "롤플레이 질문"
+  ],
+  [
+   "I'm sorry, but there's a problem.",
+   "죄송한데 문제가 생겼어요.",
+   "문제 설명"
+  ],
+  [
+   "I'm afraid I can't ___.",
+   "죄송하지만 ___ 못 할 것 같아요.",
+   "문제 설명"
+  ],
+  [
+   "Something came up.",
+   "갑자기 일이 생겼어요.",
+   "문제 설명"
+  ],
+  [
+   "It's way too big for me.",
+   "저한테 너무 커요.",
+   "문제 설명"
+  ],
+  [
+   "It doesn't work.",
+   "작동을 안 해요.",
+   "문제 설명"
+  ],
+  [
+   "I lost my ___.",
+   "___을(를) 잃어버렸어요.",
+   "문제 설명"
+  ],
+  [
+   "I ordered ___, but ___.",
+   "___을(를) 주문했는데 ___.",
+   "문제 설명"
+  ],
+  [
+   "The thing is,",
+   "문제는요,",
+   "문제 설명"
+  ],
+  [
+   "I think there's been a mistake.",
+   "뭔가 착오가 있었던 것 같아요.",
+   "문제 설명"
+  ],
+  [
+   "It's not what I expected.",
+   "제가 기대한 거랑 달라요.",
+   "문제 설명"
+  ],
+  [
+   "I can't make it.",
+   "못 갈 것 같아요.",
+   "문제 설명"
+  ],
+  [
+   "I'm really sorry about this.",
+   "이렇게 돼서 정말 미안해요.",
+   "문제 설명"
+  ],
+  [
+   "How about ___ instead?",
+   "대신 ___은(는) 어때요?",
+   "대안 제시"
+  ],
+  [
+   "Why don't we ___?",
+   "우리 ___하는 게 어때요?",
+   "대안 제시"
+  ],
+  [
+   "Could I exchange it for ___?",
+   "___(으)로 교환할 수 있을까요?",
+   "대안 제시"
+  ],
+  [
+   "Could I get a refund?",
+   "환불받을 수 있을까요?",
+   "대안 제시"
+  ],
+  [
+   "Maybe we can ___.",
+   "___하면 될 것 같아요.",
+   "대안 제시"
+  ],
+  [
+   "If that's not possible, ___.",
+   "그게 안 되면 ___.",
+   "대안 제시"
+  ],
+  [
+   "Another option is ___.",
+   "다른 방법은 ___예요.",
+   "대안 제시"
+  ],
+  [
+   "What if we ___?",
+   "___하면 어떨까요?",
+   "대안 제시"
+  ],
+  [
+   "Would it be okay if ___?",
+   "___해도 괜찮을까요?",
+   "대안 제시"
+  ],
+  [
+   "Let's ___ next time.",
+   "다음엔 ___하자.",
+   "대안 제시"
+  ],
+  [
+   "Just let me know what works for you.",
+   "편한 쪽으로 알려 주세요.",
+   "대안 제시"
+  ],
+  [
+   "That's about it.",
+   "이 정도예요.",
+   "마무리"
+  ],
+  [
+   "Anyway, that's my ___.",
+   "아무튼 그게 제 ___예요.",
+   "마무리"
+  ],
+  [
+   "So, that's why I ___.",
+   "그래서 제가 ___하는 거예요.",
+   "마무리"
+  ],
+  [
+   "That's all I can think of.",
+   "생각나는 건 이게 다예요.",
+   "마무리"
+  ],
+  [
+   "I hope that answers your question.",
+   "질문에 답이 됐으면 좋겠어요.",
+   "마무리"
+  ],
+  [
+   "It was a great experience.",
+   "정말 좋은 경험이었어요.",
+   "마무리"
+  ],
+  [
+   "I really want to ___ again someday.",
+   "언젠가 꼭 다시 ___하고 싶어요.",
+   "마무리"
+  ],
+  [
+   "Overall, I'm really happy with ___.",
+   "전체적으로 ___에 정말 만족해요.",
+   "마무리"
+  ],
+  [
+   "That's pretty much it.",
+   "대충 그게 다예요.",
+   "마무리"
+  ],
+  [
+   "That's my story.",
+   "이게 제 이야기예요.",
+   "마무리"
+  ],
+  [
+   "Thanks for listening.",
+   "들어 주셔서 감사해요.",
+   "마무리"
+  ]
+ ],
+ "verbs": [
+  [
+   "be",
+   "was/were",
+   "been",
+   "~이다, 있다"
+  ],
+  [
+   "go",
+   "went",
+   "gone",
+   "가다"
+  ],
+  [
+   "have",
+   "had",
+   "had",
+   "가지다, 먹다"
+  ],
+  [
+   "do",
+   "did",
+   "done",
+   "하다"
+  ],
+  [
+   "make",
+   "made",
+   "made",
+   "만들다"
+  ],
+  [
+   "take",
+   "took",
+   "taken",
+   "가져가다, (교통)타다, 찍다"
+  ],
+  [
+   "get",
+   "got",
+   "gotten",
+   "얻다, ~해지다, 도착하다"
+  ],
+  [
+   "see",
+   "saw",
+   "seen",
+   "보다"
+  ],
+  [
+   "come",
+   "came",
+   "come",
+   "오다"
+  ],
+  [
+   "eat",
+   "ate",
+   "eaten",
+   "먹다"
+  ],
+  [
+   "buy",
+   "bought",
+   "bought",
+   "사다"
+  ],
+  [
+   "say",
+   "said",
+   "said",
+   "말하다"
+  ],
+  [
+   "tell",
+   "told",
+   "told",
+   "말해 주다"
+  ],
+  [
+   "think",
+   "thought",
+   "thought",
+   "생각하다"
+  ],
+  [
+   "know",
+   "knew",
+   "known",
+   "알다"
+  ],
+  [
+   "give",
+   "gave",
+   "given",
+   "주다"
+  ],
+  [
+   "find",
+   "found",
+   "found",
+   "찾다, 알게 되다"
+  ],
+  [
+   "feel",
+   "felt",
+   "felt",
+   "느끼다"
+  ],
+  [
+   "leave",
+   "left",
+   "left",
+   "떠나다, 두고 오다"
+  ],
+  [
+   "meet",
+   "met",
+   "met",
+   "만나다"
+  ],
+  [
+   "spend",
+   "spent",
+   "spent",
+   "(시간·돈을) 쓰다"
+  ],
+  [
+   "lose",
+   "lost",
+   "lost",
+   "잃어버리다, 지다"
+  ],
+  [
+   "sleep",
+   "slept",
+   "slept",
+   "자다"
+  ],
+  [
+   "drink",
+   "drank",
+   "drunk",
+   "마시다"
+  ],
+  [
+   "run",
+   "ran",
+   "run",
+   "달리다"
+  ],
+  [
+   "ride",
+   "rode",
+   "ridden",
+   "(자전거 등) 타다"
+  ],
+  [
+   "drive",
+   "drove",
+   "driven",
+   "운전하다"
+  ],
+  [
+   "fly",
+   "flew",
+   "flown",
+   "날다, 비행기로 가다"
+  ],
+  [
+   "pay",
+   "paid",
+   "paid",
+   "돈을 내다"
+  ],
+  [
+   "send",
+   "sent",
+   "sent",
+   "보내다"
+  ],
+  [
+   "bring",
+   "brought",
+   "brought",
+   "가져오다"
+  ],
+  [
+   "forget",
+   "forgot",
+   "forgotten",
+   "잊다"
+  ],
+  [
+   "become",
+   "became",
+   "become",
+   "~이 되다"
+  ],
+  [
+   "begin",
+   "began",
+   "begun",
+   "시작하다"
+  ],
+  [
+   "hear",
+   "heard",
+   "heard",
+   "듣다, 들리다"
+  ],
+  [
+   "sit",
+   "sat",
+   "sat",
+   "앉다"
+  ],
+  [
+   "stand",
+   "stood",
+   "stood",
+   "서다"
+  ],
+  [
+   "put",
+   "put",
+   "put",
+   "놓다, 두다"
+  ],
+  [
+   "read",
+   "read",
+   "read",
+   "읽다 (과거는 '레드'로 발음)"
+  ],
+  [
+   "write",
+   "wrote",
+   "written",
+   "쓰다"
+  ],
+  [
+   "speak",
+   "spoke",
+   "spoken",
+   "말하다"
+  ],
+  [
+   "sing",
+   "sang",
+   "sung",
+   "노래하다"
+  ],
+  [
+   "wear",
+   "wore",
+   "worn",
+   "입다, 착용하다"
+  ],
+  [
+   "sell",
+   "sold",
+   "sold",
+   "팔다"
+  ],
+  [
+   "keep",
+   "kept",
+   "kept",
+   "유지하다, 계속 ~하다"
+  ],
+  [
+   "hurt",
+   "hurt",
+   "hurt",
+   "다치게 하다, 아프다"
+  ],
+  [
+   "fall",
+   "fell",
+   "fallen",
+   "넘어지다, 떨어지다"
+  ],
+  [
+   "break",
+   "broke",
+   "broken",
+   "깨다, 고장 나다"
+  ],
+  [
+   "understand",
+   "understood",
+   "understood",
+   "이해하다"
+  ],
+  [
+   "wake",
+   "woke",
+   "woken",
+   "잠에서 깨다"
+  ],
+  [
+   "oversleep",
+   "overslept",
+   "overslept",
+   "늦잠 자다"
+  ],
+  [
+   "cost",
+   "cost",
+   "cost",
+   "(비용이) 들다"
+  ],
+  [
+   "cut",
+   "cut",
+   "cut",
+   "자르다"
+  ],
+  [
+   "let",
+   "let",
+   "let",
+   "~하게 하다"
+  ],
+  [
+   "set",
+   "set",
+   "set",
+   "놓다, 정하다"
+  ],
+  [
+   "shut",
+   "shut",
+   "shut",
+   "닫다"
+  ],
+  [
+   "hit",
+   "hit",
+   "hit",
+   "치다, 부딪치다"
+  ],
+  [
+   "fit",
+   "fit",
+   "fit",
+   "(크기가) 맞다"
+  ],
+  [
+   "quit",
+   "quit",
+   "quit",
+   "그만두다"
+  ],
+  [
+   "choose",
+   "chose",
+   "chosen",
+   "고르다"
+  ],
+  [
+   "win",
+   "won",
+   "won",
+   "이기다, 타다(상)"
+  ],
+  [
+   "swim",
+   "swam",
+   "swum",
+   "수영하다"
+  ],
+  [
+   "catch",
+   "caught",
+   "caught",
+   "잡다, (병에) 걸리다"
+  ],
+  [
+   "teach",
+   "taught",
+   "taught",
+   "가르치다"
+  ],
+  [
+   "build",
+   "built",
+   "built",
+   "짓다"
+  ],
+  [
+   "show",
+   "showed",
+   "shown",
+   "보여 주다"
+  ],
+  [
+   "grow",
+   "grew",
+   "grown",
+   "자라다, 기르다"
+  ],
+  [
+   "draw",
+   "drew",
+   "drawn",
+   "그리다"
+  ],
+  [
+   "throw",
+   "threw",
+   "thrown",
+   "던지다"
+  ],
+  [
+   "hold",
+   "held",
+   "held",
+   "잡다, (행사를) 열다"
+  ],
+  [
+   "lend",
+   "lent",
+   "lent",
+   "빌려주다"
+  ],
+  [
+   "mean",
+   "meant",
+   "meant",
+   "의미하다"
+  ],
+  [
+   "stick",
+   "stuck",
+   "stuck",
+   "붙다, 꼼짝 못 하다"
+  ],
+  [
+   "hang",
+   "hung",
+   "hung",
+   "걸다; hang out 놀다"
+  ],
+  [
+   "hide",
+   "hid",
+   "hidden",
+   "숨다, 숨기다"
+  ],
+  [
+   "steal",
+   "stole",
+   "stolen",
+   "훔치다"
+  ],
+  [
+   "shake",
+   "shook",
+   "shaken",
+   "흔들다"
+  ],
+  [
+   "freeze",
+   "froze",
+   "frozen",
+   "얼다"
+  ],
+  [
+   "shrink",
+   "shrank",
+   "shrunk",
+   "줄어들다 (옷이)"
+  ],
+  [
+   "forgive",
+   "forgave",
+   "forgiven",
+   "용서하다"
+  ],
+  [
+   "feed",
+   "fed",
+   "fed",
+   "먹이를 주다"
+  ],
+  [
+   "fight",
+   "fought",
+   "fought",
+   "싸우다"
+  ],
+  [
+   "lead",
+   "led",
+   "led",
+   "이끌다"
+  ],
+  [
+   "light",
+   "lit",
+   "lit",
+   "불을 켜다"
+  ],
+  [
+   "ring",
+   "rang",
+   "rung",
+   "(전화·종이) 울리다"
+  ],
+  [
+   "blow",
+   "blew",
+   "blown",
+   "(바람이) 불다"
+  ],
+  [
+   "bite",
+   "bit",
+   "bitten",
+   "물다"
+  ],
+  [
+   "tear",
+   "tore",
+   "torn",
+   "찢다"
+  ],
+  [
+   "slide",
+   "slid",
+   "slid",
+   "미끄러지다"
+  ],
+  [
+   "sweep",
+   "swept",
+   "swept",
+   "쓸다"
+  ],
+  [
+   "shoot",
+   "shot",
+   "shot",
+   "쏘다, 촬영하다"
+  ],
+  [
+   "bend",
+   "bent",
+   "bent",
+   "구부리다"
+  ],
+  [
+   "spread",
+   "spread",
+   "spread",
+   "펼치다, 퍼지다"
+  ],
+  [
+   "deal",
+   "dealt",
+   "dealt",
+   "다루다, 처리하다"
+  ],
+  [
+   "rise",
+   "rose",
+   "risen",
+   "오르다, (해가) 뜨다"
+  ],
+  [
+   "beat",
+   "beat",
+   "beaten",
+   "이기다, 두드리다"
+  ],
+  [
+   "dig",
+   "dug",
+   "dug",
+   "파다"
+  ],
+  [
+   "swing",
+   "swung",
+   "swung",
+   "흔들다"
+  ],
+  [
+   "bet",
+   "bet",
+   "bet",
+   "내기하다 (I bet ~ 분명 ~일 거야)"
+  ],
+  [
+   "dive",
+   "dove",
+   "dived",
+   "다이빙하다 (미국식 과거 dove)"
+  ]
+ ],
+ "storyTemplate": [
+  {
+   "id": "S1",
+   "title": "제주 여행 폭우",
+   "slots": {
+    "언제": "2년 전 여름 (Two years ago, in the summer)",
+    "어디서": "제주도 (Jeju Island)",
+    "누구와": "가족과 (with my family)",
+    "무슨 일": "둘째 날 폭우가 쏟아져 계획했던 야외 일정을 모두 취소함",
+    "어떻게 됐나": "근처 작은 카페와 실내 박물관에 감",
+    "느낌": "처음엔 실망했지만 오히려 여행에서 가장 기억에 남는 날이 됨 (the most memorable day)"
+   },
+   "use": [
+    "국내 여행 경험",
+    "가장 기억에 남는 여행",
+    "여행 중 생긴 문제·예상 못 한 일",
+    "날씨·계절 관련 경험",
+    "가족과 함께한 경험",
+    "카페·박물관 등 장소 경험",
+    "휴가 계획이 바뀐 경험"
+   ]
+  },
+  {
+   "id": "S2",
+   "title": "오사카 휴대폰 분실",
+   "slots": {
+    "언제": "작년 겨울 (Last winter)",
+    "어디서": "일본 오사카 지하철역 (a subway station in Osaka)",
+    "누구와": "친구 둘과 (with two friends)",
+    "무슨 일": "지하철역에서 휴대폰을 잃어버림 → 역무원에게 서툰 영어와 친구 폰 번역 앱으로 설명",
+    "어떻게 됐나": "다음 날 분실물 센터(lost and found)에서 휴대폰을 찾음",
+    "느낌": "정말 안심했고(relieved), 일본 사람들의 친절에 감동받음"
+   },
+   "use": [
+    "해외여행 경험",
+    "여행 중 생긴 문제",
+    "물건을 잃어버린 경험",
+    "교통·대중교통 관련 경험",
+    "휴대폰·기술 관련 돌발",
+    "롤플레이 관련 경험(rp_exp): 문제를 해결한 경험",
+    "친구와 함께한 경험"
+   ]
+  },
+  {
+   "id": "S3",
+   "title": "첫 콘서트",
+   "slots": {
+    "언제": "5년 전 (About five years ago)",
+    "어디서": "야외 공연장 (an outdoor concert venue)",
+    "누구와": "수많은 팬들 속에서 (with thousands of other fans)",
+    "무슨 일": "공연 중 비가 왔지만 모두 우비를 입고 함께 떼창함",
+    "어떻게 됐나": "비 속에서도 끝까지 공연을 즐김",
+    "느낌": "소름이 돋았고(I got goosebumps) 지금도 잊지 못함"
+   },
+   "use": [
+    "공연·콘서트 경험",
+    "처음 공연에 간 경험",
+    "음악 감상 관련 기억",
+    "가장 기억에 남는 공연",
+    "날씨 때문에 생긴 일",
+    "좋아하는 가수 이야기",
+    "공연 보러 가기 전 준비·후기"
+   ]
+  },
+  {
+   "id": "S4",
+   "title": "조깅 중 발목",
+   "slots": {
+    "언제": "작년 봄 (Last spring)",
+    "어디서": "한강 공원 (the Han River park)",
+    "누구와": "혼자 (by myself)",
+    "무슨 일": "조깅하다가 젖은 길에서 미끄러져 발목을 삠 (I slipped and sprained my ankle)",
+    "어떻게 됐나": "2주 동안 뛰지 못함 → 지금은 준비운동을 꼭 하고 밝을 때만 뜀",
+    "느낌": "아프고 답답했지만 좋은 교훈이 됨 (a good lesson)"
+   },
+   "use": [
+    "조깅·걷기 관련 경험",
+    "운동 중 다친 경험",
+    "공원에서 있었던 일",
+    "건강 관리·습관이 바뀐 계기",
+    "예전과 지금 운동 습관 비교",
+    "예상 못 한 사고"
+   ]
+  },
+  {
+   "id": "S5",
+   "title": "온라인 쇼핑 사이즈",
+   "slots": {
+    "언제": "몇 달 전 (A few months ago)",
+    "어디서": "온라인 쇼핑몰 (an online store)",
+    "누구와": "혼자 (by myself)",
+    "무슨 일": "온라인으로 코트를 주문했는데 사이즈가 너무 큼 (way too big)",
+    "어떻게 됐나": "고객센터 채팅으로 교환 요청 → 교환까지 일주일 걸림",
+    "느낌": "답답했지만 이제는 리뷰와 사이즈표를 꼭 확인함"
+   },
+   "use": [
+    "쇼핑 경험",
+    "온라인 쇼핑 문제",
+    "교환·환불 경험",
+    "롤플레이 관련 경험(rp_exp): 구매 후 문제 해결",
+    "예전과 지금 쇼핑 습관 비교",
+    "실수에서 배운 점"
+   ]
+  },
+  {
+   "id": "S6",
+   "title": "이사·집 꾸미기",
+   "slots": {
+    "언제": "3년 전 (Three years ago)",
+    "어디서": "지금 사는 서울의 작은 아파트 (my apartment in Seoul)",
+    "누구와": "혼자 (by myself)",
+    "무슨 일": "이사 왔을 때 집이 텅 비어 있었음",
+    "어떻게 됐나": "주말마다 가구·화분·조명을 하나씩 사서 꾸밈",
+    "느낌": "지금은 세상에서 가장 편한 곳 (the most comfortable place)"
+   },
+   "use": [
+    "집 묘사",
+    "집에서 바뀐 점·예전과 지금 집 비교",
+    "집 꾸미기·가구 쇼핑",
+    "집에서 보내는 휴가",
+    "혼자 사는 생활",
+    "이사 경험",
+    "동네 소개"
+   ]
+  }
+ ]
+}

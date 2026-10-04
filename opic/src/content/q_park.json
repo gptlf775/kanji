@@ -1,0 +1,1523 @@
+{
+ "cluster": "park",
+ "items": [
+  {
+   "id": "park-desc-1",
+   "cluster": "park",
+   "topic": "공원 가기",
+   "type": "desc",
+   "q": "You indicated in the survey that you like going to parks. Tell me about a park you often go to. Where is it, and what does it look like?",
+   "qko": "설문에서 공원 가는 것을 좋아한다고 하셨네요. 자주 가는 공원에 대해 말해 주세요. 어디에 있고, 어떻게 생겼나요?",
+   "tip": "묘사는 위치 → 크기·모습 → 있는 것들 → 분위기 → 좋아하는 이유 순서. 'There is / There are'로 하나씩 보여 주듯 말하세요.",
+   "im2": [
+    [
+     "Well, I usually go to the Han River park near my place.",
+     "음, 저는 보통 집 근처 한강 공원에 가요."
+    ],
+    [
+     "It's only a five-minute walk from my apartment.",
+     "우리 아파트에서 걸어서 5분밖에 안 걸려요."
+    ],
+    [
+     "The park is really big, and it's right next to the river.",
+     "공원은 정말 크고, 강 바로 옆에 있어요."
+    ],
+    [
+     "There are long walking paths and bike lanes.",
+     "긴 산책로와 자전거 도로가 있어요."
+    ],
+    [
+     "There are also lots of trees, benches, and grass areas.",
+     "나무, 벤치, 잔디밭도 많이 있어요."
+    ],
+    [
+     "On weekends, many people have picnics there.",
+     "주말에는 많은 사람들이 거기서 소풍을 즐겨요."
+    ],
+    [
+     "At night, the bridges light up, so it looks really pretty.",
+     "밤에는 다리에 불이 켜져서 정말 예뻐 보여요."
+    ],
+    [
+     "I go there almost every evening for a walk.",
+     "저는 거의 매일 저녁 산책하러 거기 가요."
+    ],
+    [
+     "It's my favorite place in Seoul because it's so relaxing.",
+     "정말 편안해서 서울에서 제일 좋아하는 곳이에요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, the park I go to the most is the Han River park, which is about a five-minute walk from my apartment.",
+     "음, 제가 제일 자주 가는 공원은 한강 공원인데, 우리 아파트에서 걸어서 5분 정도 거리예요."
+    ],
+    [
+     "Actually, I can even see it from my big window at home.",
+     "사실 집에 있는 큰 창문으로 공원이 보이기까지 해요."
+    ],
+    [
+     "The park is really long, and it stretches along the river.",
+     "공원은 정말 길고, 강을 따라 쭉 이어져 있어요."
+    ],
+    [
+     "There are wide walking paths, bike lanes, and lots of green grass.",
+     "넓은 산책로, 자전거 도로, 그리고 푸른 잔디가 많이 있어요."
+    ],
+    [
+     "You can also find benches, small playgrounds, and convenience stores here and there.",
+     "여기저기에 벤치, 작은 놀이터, 편의점도 있어요."
+    ],
+    [
+     "In the spring, there are flowers everywhere, so it's super colorful.",
+     "봄에는 꽃이 사방에 피어서 정말 알록달록해요."
+    ],
+    [
+     "On weekends, the park gets pretty crowded.",
+     "주말에는 공원이 꽤 붐벼요."
+    ],
+    [
+     "Families set up small tents, and people order fried chicken and have picnics on the grass.",
+     "가족들은 작은 텐트를 치고, 사람들은 치킨을 시켜서 잔디 위에서 소풍을 즐겨요."
+    ],
+    [
+     "In the evening, though, it's much calmer.",
+     "그런데 저녁에는 훨씬 조용해요."
+    ],
+    [
+     "The bridges light up, and the river looks really beautiful at night.",
+     "다리에 불이 켜지고, 밤에는 강이 정말 아름다워 보여요."
+    ],
+    [
+     "To be honest, that's one of the best things about living here.",
+     "솔직히 그게 여기 사는 것의 가장 좋은 점 중 하나예요."
+    ],
+    [
+     "I walk there almost every evening for about thirty minutes.",
+     "저는 거의 매일 저녁 거기서 30분 정도 걸어요."
+    ],
+    [
+     "Anyway, whenever I feel stressed, I just go to the park, and I feel better right away.",
+     "어쨌든 스트레스 받을 때마다 그냥 공원에 가면 바로 기분이 나아져요."
+    ]
+   ],
+   "chunks": [
+    [
+     "a five-minute walk from",
+     "~에서 걸어서 5분 거리"
+    ],
+    [
+     "There are also lots of",
+     "~도 많이 있어요"
+    ],
+    [
+     "have picnics",
+     "소풍을 즐기다"
+    ],
+    [
+     "light up",
+     "불이 켜지다, 환해지다"
+    ],
+    [
+     "it's so relaxing",
+     "정말 편안해요"
+    ]
+   ]
+  },
+  {
+   "id": "park-routine-1",
+   "cluster": "park",
+   "topic": "공원 가기",
+   "type": "routine",
+   "q": "What do you usually do when you go to the park? Tell me about a typical visit, from the moment you arrive until you leave.",
+   "qko": "공원에 가면 보통 무엇을 하나요? 도착해서 떠날 때까지 평소 공원에서 보내는 시간을 말해 주세요.",
+   "tip": "루틴은 현재형 + 순서어(First, Then, After that). usually / always / sometimes로 빈도를 꼭 표현하세요.",
+   "im2": [
+    [
+     "I go to the Han River park almost every evening.",
+     "저는 거의 매일 저녁 한강 공원에 가요."
+    ],
+    [
+     "First, I put on comfortable clothes and sneakers.",
+     "먼저 편한 옷을 입고 운동화를 신어요."
+    ],
+    [
+     "Then I walk along the river for about thirty minutes.",
+     "그다음 강을 따라 30분 정도 걸어요."
+    ],
+    [
+     "I usually listen to music with my earphones while I walk.",
+     "걸으면서 보통 이어폰으로 음악을 들어요."
+    ],
+    [
+     "After that, I sit on a bench and drink some water.",
+     "그 후에는 벤치에 앉아서 물을 좀 마셔요."
+    ],
+    [
+     "Sometimes I just watch the river and the people around me.",
+     "가끔은 그냥 강이랑 주변 사람들을 구경해요."
+    ],
+    [
+     "On weekend mornings, I go jogging there instead.",
+     "주말 아침에는 대신 거기서 조깅을 해요."
+    ],
+    [
+     "When I get home, I feel really refreshed.",
+     "집에 오면 정말 상쾌해요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, since the park is so close, going there is basically part of my daily routine.",
+     "음, 공원이 워낙 가까워서 거기 가는 건 거의 제 일상의 일부예요."
+    ],
+    [
+     "I usually head out after dinner, around eight o'clock.",
+     "보통 저녁을 먹고 8시쯤 나가요."
+    ],
+    [
+     "First, I change into comfortable clothes and put on my sneakers.",
+     "먼저 편한 옷으로 갈아입고 운동화를 신어요."
+    ],
+    [
+     "Then I walk along the river for about thirty minutes.",
+     "그다음 강을 따라 30분 정도 걸어요."
+    ],
+    [
+     "While I'm walking, I always listen to ballads or pop songs with my earphones.",
+     "걷는 동안에는 항상 이어폰으로 발라드나 팝송을 들어요."
+    ],
+    [
+     "It helps me clear my head after a long day.",
+     "긴 하루를 보낸 뒤 머리를 식히는 데 도움이 돼요."
+    ],
+    [
+     "After that, I usually sit on a bench for a while and drink some water.",
+     "그 후에는 보통 벤치에 잠시 앉아서 물을 좀 마셔요."
+    ],
+    [
+     "Sometimes I just watch people riding bikes or walking their dogs.",
+     "가끔은 그냥 자전거 타는 사람들이나 강아지 산책시키는 사람들을 구경해요."
+    ],
+    [
+     "If I'm hungry, I grab a snack from the convenience store.",
+     "배가 고프면 편의점에서 간식을 사 먹어요."
+    ],
+    [
+     "On weekend mornings, though, my routine is a little different.",
+     "그런데 주말 아침에는 루틴이 조금 달라요."
+    ],
+    [
+     "I go jogging instead, and I stay a bit longer.",
+     "대신 조깅을 하고, 좀 더 오래 머물러요."
+    ],
+    [
+     "Once in a while, I meet my friend Minsu there, and we just chat by the river.",
+     "가끔은 친구 민수를 거기서 만나서 강가에서 수다를 떨어요."
+    ],
+    [
+     "Anyway, when I get home, I feel refreshed, and I sleep much better.",
+     "어쨌든 집에 오면 상쾌하고, 잠도 훨씬 잘 자요."
+    ]
+   ],
+   "chunks": [
+    [
+     "part of my daily routine",
+     "일상의 일부"
+    ],
+    [
+     "walk along the river",
+     "강을 따라 걷다"
+    ],
+    [
+     "sit on a bench",
+     "벤치에 앉다"
+    ],
+    [
+     "clear my head",
+     "머리를 식히다"
+    ],
+    [
+     "feel refreshed",
+     "상쾌해지다"
+    ]
+   ]
+  },
+  {
+   "id": "park-past-1",
+   "cluster": "park",
+   "topic": "공원 가기",
+   "type": "past",
+   "q": "Tell me about a memorable experience you had at a park. When was it, who were you with, and what happened? Why was it so special?",
+   "qko": "공원에서 있었던 기억에 남는 경험을 말해 주세요. 언제였고, 누구와 함께였고, 무슨 일이 있었나요? 왜 그렇게 특별했나요?",
+   "tip": "과거 경험은 언제 → 누구와 → 무슨 일 → 어떻게 됐나 → 느낌 순서. 끝까지 과거형을 유지하고, 마지막에만 지금의 생각을 붙이세요.",
+   "im2": [
+    [
+     "Let me tell you about the fireworks festival I saw last fall.",
+     "작년 가을에 본 불꽃축제 이야기를 해 볼게요."
+    ],
+    [
+     "My friend Minsu and I went to the Han River park to see it.",
+     "친구 민수와 저는 그걸 보러 한강 공원에 갔어요."
+    ],
+    [
+     "We got there early in the afternoon to get a good spot.",
+     "좋은 자리를 잡으려고 오후 일찍 도착했어요."
+    ],
+    [
+     "There were so many people, and it was really crowded.",
+     "사람이 정말 많아서 엄청 붐볐어요."
+    ],
+    [
+     "We sat on a mat and ate fried chicken while we waited.",
+     "기다리는 동안 돗자리에 앉아서 치킨을 먹었어요."
+    ],
+    [
+     "When the fireworks started, everyone cheered.",
+     "불꽃놀이가 시작되자 모두가 환호했어요."
+    ],
+    [
+     "The sky was full of colors, and it was so beautiful.",
+     "하늘이 온통 알록달록했고, 정말 아름다웠어요."
+    ],
+    [
+     "After it ended, I just walked home in five minutes.",
+     "끝나고 나서 저는 그냥 5분 만에 걸어서 집에 갔어요."
+    ],
+    [
+     "It was one of the best nights I've ever had at the park.",
+     "공원에서 보낸 최고의 밤 중 하나였어요."
+    ]
+   ],
+   "ih": [
+    [
+     "The most memorable thing that happened to me at the park was the fireworks festival last fall.",
+     "공원에서 저에게 있었던 가장 기억에 남는 일은 작년 가을 불꽃축제였어요."
+    ],
+    [
+     "Every year, there's a big fireworks show by the Han River, and I'd always wanted to see it in person.",
+     "매년 한강에서 큰 불꽃쇼가 열리는데, 늘 직접 보고 싶었거든요."
+    ],
+    [
+     "So my friend Minsu and I decided to go together.",
+     "그래서 친구 민수와 같이 가기로 했어요."
+    ],
+    [
+     "We got there around three in the afternoon, but it was already packed.",
+     "오후 3시쯤 도착했는데, 이미 사람이 꽉 차 있었어요."
+    ],
+    [
+     "We barely found a small spot on the grass and laid out a mat.",
+     "겨우 잔디 위에 작은 자리를 찾아서 돗자리를 깔았어요."
+    ],
+    [
+     "While we waited, we ordered fried chicken and talked for hours.",
+     "기다리는 동안 치킨을 시켜 먹으면서 몇 시간 동안 이야기했어요."
+    ],
+    [
+     "Then, around seven, the first firework shot up into the sky.",
+     "그러다 7시쯤 첫 불꽃이 하늘로 솟아올랐어요."
+    ],
+    [
+     "To be honest, it was way more amazing than I expected.",
+     "솔직히 기대했던 것보다 훨씬 멋졌어요."
+    ],
+    [
+     "The whole sky was full of colors, and everyone around us cheered and took pictures.",
+     "하늘 전체가 알록달록했고, 주변 사람들 모두 환호하며 사진을 찍었어요."
+    ],
+    [
+     "It lasted over an hour, but it felt really short.",
+     "한 시간 넘게 이어졌는데, 정말 짧게 느껴졌어요."
+    ],
+    [
+     "After the show, thousands of people rushed to the subway stations.",
+     "쇼가 끝나자 수천 명이 지하철역으로 몰려갔어요."
+    ],
+    [
+     "Minsu had to wait a long time to get on a train, but I just walked home in five minutes.",
+     "민수는 지하철을 타려고 한참 기다려야 했지만, 저는 그냥 5분 만에 걸어서 집에 갔어요."
+    ],
+    [
+     "I felt a little sorry for him, but also really lucky.",
+     "민수한테 좀 미안했지만, 한편으로는 정말 운이 좋다고 느꼈어요."
+    ],
+    [
+     "Anyway, I still think about that night whenever I walk by the river.",
+     "어쨌든 지금도 강가를 걸을 때마다 그날 밤이 생각나요."
+    ]
+   ],
+   "chunks": [
+    [
+     "get a good spot",
+     "좋은 자리를 잡다"
+    ],
+    [
+     "in person",
+     "직접"
+    ],
+    [
+     "it was already packed",
+     "이미 사람이 꽉 차 있었다"
+    ],
+    [
+     "full of colors",
+     "알록달록한, 색으로 가득한"
+    ],
+    [
+     "more amazing than I expected",
+     "기대보다 더 멋진"
+    ],
+    [
+     "one of the best nights",
+     "최고의 밤 중 하나"
+    ]
+   ]
+  },
+  {
+   "id": "park-compare-1",
+   "cluster": "park",
+   "topic": "공원 가기",
+   "type": "compare",
+   "q": "How have parks changed since you were a child? Compare the parks you went to when you were young with the parks you go to today. What are the biggest differences?",
+   "qko": "어릴 때와 비교해 공원은 어떻게 변했나요? 어릴 때 가던 공원과 요즘 가는 공원을 비교해 주세요. 가장 큰 차이는 무엇인가요?",
+   "tip": "비교는 '예전엔(used to) … → 요즘은(These days) …' 짝으로 말하기. 차이 2~3개를 들고 내 생각으로 마무리하세요.",
+   "im2": [
+    [
+     "Parks have changed a lot since I was a kid.",
+     "공원은 제가 어릴 때와 비교해 많이 변했어요."
+    ],
+    [
+     "When I was young, parks were small and pretty simple.",
+     "어릴 때 공원은 작고 꽤 단순했어요."
+    ],
+    [
+     "There was usually just a playground, some benches, and a few trees.",
+     "보통 놀이터 하나, 벤치 몇 개, 나무 몇 그루가 전부였어요."
+    ],
+    [
+     "We used to play tag and ride bikes there after dinner.",
+     "저녁을 먹고 나면 거기서 술래잡기도 하고 자전거도 타곤 했어요."
+    ],
+    [
+     "These days, parks are much bigger and cleaner.",
+     "요즘 공원은 훨씬 더 크고 깨끗해요."
+    ],
+    [
+     "There are nice walking paths, exercise machines, and clean restrooms.",
+     "좋은 산책로, 운동 기구, 깨끗한 화장실이 있어요."
+    ],
+    [
+     "Also, many parks have cafes and convenience stores now.",
+     "또 요즘은 카페와 편의점이 있는 공원도 많아요."
+    ],
+    [
+     "At night, they have bright lights, so they feel safer.",
+     "밤에는 조명이 밝아서 더 안전하게 느껴져요."
+    ],
+    [
+     "I think today's parks are great for people of all ages.",
+     "요즘 공원은 모든 연령대의 사람들에게 좋다고 생각해요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, parks today are pretty different from the ones I remember as a kid.",
+     "음, 요즘 공원은 제가 어릴 때 기억하는 공원과 꽤 달라요."
+    ],
+    [
+     "When I was young, the park in my neighborhood was really small.",
+     "어릴 때 우리 동네 공원은 정말 작았어요."
+    ],
+    [
+     "There was just an old playground, a sandbox, and a few wooden benches.",
+     "오래된 놀이터, 모래밭, 나무 벤치 몇 개가 전부였어요."
+    ],
+    [
+     "My friends and I used to play tag there until our moms called us home for dinner.",
+     "친구들과 저는 엄마들이 저녁 먹으라고 부를 때까지 거기서 술래잡기를 하곤 했어요."
+    ],
+    [
+     "Back then, parks were mostly for kids, so adults didn't really spend time there.",
+     "그때는 공원이 주로 아이들을 위한 곳이라 어른들은 별로 거기서 시간을 보내지 않았어요."
+    ],
+    [
+     "These days, though, parks are much bigger and better designed.",
+     "그런데 요즘 공원은 훨씬 더 크고 잘 설계되어 있어요."
+    ],
+    [
+     "For example, the Han River park near my place has long walking paths, bike lanes, and outdoor exercise machines.",
+     "예를 들어 우리 집 근처 한강 공원에는 긴 산책로, 자전거 도로, 야외 운동 기구가 있어요."
+    ],
+    [
+     "There are also clean restrooms, cafes, and convenience stores, so you can stay there all day.",
+     "깨끗한 화장실, 카페, 편의점도 있어서 하루 종일 있을 수도 있어요."
+    ],
+    [
+     "Another big change is that parks are much brighter at night.",
+     "또 하나의 큰 변화는 밤에 공원이 훨씬 밝아졌다는 거예요."
+    ],
+    [
+     "Thanks to the lights, I feel safe walking there even late in the evening.",
+     "조명 덕분에 늦은 저녁에도 안심하고 걸을 수 있어요."
+    ],
+    [
+     "Also, people of all ages use parks now, from little kids to older people.",
+     "또 요즘은 어린아이부터 어르신까지 모든 연령대가 공원을 이용해요."
+    ],
+    [
+     "To be honest, I sometimes miss the simple parks from my childhood.",
+     "솔직히 가끔은 어린 시절의 단순했던 공원이 그리워요."
+    ],
+    [
+     "But overall, I think parks today are much more useful and comfortable.",
+     "하지만 전체적으로 요즘 공원이 훨씬 더 유용하고 편하다고 생각해요."
+    ]
+   ],
+   "chunks": [
+    [
+     "since I was a kid",
+     "어릴 때와 비교해, 어릴 때 이후로"
+    ],
+    [
+     "used to play tag",
+     "술래잡기를 하곤 했다"
+    ],
+    [
+     "much bigger and",
+     "훨씬 더 크고"
+    ],
+    [
+     "feel safer",
+     "더 안전하게 느껴지다"
+    ],
+    [
+     "people of all ages",
+     "모든 연령대의 사람들"
+    ]
+   ]
+  },
+  {
+   "id": "park-desc-2",
+   "cluster": "park",
+   "topic": "걷기·조깅",
+   "type": "desc",
+   "q": "You indicated that you enjoy walking and jogging. Where do you usually go to walk or jog? Describe the place and tell me why you like going there.",
+   "qko": "걷기와 조깅을 즐긴다고 하셨네요. 보통 어디서 걷거나 조깅하나요? 그 장소를 묘사하고 왜 거기 가는 걸 좋아하는지 말해 주세요.",
+   "tip": "장소 묘사(어디·어떻게 생겼나) + 이유 2~3개(가까움·경치·안전). First, Second, Also로 이유를 나눠 말하면 구조가 분명해져요.",
+   "im2": [
+    [
+     "I usually walk and jog at the Han River park.",
+     "저는 보통 한강 공원에서 걷고 조깅해요."
+    ],
+    [
+     "It's only five minutes from my apartment on foot.",
+     "우리 아파트에서 걸어서 5분밖에 안 걸려요."
+    ],
+    [
+     "The path is flat and wide, and it goes along the river.",
+     "길은 평평하고 넓고, 강을 따라 이어져 있어요."
+    ],
+    [
+     "There are lots of trees, so it's nice and cool in summer.",
+     "나무가 많아서 여름에도 선선하고 좋아요."
+    ],
+    [
+     "I like this place for a few reasons.",
+     "제가 이곳을 좋아하는 데는 몇 가지 이유가 있어요."
+    ],
+    [
+     "First, it's really close, so I can go anytime.",
+     "첫째, 정말 가까워서 언제든 갈 수 있어요."
+    ],
+    [
+     "Second, the view of the river is beautiful, especially at sunset.",
+     "둘째, 강 경치가 아름다워요, 특히 해 질 녘에요."
+    ],
+    [
+     "Also, many other people jog there, so it feels safe.",
+     "또 다른 사람들도 많이 조깅해서 안전하게 느껴져요."
+    ],
+    [
+     "That's why I go there almost every day.",
+     "그래서 거의 매일 거기 가요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, my favorite place for walking and jogging is definitely the Han River park.",
+     "음, 제가 걷고 조깅하기에 제일 좋아하는 곳은 단연 한강 공원이에요."
+    ],
+    [
+     "It's just a five-minute walk from my apartment, so it's super convenient.",
+     "우리 아파트에서 걸어서 5분 거리라서 정말 편해요."
+    ],
+    [
+     "There's a long, flat path right along the river, and it's separate from the bike lane.",
+     "강 바로 옆으로 길고 평평한 길이 있는데, 자전거 도로와 분리되어 있어요."
+    ],
+    [
+     "That means I don't have to worry about bikes while I'm running.",
+     "그래서 뛰는 동안 자전거를 걱정할 필요가 없어요."
+    ],
+    [
+     "On both sides of the path, there are trees and flowers, so the scenery changes every season.",
+     "길 양쪽에 나무와 꽃이 있어서 계절마다 풍경이 바뀌어요."
+    ],
+    [
+     "In the spring, the cherry blossoms are amazing, and in the fall, the leaves turn red and yellow.",
+     "봄에는 벚꽃이 정말 멋지고, 가을에는 나뭇잎이 빨갛고 노랗게 물들어요."
+    ],
+    [
+     "Another reason I like it is the view.",
+     "제가 좋아하는 또 다른 이유는 경치예요."
+    ],
+    [
+     "When I walk there in the evening, I can watch the sunset over the river.",
+     "저녁에 거기서 걸으면 강 위로 지는 노을을 볼 수 있어요."
+    ],
+    [
+     "It's really calming after a busy day.",
+     "바쁜 하루를 보낸 뒤라 마음이 정말 차분해져요."
+    ],
+    [
+     "There are also water fountains and restrooms along the way, which is really helpful.",
+     "가는 길에 식수대와 화장실도 있어서 정말 도움이 돼요."
+    ],
+    [
+     "Plus, lots of people walk and jog there, so I never feel unsafe.",
+     "게다가 거기서 걷고 뛰는 사람이 많아서 전혀 불안하지 않아요."
+    ],
+    [
+     "To be honest, I don't think I'd exercise this much if the park wasn't so close.",
+     "솔직히 공원이 이렇게 가깝지 않았다면 이만큼 운동하지 않았을 것 같아요."
+    ]
+   ],
+   "chunks": [
+    [
+     "on foot",
+     "걸어서"
+    ],
+    [
+     "goes along the river",
+     "강을 따라 이어지다"
+    ],
+    [
+     "for a few reasons",
+     "몇 가지 이유로"
+    ],
+    [
+     "especially at sunset",
+     "특히 해 질 녘에"
+    ],
+    [
+     "so it feels safe",
+     "그래서 안전하게 느껴져요"
+    ],
+    [
+     "I don't have to worry about",
+     "~을 걱정할 필요가 없다"
+    ]
+   ]
+  },
+  {
+   "id": "park-routine-2",
+   "cluster": "park",
+   "topic": "걷기·조깅",
+   "type": "routine",
+   "q": "Tell me about your routine when you go jogging. What do you do to get ready before you start, and what do you do after you finish?",
+   "qko": "조깅하러 갈 때의 루틴을 말해 주세요. 시작하기 전에 어떤 준비를 하고, 끝난 후에는 무엇을 하나요?",
+   "tip": "Before(복장·준비운동·앱) → During → After(정리운동·샤워) 세 덩어리로 나누고 순서어를 쓰세요. 준비운동을 하는 이유(예전 부상)를 한 줄 넣으면 자연스러워요.",
+   "im2": [
+    [
+     "I go jogging on weekend mornings at the Han River park.",
+     "저는 주말 아침마다 한강 공원에서 조깅해요."
+    ],
+    [
+     "Before I run, I put on my running shoes and comfortable clothes.",
+     "뛰기 전에 러닝화를 신고 편한 옷을 입어요."
+    ],
+    [
+     "Then I stretch my legs for about ten minutes.",
+     "그다음 10분 정도 다리 스트레칭을 해요."
+    ],
+    [
+     "I always warm up because I hurt my ankle last spring.",
+     "작년 봄에 발목을 다쳐서 항상 준비운동을 해요."
+    ],
+    [
+     "I also turn on a running app on my phone.",
+     "휴대폰에서 러닝 앱도 켜요."
+    ],
+    [
+     "It checks my time and how far I run.",
+     "앱이 시간과 뛴 거리를 체크해 줘요."
+    ],
+    [
+     "After I finish, I walk slowly for a few minutes to cool down.",
+     "다 뛰고 나면 몸을 식히려고 몇 분 동안 천천히 걸어요."
+    ],
+    [
+     "Then I go home, take a shower, and eat a big breakfast.",
+     "그러고 나서 집에 가서 샤워하고 아침을 든든하게 먹어요."
+    ],
+    [
+     "It's a great way to start the weekend.",
+     "주말을 시작하기에 정말 좋은 방법이에요."
+    ]
+   ],
+   "ih": [
+    [
+     "I usually go jogging on Saturday and Sunday mornings, and I have a pretty set routine.",
+     "저는 보통 토요일과 일요일 아침에 조깅을 하는데, 꽤 정해진 루틴이 있어요."
+    ],
+    [
+     "First, I check the weather, because I never run when it's raining.",
+     "먼저 날씨를 확인해요. 비가 오면 절대 안 뛰거든요."
+    ],
+    [
+     "Then I put on light running clothes and my favorite running shoes.",
+     "그다음 가벼운 운동복을 입고 제일 좋아하는 러닝화를 신어요."
+    ],
+    [
+     "Before I start, I always stretch for about ten minutes, especially my ankles and legs.",
+     "시작하기 전에는 항상 10분 정도 스트레칭을 해요, 특히 발목과 다리를요."
+    ],
+    [
+     "To be honest, I used to skip this part.",
+     "솔직히 예전에는 이 부분을 건너뛰곤 했어요."
+    ],
+    [
+     "But after I hurt my ankle last spring, I learned my lesson.",
+     "그런데 작년 봄에 발목을 다친 뒤로 교훈을 얻었죠."
+    ],
+    [
+     "Next, I turn on a running app on my phone and put in my earphones.",
+     "다음으로 휴대폰에서 러닝 앱을 켜고 이어폰을 껴요."
+    ],
+    [
+     "The app tracks my distance and pace, so I can see how much I've improved.",
+     "앱이 거리와 속도를 기록해 줘서 제가 얼마나 늘었는지 볼 수 있어요."
+    ],
+    [
+     "I usually run about five kilometers along the river, listening to upbeat pop songs.",
+     "보통 신나는 팝송을 들으면서 강을 따라 5킬로미터쯤 뛰어요."
+    ],
+    [
+     "When I finish, I don't stop right away.",
+     "다 뛰고 나서 바로 멈추지 않아요."
+    ],
+    [
+     "Instead, I walk slowly for five minutes to cool down and stretch again.",
+     "대신 몸을 식히려고 5분 동안 천천히 걷고 다시 스트레칭을 해요."
+    ],
+    [
+     "After that, I go home, take a long shower, and make myself a big breakfast.",
+     "그 후에 집에 가서 샤워를 오래 하고, 아침을 든든하게 차려 먹어요."
+    ],
+    [
+     "Honestly, those weekend mornings are the best part of my week.",
+     "솔직히 그 주말 아침이 일주일 중 제일 좋은 시간이에요."
+    ]
+   ],
+   "chunks": [
+    [
+     "go jogging",
+     "조깅하러 가다"
+    ],
+    [
+     "warm up",
+     "준비운동을 하다"
+    ],
+    [
+     "stretch my legs",
+     "다리 스트레칭을 하다"
+    ],
+    [
+     "to cool down",
+     "몸을 식히려고, 정리운동으로"
+    ],
+    [
+     "take a shower",
+     "샤워하다"
+    ],
+    [
+     "learned my lesson",
+     "교훈을 얻었다"
+    ]
+   ]
+  },
+  {
+   "id": "park-past-2",
+   "cluster": "park",
+   "topic": "걷기·조깅",
+   "type": "past",
+   "q": "Have you ever gotten hurt while you were walking or jogging? Tell me exactly what happened. When was it, and how did you recover?",
+   "qko": "걷거나 조깅하다가 다친 적이 있나요? 무슨 일이 있었는지 자세히 말해 주세요. 언제였고, 어떻게 회복했나요?",
+   "tip": "언제(last spring) → 어디서 → 무슨 일(미끄러짐) → 결과(2주 못 뜀) → 지금 달라진 점. 과거형을 유지하고 마지막 교훈만 현재형으로.",
+   "im2": [
+    [
+     "Yes, I hurt my ankle while I was jogging last spring.",
+     "네, 작년 봄에 조깅하다가 발목을 다쳤어요."
+    ],
+    [
+     "It was early on a Sunday morning, and it was still a little dark.",
+     "일요일 이른 아침이었는데, 아직 좀 어두웠어요."
+    ],
+    [
+     "I was running at the Han River park, and the path was wet from the rain.",
+     "한강 공원에서 뛰고 있었는데, 비 때문에 길이 젖어 있었어요."
+    ],
+    [
+     "I didn't see a puddle, so I slipped and fell.",
+     "물웅덩이를 못 봐서 미끄러져 넘어졌어요."
+    ],
+    [
+     "My ankle hurt a lot, and I could barely walk home.",
+     "발목이 너무 아파서 집까지 거의 걷지 못할 정도였어요."
+    ],
+    [
+     "I sprained it pretty badly, so I couldn't run for two weeks.",
+     "꽤 심하게 삐어서 2주 동안 뛰지 못했어요."
+    ],
+    [
+     "That was really frustrating.",
+     "그게 정말 답답했어요."
+    ],
+    [
+     "Now I always warm up first, and I only run when it's bright outside.",
+     "지금은 항상 먼저 준비운동을 하고, 밖이 밝을 때만 뛰어요."
+    ],
+    [
+     "I learned to be more careful.",
+     "더 조심하는 법을 배웠어요."
+    ]
+   ],
+   "ih": [
+    [
+     "Yes, actually, I got hurt while I was jogging last spring.",
+     "네, 사실 작년 봄에 조깅하다가 다쳤어요."
+    ],
+    [
+     "It was early on a Sunday morning, and the sun wasn't fully up yet.",
+     "일요일 이른 아침이었고, 해가 아직 다 뜨지 않았어요."
+    ],
+    [
+     "It had rained the night before, so the path along the river was still wet.",
+     "전날 밤에 비가 와서 강변 길이 아직 젖어 있었어요."
+    ],
+    [
+     "I was in a hurry, so I skipped my stretching and just started running.",
+     "제가 좀 서둘러서 스트레칭을 건너뛰고 바로 뛰기 시작했어요."
+    ],
+    [
+     "About ten minutes later, I stepped on a slippery spot and my foot twisted.",
+     "10분쯤 뒤에 미끄러운 곳을 밟아서 발이 꺾였어요."
+    ],
+    [
+     "I fell down hard, and my ankle started to swell right away.",
+     "세게 넘어졌고, 발목이 바로 붓기 시작했어요."
+    ],
+    [
+     "A man jogging nearby stopped and helped me sit on a bench.",
+     "근처에서 조깅하던 남자분이 멈춰서 제가 벤치에 앉도록 도와줬어요."
+    ],
+    [
+     "Luckily, my apartment is close to the park, so I slowly limped home.",
+     "다행히 우리 아파트가 공원과 가까워서 천천히 절뚝거리며 집에 갔어요."
+    ],
+    [
+     "It turned out I had sprained my ankle, and I couldn't run for two whole weeks.",
+     "알고 보니 발목을 삐어서 꼬박 2주 동안 뛰지 못했어요."
+    ],
+    [
+     "To be honest, that was the hardest part, because jogging is how I relieve stress.",
+     "솔직히 그게 제일 힘들었어요. 조깅이 제 스트레스 해소법이거든요."
+    ],
+    [
+     "Eventually, it healed, and I started running again little by little.",
+     "결국 다 나았고, 조금씩 다시 뛰기 시작했어요."
+    ],
+    [
+     "Since then, I always warm up before I run, and I only jog when it's bright outside.",
+     "그 뒤로는 뛰기 전에 항상 준비운동을 하고, 밖이 밝을 때만 조깅해요."
+    ],
+    [
+     "It was a painful lesson, but now I'm much more careful.",
+     "아픈 교훈이었지만, 지금은 훨씬 더 조심해요."
+    ]
+   ],
+   "chunks": [
+    [
+     "hurt my ankle",
+     "발목을 다치다"
+    ],
+    [
+     "slipped and fell",
+     "미끄러져 넘어졌다"
+    ],
+    [
+     "could barely walk",
+     "거의 걷지 못했다"
+    ],
+    [
+     "couldn't run for two weeks",
+     "2주 동안 뛰지 못했다"
+    ],
+    [
+     "It turned out",
+     "알고 보니"
+    ],
+    [
+     "little by little",
+     "조금씩"
+    ]
+   ],
+   "story": "S4"
+  },
+  {
+   "id": "park-compare-2",
+   "cluster": "park",
+   "topic": "걷기·조깅",
+   "type": "compare",
+   "q": "Think back to when you first started walking or jogging. How is it different from the way you do it now? Tell me about the changes in detail.",
+   "qko": "처음 걷기나 조깅을 시작했을 때를 떠올려 보세요. 지금 하는 방식과 어떻게 다른가요? 변화에 대해 자세히 말해 주세요.",
+   "tip": "처음(At first / When I first started) vs 지금(Now / These days) 대조. 시간·거리·장비·마음가짐 같은 구체적인 차이 2~3개를 숫자와 함께 말하세요.",
+   "im2": [
+    [
+     "I started walking about three years ago, when I moved near the Han River park.",
+     "저는 3년쯤 전에 한강 공원 근처로 이사 오면서 걷기를 시작했어요."
+    ],
+    [
+     "At first, I only walked for ten minutes, and I got tired easily.",
+     "처음에는 10분만 걸었는데도 쉽게 지쳤어요."
+    ],
+    [
+     "I just wore any old sneakers and didn't use any apps.",
+     "그냥 아무 낡은 운동화나 신었고, 앱도 전혀 안 썼어요."
+    ],
+    [
+     "Also, I went out only when I felt like it.",
+     "또 내킬 때만 나갔어요."
+    ],
+    [
+     "Now it's very different.",
+     "지금은 아주 달라요."
+    ],
+    [
+     "I walk for thirty minutes every evening, and I jog on weekend mornings.",
+     "매일 저녁 30분씩 걷고, 주말 아침에는 조깅해요."
+    ],
+    [
+     "I have real running shoes and use a running app.",
+     "제대로 된 러닝화도 있고 러닝 앱도 써요."
+    ],
+    [
+     "I'm much healthier and stronger than before.",
+     "전보다 훨씬 건강하고 튼튼해졌어요."
+    ],
+    [
+     "It's a big part of my life now.",
+     "이제 걷기와 조깅은 제 삶의 큰 부분이에요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, I started walking about three years ago, right after I moved to my current apartment.",
+     "음, 저는 지금 아파트로 이사 온 직후인 3년쯤 전에 걷기를 시작했어요."
+    ],
+    [
+     "Since the Han River park was so close, I thought, \"Why not?\"",
+     "한강 공원이 워낙 가까우니까 '안 할 이유가 없지'라고 생각했죠."
+    ],
+    [
+     "At first, though, it wasn't easy at all.",
+     "그런데 처음에는 전혀 쉽지 않았어요."
+    ],
+    [
+     "I could only walk for ten or fifteen minutes before I got tired.",
+     "10분이나 15분만 걸어도 지쳤어요."
+    ],
+    [
+     "I wore old sneakers, and I didn't really know anything about stretching.",
+     "낡은 운동화를 신었고, 스트레칭에 대해서는 거의 아무것도 몰랐어요."
+    ],
+    [
+     "Also, I only went out when the weather was perfect, so it wasn't a habit yet.",
+     "또 날씨가 완벽할 때만 나가서 아직 습관이 되지 않았어요."
+    ],
+    [
+     "A few months later, I tried jogging, but I could barely run for five minutes.",
+     "몇 달 뒤에 조깅을 시도했는데, 5분도 겨우 뛰었어요."
+    ],
+    [
+     "These days, things are totally different.",
+     "요즘은 완전히 달라요."
+    ],
+    [
+     "I walk for thirty minutes every evening, and I jog about five kilometers on weekend mornings.",
+     "매일 저녁 30분씩 걷고, 주말 아침에는 5킬로미터쯤 조깅해요."
+    ],
+    [
+     "I have proper running shoes now, and I use an app to track my pace.",
+     "이제는 제대로 된 러닝화도 있고, 앱으로 속도도 기록해요."
+    ],
+    [
+     "I've also become much more careful, especially after I hurt my ankle last spring.",
+     "특히 작년 봄에 발목을 다친 뒤로 훨씬 더 조심하게 됐어요."
+    ],
+    [
+     "Most importantly, I don't see it as exercise anymore.",
+     "무엇보다 이제는 그걸 운동이라고 생각하지 않아요."
+    ],
+    [
+     "It's just part of my day, like brushing my teeth.",
+     "양치질처럼 그냥 하루의 일부예요."
+    ],
+    [
+     "Looking back, I'm really proud of how far I've come.",
+     "돌이켜 보면 제가 이만큼 발전한 게 정말 뿌듯해요."
+    ]
+   ],
+   "chunks": [
+    [
+     "At first",
+     "처음에는"
+    ],
+    [
+     "got tired easily",
+     "쉽게 지쳤다"
+    ],
+    [
+     "when I felt like it",
+     "내킬 때, 하고 싶을 때"
+    ],
+    [
+     "much healthier",
+     "훨씬 더 건강한"
+    ],
+    [
+     "a big part of my life",
+     "내 삶의 큰 부분"
+    ],
+    [
+     "how far I've come",
+     "내가 얼마나 발전했는지"
+    ]
+   ]
+  },
+  {
+   "id": "park-desc-3",
+   "cluster": "park",
+   "topic": "쇼핑하기",
+   "type": "desc",
+   "q": "You indicated in the survey that you enjoy shopping. Where do you usually go shopping? Describe the place for me in as much detail as possible.",
+   "qko": "설문에서 쇼핑을 즐긴다고 하셨네요. 보통 어디서 쇼핑하나요? 그곳을 최대한 자세히 묘사해 주세요.",
+   "tip": "온라인과 매장 중 하나를 메인으로 자세히 묘사하고, 다른 하나는 짧게 덧붙이세요. 층별로 '무엇이 있는지' 말하면 묘사가 쉬워져요.",
+   "im2": [
+    [
+     "I do most of my shopping online, but I also like going to a shopping mall.",
+     "저는 쇼핑을 대부분 온라인으로 하지만, 쇼핑몰에 가는 것도 좋아해요."
+    ],
+    [
+     "The mall is about twenty minutes from my place by subway.",
+     "그 쇼핑몰은 우리 집에서 지하철로 20분 정도 걸려요."
+    ],
+    [
+     "It's really big, and it has six floors.",
+     "정말 크고, 6층까지 있어요."
+    ],
+    [
+     "There are clothing stores, shoe stores, and a big bookstore.",
+     "옷 가게, 신발 가게, 그리고 큰 서점이 있어요."
+    ],
+    [
+     "On the top floor, there's a food court and a movie theater.",
+     "맨 위층에는 푸드코트와 영화관이 있어요."
+    ],
+    [
+     "It's always bright and clean, and there's nice music playing.",
+     "항상 밝고 깨끗하고, 좋은 음악이 흘러나와요."
+    ],
+    [
+     "I usually go there on weekends to look around.",
+     "보통 주말에 거기 가서 구경해요."
+    ],
+    [
+     "For everyday things, I just use a shopping app on my phone.",
+     "생활용품은 그냥 휴대폰 쇼핑 앱으로 사요."
+    ],
+    [
+     "Both are convenient, but the mall is more fun.",
+     "둘 다 편리하지만, 쇼핑몰이 더 재미있어요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, these days I do most of my shopping online, but when I want to see things in person, I go to a big shopping mall.",
+     "음, 요즘은 쇼핑을 대부분 온라인으로 하지만, 물건을 직접 보고 싶을 때는 큰 쇼핑몰에 가요."
+    ],
+    [
+     "It's about twenty minutes from my apartment by subway, and it's connected directly to the station.",
+     "우리 아파트에서 지하철로 20분 정도 거리이고, 역과 바로 연결되어 있어요."
+    ],
+    [
+     "The mall has six floors, and it's huge inside.",
+     "그 쇼핑몰은 6층까지 있고, 안이 엄청 넓어요."
+    ],
+    [
+     "In the basement, there's a big supermarket and a food court.",
+     "지하에는 큰 마트와 푸드코트가 있어요."
+    ],
+    [
+     "The second and third floors are full of clothing and shoe stores.",
+     "2층과 3층은 옷 가게와 신발 가게로 가득해요."
+    ],
+    [
+     "On the top floor, there's a movie theater, so sometimes Minsu and I watch a movie there and then go shopping.",
+     "맨 위층에는 영화관이 있어서, 가끔 민수랑 거기서 영화를 보고 나서 쇼핑을 해요."
+    ],
+    [
+     "The whole place is bright and clean, and it has a really nice atmosphere.",
+     "전체적으로 밝고 깨끗하고, 분위기가 정말 좋아요."
+    ],
+    [
+     "It's also air-conditioned, so it's a great place to spend a hot summer afternoon.",
+     "에어컨도 잘 나와서 더운 여름 오후를 보내기에 딱 좋은 곳이에요."
+    ],
+    [
+     "On weekends, though, it gets really crowded, so I try to go in the morning.",
+     "그런데 주말에는 정말 붐벼서 오전에 가려고 해요."
+    ],
+    [
+     "For online shopping, I mostly use one big shopping app.",
+     "온라인 쇼핑은 주로 큰 쇼핑 앱 하나를 써요."
+    ],
+    [
+     "I can order clothes and household items with just a few taps, and they usually arrive the next day.",
+     "몇 번만 누르면 옷이랑 생활용품을 주문할 수 있고, 보통 다음 날 도착해요."
+    ],
+    [
+     "To be honest, online shopping is more convenient, but the mall is definitely more fun.",
+     "솔직히 온라인 쇼핑이 더 편하지만, 쇼핑몰이 확실히 더 재미있어요."
+    ]
+   ],
+   "chunks": [
+    [
+     "do most of my shopping online",
+     "쇼핑을 대부분 온라인으로 하다"
+    ],
+    [
+     "by subway",
+     "지하철로"
+    ],
+    [
+     "On the top floor",
+     "맨 위층에는"
+    ],
+    [
+     "look around",
+     "둘러보다, 구경하다"
+    ],
+    [
+     "in person",
+     "직접"
+    ],
+    [
+     "with just a few taps",
+     "몇 번만 누르면"
+    ]
+   ]
+  },
+  {
+   "id": "park-routine-3",
+   "cluster": "park",
+   "topic": "쇼핑하기",
+   "type": "routine",
+   "q": "Tell me about your shopping habits. Do you usually shop online or in stores? How often do you shop, and what kinds of things do you usually buy?",
+   "qko": "쇼핑 습관에 대해 말해 주세요. 보통 온라인으로 쇼핑하나요, 매장에서 하나요? 얼마나 자주 쇼핑하고, 주로 어떤 물건을 사나요?",
+   "tip": "빈도(once or twice a week)·장소·품목·사는 방식을 현재형으로. 온라인과 매장 각각을 이용하는 이유를 하나씩 대면 내용이 풍부해져요.",
+   "im2": [
+    [
+     "I usually shop online because it's fast and easy.",
+     "저는 빠르고 쉬워서 보통 온라인으로 쇼핑해요."
+    ],
+    [
+     "I buy things like clothes, snacks, and household items.",
+     "옷, 간식, 생활용품 같은 걸 사요."
+    ],
+    [
+     "I shop online about once or twice a week.",
+     "온라인 쇼핑은 일주일에 한두 번 정도 해요."
+    ],
+    [
+     "Before I buy something, I always read the reviews.",
+     "뭔가 사기 전에는 항상 리뷰를 읽어요."
+    ],
+    [
+     "I also check the size chart for clothes.",
+     "옷은 사이즈표도 확인해요."
+    ],
+    [
+     "Sometimes I go to a department store on weekends.",
+     "가끔 주말에 백화점에 가요."
+    ],
+    [
+     "I go there when I want to try on shoes or jackets.",
+     "신발이나 재킷을 입어 보고 싶을 때 거기 가요."
+    ],
+    [
+     "I don't spend too much money, because I live alone and have a budget.",
+     "혼자 살고 예산이 있어서 돈을 너무 많이 쓰진 않아요."
+    ],
+    [
+     "Overall, shopping is a fun way to relax for me.",
+     "전체적으로 쇼핑은 저에게 재미있게 쉬는 방법이에요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, I'd say I'm mostly an online shopper.",
+     "음, 저는 주로 온라인으로 쇼핑하는 편이라고 할 수 있어요."
+    ],
+    [
+     "I shop online once or twice a week, usually late at night when I'm relaxing on my couch.",
+     "일주일에 한두 번 온라인 쇼핑을 하는데, 보통 밤늦게 소파에서 쉴 때 해요."
+    ],
+    [
+     "I mostly buy clothes and household items like detergent, tissues, and snacks.",
+     "주로 옷이랑 세제, 휴지, 간식 같은 생활용품을 사요."
+    ],
+    [
+     "For things I use every day, I set up regular deliveries, so I never run out.",
+     "매일 쓰는 물건은 정기 배송을 신청해 둬서 떨어질 일이 없어요."
+    ],
+    [
+     "Before I order anything, I always read the reviews carefully.",
+     "뭘 주문하기 전에는 항상 리뷰를 꼼꼼히 읽어요."
+    ],
+    [
+     "When it comes to clothes, I also check the size chart, because I've made mistakes before.",
+     "옷의 경우에는 사이즈표도 확인해요. 전에 실수한 적이 있거든요."
+    ],
+    [
+     "On the other hand, I sometimes go to a department store or shopping mall on weekends.",
+     "반면에 가끔 주말에는 백화점이나 쇼핑몰에 가요."
+    ],
+    [
+     "I usually go there when I need shoes or a nice jacket, since I want to try them on first.",
+     "신발이나 좋은 재킷이 필요할 때 주로 가는데, 먼저 신어 보고 입어 보고 싶어서예요."
+    ],
+    [
+     "I also like to just look around and get ideas for my style.",
+     "그냥 둘러보면서 스타일 아이디어를 얻는 것도 좋아해요."
+    ],
+    [
+     "To be honest, I try not to buy things on impulse.",
+     "솔직히 충동적으로 물건을 사지 않으려고 해요."
+    ],
+    [
+     "I usually put things in my cart and wait a day or two before I actually buy them.",
+     "보통 물건을 장바구니에 담아 두고 하루이틀 기다렸다가 실제로 사요."
+    ],
+    [
+     "That way, I save a lot of money.",
+     "그렇게 하면 돈을 많이 아낄 수 있어요."
+    ],
+    [
+     "Anyway, shopping is one of my favorite ways to relax on the weekend.",
+     "어쨌든 쇼핑은 주말에 제가 제일 좋아하는 휴식 방법 중 하나예요."
+    ]
+   ],
+   "chunks": [
+    [
+     "household items",
+     "생활용품"
+    ],
+    [
+     "read the reviews",
+     "리뷰를 읽다"
+    ],
+    [
+     "check the size chart",
+     "사이즈표를 확인하다"
+    ],
+    [
+     "try on",
+     "입어 보다, 신어 보다"
+    ],
+    [
+     "on impulse",
+     "충동적으로"
+    ],
+    [
+     "put things in my cart",
+     "장바구니에 담다"
+    ]
+   ]
+  },
+  {
+   "id": "park-past-3",
+   "cluster": "park",
+   "topic": "쇼핑하기",
+   "type": "past",
+   "q": "Have you ever had a problem while you were shopping? Maybe something was wrong with an item you bought. Tell me what happened and how you solved the problem.",
+   "qko": "쇼핑하다가 문제가 생긴 적이 있나요? 산 물건에 문제가 있었을 수도 있겠죠. 무슨 일이 있었고 어떻게 해결했는지 말해 주세요.",
+   "tip": "문제 상황 → 해결 과정(누구에게·어떻게 연락) → 결과 → 교훈 순서. '그 뒤로 항상 ~해요(Since then, I always…)'로 끝내면 깔끔해요.",
+   "im2": [
+    [
+     "Yes, I had a problem with an online order a few months ago.",
+     "네, 몇 달 전에 온라인 주문으로 문제가 있었어요."
+    ],
+    [
+     "I ordered a winter coat on sale from a shopping app.",
+     "쇼핑 앱에서 할인하는 겨울 코트를 주문했어요."
+    ],
+    [
+     "It looked really nice in the pictures.",
+     "사진에서는 정말 멋져 보였어요."
+    ],
+    [
+     "But when it arrived, it was way too big for me.",
+     "그런데 도착하고 보니 저한테 너무 컸어요."
+    ],
+    [
+     "So I contacted customer service through online chat.",
+     "그래서 온라인 채팅으로 고객센터에 연락했어요."
+    ],
+    [
+     "I explained the problem and asked for a smaller size.",
+     "문제를 설명하고 더 작은 사이즈를 요청했어요."
+    ],
+    [
+     "They were nice, but the exchange took a whole week.",
+     "친절했지만 교환하는 데 꼬박 일주일이 걸렸어요."
+    ],
+    [
+     "I was a little annoyed because I had to wait so long.",
+     "너무 오래 기다려야 해서 좀 짜증이 났어요."
+    ],
+    [
+     "Now I always check the reviews and the size chart before I buy clothes.",
+     "이제는 옷을 사기 전에 항상 리뷰와 사이즈표를 확인해요."
+    ]
+   ],
+   "ih": [
+    [
+     "Actually, yes, I had a problem with an online order a few months ago.",
+     "사실 네, 몇 달 전에 온라인 주문으로 문제가 있었어요."
+    ],
+    [
+     "There was a big sale on a shopping app, and I found a really nice long coat.",
+     "쇼핑 앱에서 큰 할인 행사가 있었는데, 정말 멋진 롱코트를 발견했어요."
+    ],
+    [
+     "The price was great, so I ordered it right away without thinking too much.",
+     "가격이 너무 좋아서 별생각 없이 바로 주문했어요."
+    ],
+    [
+     "It came two days later, and I was so excited to open the box.",
+     "이틀 뒤에 도착했고, 상자를 열 생각에 엄청 신났어요."
+    ],
+    [
+     "But when I tried it on, it was way too big.",
+     "그런데 입어 보니 너무 컸어요."
+    ],
+    [
+     "The sleeves covered my hands, and the shoulders were too wide.",
+     "소매가 손을 덮었고, 어깨도 너무 넓었어요."
+    ],
+    [
+     "At first, I didn't know what to do, because I'd never returned anything before.",
+     "처음에는 어떻게 해야 할지 몰랐어요. 전에 반품해 본 적이 한 번도 없었거든요."
+    ],
+    [
+     "Then I found the customer service chat on the app and explained the problem.",
+     "그러다 앱에서 고객센터 채팅을 찾아서 문제를 설명했어요."
+    ],
+    [
+     "I sent them a few photos and asked to exchange it for a smaller size.",
+     "사진 몇 장을 보내고 더 작은 사이즈로 교환해 달라고 했어요."
+    ],
+    [
+     "The staff member was really kind, and she told me how to send it back.",
+     "직원분이 정말 친절했고, 다시 보내는 방법을 알려 줬어요."
+    ],
+    [
+     "The problem was that the whole exchange took about a week.",
+     "문제는 교환 전체가 일주일 정도 걸렸다는 거예요."
+    ],
+    [
+     "To be honest, waiting was pretty annoying.",
+     "솔직히 기다리는 게 꽤 짜증 났어요."
+    ],
+    [
+     "But eventually, the new coat arrived, and it fit perfectly.",
+     "하지만 결국 새 코트가 도착했고, 딱 맞았어요."
+    ],
+    [
+     "Since then, I always read the reviews and check the size chart before I buy clothes online.",
+     "그 뒤로는 온라인으로 옷을 사기 전에 항상 리뷰를 읽고 사이즈표를 확인해요."
+    ]
+   ],
+   "chunks": [
+    [
+     "way too big",
+     "너무 큰"
+    ],
+    [
+     "customer service",
+     "고객센터"
+    ],
+    [
+     "asked for a smaller size",
+     "더 작은 사이즈를 요청했다"
+    ],
+    [
+     "took a whole week",
+     "꼬박 일주일이 걸렸다"
+    ],
+    [
+     "exchange it for",
+     "~로 교환하다"
+    ],
+    [
+     "it fit perfectly",
+     "딱 맞았다"
+    ]
+   ],
+   "story": "S5"
+  },
+  {
+   "id": "park-compare-3",
+   "cluster": "park",
+   "topic": "쇼핑하기",
+   "type": "compare",
+   "q": "The way people shop has changed a lot over the years. Compare how you used to shop in the past with how you shop these days. What has changed?",
+   "qko": "사람들이 쇼핑하는 방식은 지난 몇 년 동안 많이 변했어요. 예전에 쇼핑하던 방식과 요즘 쇼핑하는 방식을 비교해 주세요. 무엇이 달라졌나요?",
+   "tip": "예전(used to: 매장·현금·무거운 짐) vs 요즘(앱·빠른 배송·간편결제). 장점과 단점을 하나씩 넣고 내 의견으로 마무리하세요.",
+   "im2": [
+    [
+     "The way I shop has changed a lot.",
+     "제가 쇼핑하는 방식은 많이 변했어요."
+    ],
+    [
+     "In the past, I used to go to stores to buy everything.",
+     "예전에는 뭐든 사려면 매장에 가곤 했어요."
+    ],
+    [
+     "I went to the mall or the market with my family on weekends.",
+     "주말에 가족과 쇼핑몰이나 시장에 갔어요."
+    ],
+    [
+     "I had to carry heavy bags all the way home.",
+     "무거운 봉지를 집까지 쭉 들고 와야 했어요."
+    ],
+    [
+     "These days, I buy most things online with my phone.",
+     "요즘은 휴대폰으로 대부분의 물건을 온라인에서 사요."
+    ],
+    [
+     "It only takes a few minutes, and things arrive the next day.",
+     "몇 분밖에 안 걸리고, 물건은 다음 날 도착해요."
+    ],
+    [
+     "I can also compare prices easily.",
+     "가격도 쉽게 비교할 수 있어요."
+    ],
+    [
+     "But sometimes I miss trying things on in person.",
+     "하지만 가끔은 직접 입어 보던 게 그리워요."
+    ],
+    [
+     "Still, I think shopping is much more convenient now.",
+     "그래도 지금 쇼핑이 훨씬 더 편리하다고 생각해요."
+    ]
+   ],
+   "ih": [
+    [
+     "Well, the way I shop is completely different from how it was about ten years ago.",
+     "음, 제가 쇼핑하는 방식은 10년쯤 전과 완전히 달라요."
+    ],
+    [
+     "Back then, I used to go to stores for almost everything.",
+     "그때는 거의 모든 걸 사러 매장에 가곤 했어요."
+    ],
+    [
+     "On weekends, my family would go to a big supermarket together and fill up a whole cart.",
+     "주말이면 가족이 함께 큰 마트에 가서 카트를 가득 채우곤 했어요."
+    ],
+    [
+     "For clothes, I went to the mall and walked around for hours to find what I wanted.",
+     "옷은 쇼핑몰에 가서 원하는 걸 찾으려고 몇 시간씩 돌아다녔어요."
+    ],
+    [
+     "It was tiring, but it was also kind of fun.",
+     "피곤했지만, 나름 재미도 있었어요."
+    ],
+    [
+     "These days, though, I do most of my shopping on my phone.",
+     "그런데 요즘은 쇼핑을 대부분 휴대폰으로 해요."
+    ],
+    [
+     "I can compare prices in seconds and read other people's reviews before I buy anything.",
+     "몇 초 만에 가격을 비교하고, 뭘 사기 전에 다른 사람들의 리뷰도 읽을 수 있어요."
+    ],
+    [
+     "Plus, with fast delivery, my order usually shows up at my door the next morning.",
+     "게다가 빠른 배송 덕분에 주문한 물건이 보통 다음 날 아침이면 문 앞에 와 있어요."
+    ],
+    [
+     "That's really helpful because I live alone, so carrying heavy bags is a pain.",
+     "혼자 살아서 무거운 짐을 드는 게 힘들기 때문에 그게 정말 도움이 돼요."
+    ],
+    [
+     "Another big change is how I pay.",
+     "또 하나의 큰 변화는 결제 방식이에요."
+    ],
+    [
+     "I used to pay with cash, but now I just use mobile payment for everything.",
+     "예전에는 현금으로 냈는데, 지금은 뭐든 그냥 모바일 결제를 써요."
+    ],
+    [
+     "Of course, online shopping isn't perfect.",
+     "물론 온라인 쇼핑이 완벽하진 않아요."
+    ],
+    [
+     "Sometimes the size or color is different from what I expected, so I have to send things back.",
+     "가끔 사이즈나 색이 기대와 달라서 물건을 돌려보내야 할 때도 있어요."
+    ],
+    [
+     "Still, overall, I think shopping today is much easier and saves me a lot of time.",
+     "그래도 전체적으로 요즘 쇼핑이 훨씬 쉽고 시간도 많이 아껴 준다고 생각해요."
+    ]
+   ],
+   "chunks": [
+    [
+     "used to go to stores",
+     "매장에 가곤 했다"
+    ],
+    [
+     "all the way home",
+     "집까지 쭉"
+    ],
+    [
+     "compare prices",
+     "가격을 비교하다"
+    ],
+    [
+     "the next day",
+     "다음 날"
+    ],
+    [
+     "in person",
+     "직접"
+    ],
+    [
+     "much more convenient",
+     "훨씬 더 편리한"
+    ]
+   ]
+  }
+ ]
+}

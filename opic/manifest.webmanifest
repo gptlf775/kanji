@@ -1,0 +1,15 @@
+{
+  "name": "누구나 오픽",
+  "short_name": "누구나 오픽",
+  "description": "왕초보부터 OPIc IM2까지 — 듣고, 말하고, 녹음하고, 외우는 말하기 앱",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F5F8FF",
+  "theme_color": "#4F7FE0",
+  "lang": "ko",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
