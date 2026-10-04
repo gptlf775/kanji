@@ -147,7 +147,7 @@ def check_v2(k, it, rds, exs, J, common, tagger, errors, warns, infos):
 
 def write_index():
     """data/index.js — 준비된 학년 목록 + 파일 내용 해시(=버전). 앱이 주소에 붙여 서버 캐시(최대 10분)의 옛 파일을 피함.
-    활용어 자료 data/gram.js 의 버전(GRAM_VER)도 함께 기록 (build_gram.py 도 이 함수를 씀)"""
+    활용어·단어장·가나 획순 자료(gram.js·vocab.js·kana.js)의 버전도 함께 기록 (build_gram.py·build_kana.py 도 이 함수를 씀)"""
     dd = os.path.join(ROOT, 'data')
     avail = sorted(int(f[1:-3]) for f in os.listdir(dd) if re.match(r'^g\d\.js$', f))
     md5 = lambda p: hashlib.md5(open(p, 'rb').read()).hexdigest()[:8]
@@ -155,7 +155,7 @@ def write_index():
     fv = lambda name: md5(os.path.join(dd, name)) if os.path.exists(os.path.join(dd, name)) else ''
     open(os.path.join(dd, 'index.js'), 'w', encoding='utf-8').write(
         f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};'
-        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};\n')
+        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};\n')
 
 def main(grade):
     J = json.load(open(os.path.join(REF_DIR, 'jouyou.json'), encoding='utf-8'))
