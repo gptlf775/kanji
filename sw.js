@@ -1,9 +1,9 @@
 // 오프라인 동작용 서비스 워커
 // 전략: 캐시에서 즉시 보여주고(오프라인 OK), 인터넷이 되면 뒤에서 새 버전으로 갱신
-const CACHE = 'kanji1026-v4';
+const CACHE = 'kanji1026-v5';
 const CORE = ['./', './index.html', './guide.html', './manifest.webmanifest',
   './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
-const DATA = ['./data/index.js', './data/gram.js', './data/vocab.js', './data/kana.js', ...[1, 2, 3, 4, 5, 6].map(g => `./data/g${g}.js`)];  // 없는 파일은 건너뜀
+const DATA = ['./data/index.js', './data/gram.js', './data/vocab.js', './data/kana.js', './data/listen.js', ...[1, 2, 3, 4, 5, 6].map(g => `./data/g${g}.js`)];  // 없는 파일은 건너뜀
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(async c => {
@@ -33,6 +33,8 @@ self.addEventListener('fetch', e => {
     return;
   }
   if (new URL(req.url).origin !== location.origin) return;
+  // 듣기 음성(mp3)은 브라우저가 조각(Range)으로 받아 재생 → 서비스 워커를 거치지 않음
+  if (req.headers.has('range') || new URL(req.url).pathname.includes('/data/audio/')) return;
   e.respondWith(caches.open(CACHE).then(async c => {
     try {
       const res = await fetch(req, { cache: 'no-cache' });

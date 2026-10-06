@@ -199,6 +199,24 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .tog{display:inline-block;padding:7px 12px;border-radius:99px;border:2px solid var(--line);background:#fff;font-weight:bold;font-size:.88rem;margin:3px 2px;}
 .tog.on{border-color:var(--accent);background:var(--accent-soft);}
 .optrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0;}
+.lsnow{text-align:center;}
+.lsnow .lj{font-size:1.45rem;line-height:1.5;margin:6px 0 2px;}
+.lsnow .ly{color:var(--sub);font-size:.92rem;}
+.lsnow .lk{font-size:1.05rem;margin-top:6px;}
+.hl{color:var(--accent-dk);background:var(--accent-soft);border-radius:6px;padding:0 2px;font-weight:inherit;}
+.lsvo{display:flex;justify-content:center;gap:6px;margin:8px 0;}
+.lsvo span{padding:3px 10px;border-radius:99px;background:#F4EEE6;color:var(--sub);font-size:.82rem;}
+.lsvo span.on{background:var(--accent);color:#fff;}
+.lsctl{display:flex;justify-content:center;gap:10px;margin-top:10px;}
+.lsctl button{width:56px;height:56px;border-radius:50%;background:var(--accent-soft);font-size:1.4rem;}
+.lsctl button.play{background:var(--accent);color:#fff;width:68px;height:68px;font-size:1.7rem;}
+.lsbar{height:6px;background:#F4EEE6;border-radius:3px;margin-top:10px;overflow:hidden;}
+.lsbar i{display:block;height:100%;background:var(--accent);}
+.lssel{font-size:1rem;padding:6px 8px;border-radius:10px;border:2px solid var(--line);background:#fff;}
+.lsrow{display:block;width:100%;text-align:left;padding:8px 4px;border-top:1px solid var(--line);}
+.lsrow .ly{display:block;font-size:.8rem;color:var(--sub);}
+.lsrow .lk{display:block;font-size:.85rem;}
+.lsrow.cur{background:var(--accent-soft);border-radius:8px;}
 .optrow .lab{font-size:.85rem;color:var(--sub);min-width:58px;font-weight:bold;}
 .pstat{display:flex;justify-content:center;gap:18px;font-weight:bold;margin:4px 0;}
 .pbig{text-align:center;font-size:6.5rem;line-height:1.2;}
@@ -261,6 +279,7 @@ textarea{height:90px;font-size:12px;}
   <section class="screen" id="scrVocab"></section>
   <section class="screen" id="scrWprac"></section>
   <section class="screen" id="scrCprac"></section>
+  <section class="screen" id="scrListen"></section>
 </main>
 <div class="toast" id="toast"></div>
 
@@ -388,6 +407,7 @@ const canSpeak = () => 'speechSynthesis' in window;
 const ttsText = t => /^[ぁ-ゖー]+$/.test(t) && !/(こんにちは|こんばんは|では|じつは|または|もしくは)$/.test(t) ? t.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)) : t;
 function speak(text, rate) {
   if (!canSpeak() || !text) return;
+  if (window.LA && !window.LA.paused) window.LA.pause();
   try {
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(ttsText(text));
@@ -512,6 +532,7 @@ function renderHome() {
     </div>
     <div class="menu">
       <button id="goSheet" class="wide"><span>📋</span>한 장 정리 <small class="muted" style="display:block;font-weight:normal">히라가나·가타카나 (연습 문제) · 숫자·날짜·세는 말…</small></button>
+      <button id="goListen" class="wide"><span>🎧</span>문장 듣기 <small class="muted" style="display:block;font-weight:normal">문법 순서 회화 · 한국어 → 일본어 여성 → 남성 자동 재생</small></button>
       <button id="goGram"><span>🔀</span>활용어 <small class="muted" style="display:block;font-weight:normal">문법 · 동사·형용사 활용</small></button>
       <button id="goVocab"><span>📒</span>단어장 <small class="muted" style="display:block;font-weight:normal">N5·N4 많이 쓰는 순</small></button>
       <button id="goKprac"><span>✏️</span>한자 연습</button>
@@ -534,6 +555,7 @@ function renderHome() {
   on('goGram', () => renderGram());
   on('goKprac', () => renderKprac());
   on('goVocab', () => renderVocab());
+  on('goListen', () => renderListen());
   on('goWeak', () => startExtra());
   on('goSet', () => renderSet());
   show('Home');
@@ -1652,7 +1674,7 @@ function patList(ps) {
 
 
 /* ═══════════════ 자료 불러오기 (활용어·단어장은 처음 열 때만) ═══════════════ */
-const DATA_FILE = { GRAM: ['gram', 'GRAM_VER'], VOCAB: ['vocab', 'VOCAB_VER'] };
+const DATA_FILE = { GRAM: ['gram', 'GRAM_VER'], VOCAB: ['vocab', 'VOCAB_VER'], LISTEN: ['listen', 'LISTEN_VER'] };
 function ensureData(names, screen, title, again) {
   const miss = names.filter(n => !window[n]);
   if (!miss.length) return true;
@@ -2011,7 +2033,126 @@ function onboarding() {
 
 /* ═══════════════ 시작 ═══════════════ */
 // 뒤로가기 기록에 올릴 화면들 (공부 중 새 한자 카드는 기록하지 않음)
+/* ═══════════════ 🎧 문장 듣기 (문법 순서 회화 · 한국어 → 일본어 여성 → 남성 · 챕터마다 mp3 하나) ═══════════════ */
+// 챕터 파일 하나를 끝까지 재생하고 다음 챕터로 넘어감 → 화면을 꺼도 이어서 들을 수 있음. 문장 위치는 listen.js 의 시각(at)으로 찾음
+const LA = window.LA = new Audio(); LA.preload = 'auto';
+const LS = { list: [], idx: 0, rep: 0, cur: 0, si: -1, key: '' };
+const lsOpt = () => (S.ls = Object.assign({ from: 1, to: 1, rep: 1, rate: 1, pos: null }, S.ls || {}));
+const lsCh = n => window.LISTEN && LISTEN.ch.find(c => c.n === n);
+const hlJ = j => esc(j).replace(/\[([^\]]*)\]/g, '<b class="hl">$1</b>');
+const lsSentAt = (c, t) => { let i = -1; c.s.forEach((x, k) => { if (t >= x.at[0] - 0.05) i = k; }); return i; };
+function lsLoad(n, t, play) {
+  const c = lsCh(n); if (!c) return;
+  const go = () => { LA.playbackRate = lsOpt().rate; if (t) LA.currentTime = t; if (play) LA.play().catch(() => {}); lsUI(); };
+  if (LS.cur !== n) { LS.cur = n; LS.si = -1; LA.src = c.f; LA.defaultPlaybackRate = lsOpt().rate; LA.addEventListener('loadedmetadata', go, { once: true }); LA.load(); }
+  else go();
+  lsMeta(c);
+}
+function lsStart(n, si) {
+  const o = lsOpt(); LS.list = [];
+  for (let k = o.from; k <= o.to; k++) if (lsCh(k)) LS.list.push(k);
+  if (n && !LS.list.includes(n)) { o.from = o.to = n; save(); LS.list = [n]; }
+  if (!LS.list.length) return;
+  LS.idx = Math.max(0, LS.list.indexOf(n || LS.list[0])); LS.rep = 0;
+  const c = lsCh(LS.list[LS.idx]);
+  lsLoad(c.n, si != null ? c.s[si].at[0] : 0, true);
+}
+function lsStep(d) {
+  const c = lsCh(LS.cur); if (!c) return lsStart();
+  let i = Math.max(0, lsSentAt(c, LA.currentTime));
+  if (d < 0 && LA.currentTime - c.s[i].at[0] > 2) d = 0;      // 문장 중간이면 그 문장 처음으로
+  i += d;
+  const play = !LA.paused;
+  if (i < 0 && LS.idx > 0) { LS.idx--; const p = lsCh(LS.list[LS.idx]); lsLoad(p.n, p.s[p.s.length - 1].at[0], play); }
+  else if (i >= c.s.length && LS.idx + 1 < LS.list.length) { LS.idx++; lsLoad(LS.list[LS.idx], 0, play); }
+  else { LA.currentTime = c.s[Math.min(Math.max(i, 0), c.s.length - 1)].at[0]; lsUI(); }
+}
+LA.addEventListener('ended', () => {
+  if (LS.idx + 1 < LS.list.length) LS.idx++;
+  else { LS.rep++; const o = lsOpt(); if (o.rep && LS.rep >= o.rep) { LS.key = ''; lsUI(); return; } LS.idx = 0; }
+  lsLoad(LS.list[LS.idx], 0, true);
+});
+LA.addEventListener('timeupdate', () => {
+  const c = lsCh(LS.cur); if (!c) return;
+  const i = lsSentAt(c, LA.currentTime);
+  if (i !== LS.si) { LS.si = i; S.ls.pos = { c: c.n, s: Math.max(0, i) }; save(); }
+  lsUI();
+});
+LA.addEventListener('play', () => lsUI()); LA.addEventListener('pause', () => lsUI());
+function lsMeta(c) {
+  if (!('mediaSession' in navigator) || !window.MediaMetadata) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: `챕터 ${c.n} · ${c.t.split(' — ')[0]}`, artist: '한자 1026 · 문장 듣기', album: c.t,
+      artwork: [{ src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' }] });
+    const h = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
+    h('play', () => LA.play()); h('pause', () => LA.pause()); h('previoustrack', () => lsStep(-1)); h('nexttrack', () => lsStep(1));
+  } catch (e) {}
+}
+// 재생 중 화면: 지금 문장·지금 목소리·진행 막대 (바뀔 때만 다시 그림)
+function lsUI() {
+  if (cur !== 'Listen' || !$('#lsNow')) return;
+  const c = lsCh(LS.cur), o = lsOpt();
+  if (!c) {
+    const p = o.pos && lsCh(o.pos.c);
+    $('#lsNow').innerHTML = `<div class="lsnow"><p class="muted">▶를 누르면 고른 범위(챕터 ${o.from}~${o.to})를 처음부터 들려줘요.</p>
+      ${p ? `<button class="btn sub" id="lsResume" style="margin-top:8px">⏯ 이어 듣기 — 챕터 ${p.n} · ${o.pos.s + 1}번째 문장</button>` : ''}
+      <div class="lsctl"><button class="play" id="lsPlay">▶</button></div></div>`;
+    $('#lsPlay').onclick = () => lsStart();
+    if ($('#lsResume')) $('#lsResume').onclick = () => lsStart(p.n, o.pos.s);
+    LS.key = ''; return;
+  }
+  const i = Math.max(0, lsSentAt(c, LA.currentTime)), x = c.s[i], t = LA.currentTime;
+  const seg = t < x.at[1] ? 'k' : t < x.at[2] ? 'f' : 'm';
+  const done = (LS.idx * 10 + i + 1), total = LS.list.length * 10;
+  const key = `${c.n}-${i}-${seg}-${LA.paused}-${done}`;
+  if (key !== LS.key) {
+    LS.key = key;
+    $('#lsNow').innerHTML = `<div class="lsnow">
+      <div class="muted" style="font-size:.85rem">챕터 ${c.n} · ${esc(c.t)} · ${i + 1}/10${LS.list.length > 1 ? ` · 전체 ${done}/${total}` : ''}${o.rep !== 1 ? ` · 반복 ${LS.rep + 1}${o.rep ? '/' + o.rep : ''}` : ''}</div>
+      <div class="lj jp" lang="ja">${hlJ(x.j)}</div><div class="ly jp" lang="ja">${esc(x.y)}</div><div class="lk">${esc(x.k)}</div>
+      <div class="lsvo"><span class="${seg === 'k' ? 'on' : ''}">🇰🇷 한국어</span><span class="${seg === 'f' ? 'on' : ''}">👩 여성</span><span class="${seg === 'm' ? 'on' : ''}">👨 남성</span></div>
+      <div class="lsctl"><button id="lsPrev" aria-label="이전 문장">⏮</button><button class="play" id="lsPlay">${LA.paused ? '▶' : '⏸'}</button><button id="lsNext" aria-label="다음 문장">⏭</button></div>
+      <div class="lsbar"><i style="width:${done / total * 100}%"></i></div></div>`;
+    $('#lsPrev').onclick = () => lsStep(-1); $('#lsNext').onclick = () => lsStep(1);
+    $('#lsPlay').onclick = () => LA.paused ? LA.play().catch(() => {}) : LA.pause();
+    document.querySelectorAll('#scrListen .lsrow').forEach(b => b.classList.toggle('cur', +b.dataset.c === c.n && +b.dataset.s === i));
+  }
+}
+function renderListen() {
+  if (!ensureData(['LISTEN'], 'Listen', '🎧 문장 듣기', renderListen)) return;
+  const o = lsOpt(), N = LISTEN.ch.length;
+  o.from = Math.min(Math.max(1, o.from), N); o.to = Math.min(Math.max(o.from, o.to), N);
+  const sel = (id, a, v) => `<select class="lssel" id="${id}">${Array.from({ length: N - a + 1 }, (_, k) => k + a).map(n => `<option value="${n}" ${n === v ? 'selected' : ''}>${n}</option>`).join('')}</select>`;
+  const tg = (attr, val, now, t) => `<button class="tog ${val === now ? 'on' : ''}" ${attr}="${val}">${t}</button>`;
+  const cnt = o.to - o.from + 1;
+  $('#scrListen').innerHTML = `
+    <div class="card"><h2>🎧 문장 듣기</h2>
+      <p class="muted" style="font-size:.88rem">문법 순서로 만든 일상 회화를 <b>한국어 → 일본어 여성 → 일본어 남성</b> 순서로 들려줘요. 한 챕터 = 10문장 (약 2분). 화면을 꺼도 이어서 들을 수 있고, 잠금 화면·이어폰 버튼으로 이전·다음 문장으로 넘길 수 있어요.</p>
+      <div class="optrow"><span class="lab">분량</span>${[[1, '10문장'], [5, '50문장'], [10, '100문장']].map(([k, t]) => `<button class="tog ${cnt === k ? 'on' : ''}" data-lq="${k}">${t}</button>`).join('')}</div>
+      <div class="optrow"><span class="lab">챕터</span>${sel('lsFrom', 1, o.from)} ~ ${sel('lsTo', o.from, o.to)} <span class="muted" style="font-size:.85rem">${cnt}챕터 · ${cnt * 10}문장 · 약 ${Math.round(LISTEN.ch.filter(c => c.n >= o.from && c.n <= o.to).reduce((a, c) => a + c.dur, 0) / 60)}분</span></div>
+      <div class="optrow"><span class="lab">반복</span>${[[1, '1번'], [2, '2번'], [3, '3번'], [0, '계속']].map(([v, t]) => tg('data-lr', v, o.rep, t)).join('')}</div>
+      <div class="optrow"><span class="lab">속도</span>${[[0.75, '0.75'], [0.9, '0.9'], [1, '보통'], [1.2, '1.2']].map(([v, t]) => tg('data-lv', v, o.rate, t)).join('')}</div>
+      <p class="muted" style="font-size:.8rem;margin-top:6px">지금 준비된 챕터: 1 ~ ${N} (N5 문법 순서 · 계속 추가 예정)</p></div>
+    <div class="card" id="lsNow"></div>
+    <div class="card"><h2>📖 챕터 내용</h2><p class="muted" style="font-size:.85rem">문장을 누르면 거기서부터 들려줘요. 색칠된 부분이 그 챕터의 문법이에요.</p>
+      ${LISTEN.ch.map(c => `<details class="cnt" ${c.n === LS.cur ? 'open' : ''}><summary><b>${c.n}.</b> ${esc(c.t)}</summary>
+        <p class="tip" style="margin:6px 0">💡 ${esc(c.g)}</p>
+        ${c.s.map((x, k) => `<button class="lsrow" data-c="${c.n}" data-s="${k}"><span class="jp" lang="ja">${hlJ(x.j)}</span><span class="ly jp" lang="ja">${esc(x.y)}</span><span class="lk">${esc(x.k)}</span></button>`).join('')}</details>`).join('')}</div>
+    <p class="muted" style="text-align:center;font-size:.75rem;margin:8px 0">음성: ${esc(LISTEN.voice)}</p>`;
+  const sc = $('#scrListen');
+  const restart = () => { if (LS.cur) { LA.pause(); LS.cur = 0; LS.key = ''; } renderListen(); };
+  sc.querySelectorAll('[data-lq]').forEach(b => b.onclick = () => { o.to = Math.min(N, o.from + +b.dataset.lq - 1); save(); restart(); });
+  $('#lsFrom').onchange = e => { o.from = +e.target.value; if (o.to < o.from) o.to = o.from; save(); restart(); };
+  $('#lsTo').onchange = e => { o.to = +e.target.value; save(); restart(); };
+  sc.querySelectorAll('[data-lr]').forEach(b => b.onclick = () => { o.rep = +b.dataset.lr; save(); renderListen(); });
+  sc.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { o.rate = +b.dataset.lv; LA.playbackRate = LA.defaultPlaybackRate = o.rate; save(); renderListen(); });
+  sc.querySelectorAll('.lsrow').forEach(b => b.onclick = () => lsStart(+b.dataset.c, +b.dataset.s));
+  show('Listen', '🎧 문장 듣기');
+  LS.key = ''; lsUI();
+}
+
 renderHome = navable(renderHome, () => 'Home');
+renderListen = navable(renderListen, () => 'Listen');
 renderList = navable(renderList, () => 'List');
 renderCard = navable(renderCard, a => a[1] === 'learn' ? null : 'Card');
 renderSearch = navable(renderSearch, () => 'Search');
