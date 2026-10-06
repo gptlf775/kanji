@@ -23,30 +23,78 @@ KBPS = '40k'
 VOL = 100                                 # 권 파일 하나에 넣을 챕터 수 (100챕터 ≈ 3시간 ≈ 58MB, GitHub 파일 한도 100MB 안) — 권이 나뉘면 잠금 중 다음 권으로 못 넘어감
 
 strip = lambda j: j.replace('[', '').replace(']', '')
+ko_tts = lambda k: k.replace('…', '')        # 한국어 음성: 말줄임표는 이상하게 읽혀서 뺌
+
+# 챕터 제목 안내 (한국어 음성): 한국어 음성은 い·な 같은 일본 글자와 ①② 를 건너뛰고 읽으므로 한국어로 바꿔 읽힘
+TITLE_KO = {'い형용사': '이 형용사', 'な형용사': '나 형용사', '①': '첫 번째', '②': '두 번째', 'N4': '엔포', '·': ', ', '~': ''}
+def title_tts(ci, t):
+    a, _, b = t.partition(' — ')
+    s = a + (', ' + b if b and re.fullmatch(r'[가-힣 ·]+', b) else '')     # '— 가능형'처럼 한국어면 함께 읽음
+    for k, v in TITLE_KO.items(): s = s.replace(k, v)
+    s = re.sub(r'\s+', ' ', s).strip()
+    if re.search(r'[^가-힣0-9 ,.()]', s): raise ValueError(f'챕터 {ci} 제목에 한국어 음성이 못 읽는 글자: {s}')
+    return f'챕터 {ci}. {s}.'
+
+# 음성 엔진이 문맥에 따라 다른 읽기로 읽는 한자 (음성 인식 검수로 확인: 町→ちょう, 何時→いつ, 温める→ぬくめる,
+# 十分→じゅっぷん, 開く→ひらく, 辛い→つらい …) — 이 글자가 든 낱말은 항상 작성한 읽기(가나)로 넘김
+FORCE_CHARS = set('何町温辛開注描')
+FORCE_WORDS = {'十分', '十部'}
+NOUNISH = {'名詞', '接頭辞', '接尾辞', '代名詞'}
+# 분석기는 わたくし·にっぽん 으로 보지만 음성 엔진은 わたし·にほん 으로 바르게 읽는 낱말 → 한자 그대로 (가나로 바꾸면 앞뒤와 붙어 오히려 잘못 끊김)
+KEEP_RE = re.compile(r'(私|日本)(人|語|たち)?')
+# 음성 인식 검수에서 걸린 문장: 음성용 문장을 직접 지정 (화면 문장은 그대로)
+TTS_FIX = {'銀行は九時から三時までです。': '銀行は、くじから三時までです。',   # わ+くじ 가 '枠'로 붙어 들림
+           '道を間違えたみたいです。': 'みちを間違えたみたいです。'}             # 남성 음성이 '日曜'처럼 읽음
 
 def tts_text(tagger, j, y, infos, tag):
-    """분석기 낱말 읽기와 내 읽기(y)를 맞춰 보고, 다른 낱말은 내 읽기 가나로 바꾼 음성용 문장"""
+    """음성용 문장: 분석기 읽기와 작성 읽기(y)를 낱말마다 맞춰 보고,
+    ① 읽기가 다른 낱말 ② 잘못 읽기 쉬운 한자가 든 낱말은 '낱말 전체'를 작성 읽기 가나로 바꿈
+    (誕生日처럼 이어진 명사는 한 낱말로 묶어 통째로 — 한 글자만 바꾸면 '誕生び'처럼 어색하게 읽힘)
+    ③ 가나로 바꾼 낱말 바로 앞·뒤의 조사 は·へ 는 소리대로 わ·え 로 (가나끼리 붙어 '하·헤'로 읽히는 것 방지)"""
     sent = strip(j); mine = y.replace(' ', ''); mh = kata2hira(mine)
-    toks = [(w.surface, kata2hira(k) if (k := getattr(w.feature, 'kana', None)) and k != '*' else w.surface) for w in tagger(sent)]
-    out, pos, i = [], 0, 0
+    if sent in TTS_FIX:
+        infos.append(f'{tag}: 음성 문장 직접 지정 → {TTS_FIX[sent]}'); return TTS_FIX[sent]
+    toks = []
+    for w in tagger(sent):
+        k = getattr(w.feature, 'kana', None)
+        toks.append(dict(s=w.surface, r=kata2hira(k) if k and k != '*' else w.surface, p=getattr(w.feature, 'pos1', '')))
+    segs, pos, i = [], 0, 0          # seg = [시작 토큰, 끝 토큰, 작성 읽기 조각, 읽기 일치 여부]
     while i < len(toks):
-        surf, r = toks[i]; r = kata2hira(r)
+        r = toks[i]['r']
         if mh.startswith(r, pos):
-            out.append(surf); pos += len(r); i += 1; continue
-        # 다른 낱말: 이어지는 낱말 k개를 묶어 보며, 그다음 낱말 읽기와 다시 맞는 길이 L을 찾음 (日本+人 → にほんじん)
+            segs.append([i, i + 1, mine[pos:pos + len(r)], True]); pos += len(r); i += 1; continue
         found = None
-        for k in range(1, 4):
-            nxt = kata2hira(toks[i + k][1]) if i + k < len(toks) else None
+        for k in range(1, 4):        # 다른 낱말: 이어지는 낱말 k개를 묶어, 그다음 낱말 읽기와 다시 맞는 길이 L을 찾음
+            nxt = toks[i + k]['r'] if i + k < len(toks) else None
             for L in range(1, 16):
                 if (nxt is None and pos + L == len(mh)) or (nxt is not None and nxt and mh.startswith(nxt, pos + L)):
                     found = (k, L); break
             if found or nxt is None: break
         if not found: raise ValueError(f'{tag}: 읽기 맞추기 실패 "{sent}" / {y}')
         k, L = found
-        surfs = ''.join(s for s, _ in toks[i:i + k]); ar = ''.join(kata2hira(x) for _, x in toks[i:i + k])
-        out.append(mine[pos:pos + L]); infos.append(f'{tag}: {surfs} → 분석기 {ar} / 작성 {mine[pos:pos + L]} (음성은 작성 읽기로)')
-        pos += L; i += k
+        segs.append([i, i + k, mine[pos:pos + L], False]); pos += L; i += k
     if pos != len(mh): raise ValueError(f'{tag}: 읽기 길이 불일치 "{sent}" / {y}')
+    # 이어진 명사(한자·숫자 포함)는 한 낱말로 묶기
+    isnoun = lambda g: all(toks[t]['p'] in NOUNISH for t in range(g[0], g[1])) and re.search(r'[一-龯々0-9]', ''.join(toks[t]['s'] for t in range(g[0], g[1])))
+    groups = []
+    for g in segs:
+        if groups and isnoun(g) and isnoun(groups[-1][-1]): groups[-1].append(g)
+        else: groups.append([g])
+    pieces = []                       # [표기, 가나로 바꿨는지, 조사 は·へ 인지]
+    for grp in groups:
+        surf = ''.join(toks[t]['s'] for g in grp for t in range(g[0], g[1])); kana = ''.join(g[2] for g in grp)
+        kanji = re.search(r'[一-龯々]', surf)
+        use_kana = kanji and (any(not g[3] for g in grp) or set(surf) & FORCE_CHARS or any(w in surf for w in FORCE_WORDS))
+        if use_kana and KEEP_RE.fullmatch(surf) and not set(surf) & FORCE_CHARS: use_kana = False
+        part = len(grp) == 1 and grp[0][1] - grp[0][0] == 1 and toks[grp[0][0]]['p'] == '助詞' and surf in ('は', 'へ')
+        if use_kana and kana != surf: infos.append(f'{tag}: {surf} → 음성은 {kana}')
+        pieces.append([kana if use_kana else surf, bool(use_kana), part and surf])
+    out = []
+    for n, (txt, kn, part) in enumerate(pieces):
+        prev_k = n > 0 and pieces[n - 1][1]; next_k = n + 1 < len(pieces) and pieces[n + 1][1]
+        if part == 'は' and next_k: txt = 'わ'
+        elif part == 'へ' and (prev_k or next_k): txt = 'え'
+        out.append(txt)
     return ''.join(out)
 
 def vocab_set():
@@ -88,8 +136,8 @@ def main():
     jobs, plan = [], []
     for ci, ch in enumerate(CHAPTERS, 1):
         if len(ch['s']) != 10: errors.append(f'챕터 {ci}: 문장 {len(ch["s"])}개 (10개여야 함)')
-        title_ko = ch['t'].split(' — ')[0]
-        items = [('k', f'챕터 {ci}. {title_ko}.')]
+        try: items = [('k', title_tts(ci, ch['t']))]
+        except ValueError as e: errors.append(str(e)); continue
         sents = []
         for si, (j, y, k) in enumerate(ch['s'], 1):
             tag = f'{ci}-{si}'
@@ -106,12 +154,26 @@ def main():
         plan.append((ci, ch, items, sents))
         for v, t in items: jobs.append((VOICE[v], t, cache_path(VOICE[v], t)))
         for s in sents:
-            for v, t in (('k', s['k']), ('f', s['tt']), ('m', s['tt'])): jobs.append((VOICE[v], t, cache_path(VOICE[v], t)))
+            for v, t in (('k', ko_tts(s['k'])), ('f', s['tt']), ('m', s['tt'])): jobs.append((VOICE[v], t, cache_path(VOICE[v], t)))
     if errors:
         print('\n'.join('ERR ' + e for e in errors)); return 1
     todo = [j for j in {j[2]: j for j in jobs}.values() if not os.path.exists(j[2])]
     print(f'음성 {len(set(j[2] for j in jobs))}개 중 새로 만들 것 {len(todo)}개')
     if todo: asyncio.run(synth(todo))
+    # 잘린 음성 검사: 네트워크 문제로 음성이 앞부분만 받아지는 일이 있음 (0.36초짜리 등) → 길이가 글자 수에 비해 너무 짧으면 다시 만듦
+    def too_short(v, t, fn):
+        sec = len(pcm(fn)) / 2 / SR
+        return sec < 0.35 + 0.045 * len(re.sub(r'[\s、。，．！？!?…「」]', '', t))
+    for attempt in range(4):
+        bad = [j for j in {j[2]: j for j in jobs}.values() if too_short(*j)]
+        if not bad: break
+        print(f'잘린 음성 {len(bad)}개 → 다시 만듦 ({attempt + 1}회차)')
+        for _, _, fn in bad:
+            for f in (fn, fn[:-4] + '.wav'):
+                if os.path.exists(f): os.remove(f)
+        asyncio.run(synth(bad))
+    else:
+        print(f'ERR 잘린 음성이 계속 남음: {len(bad)}개'); return 1
     chapters = []
     for ci, ch, items, sents in plan:
         buf = [silence(GAP['lead'])]; t = GAP['lead']
@@ -122,7 +184,7 @@ def main():
         out_s = []
         for s in sents:
             at = []
-            for v, txt in (('k', s['k']), ('f', s['tt']), ('m', s['tt'])):
+            for v, txt in (('k', ko_tts(s['k'])), ('f', s['tt']), ('m', s['tt'])):
                 at.append(round(t, 2)); add(pcm(cache_path(VOICE[v], txt))); add(silence(GAP[v]))
             at.append(round(t, 2))
             out_s.append(dict(j=s['j'], y=s['y'], k=s['k'], at=at))
