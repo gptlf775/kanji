@@ -2033,53 +2033,67 @@ function onboarding() {
 
 /* ═══════════════ 시작 ═══════════════ */
 // 뒤로가기 기록에 올릴 화면들 (공부 중 새 한자 카드는 기록하지 않음)
-/* ═══════════════ 🎧 문장 듣기 (문법 순서 회화 · 한국어 → 일본어 여성 → 남성 · 챕터마다 mp3 하나) ═══════════════ */
-// 챕터 파일 하나를 끝까지 재생하고 다음 챕터로 넘어감 → 화면을 꺼도 이어서 들을 수 있음. 문장 위치는 listen.js 의 시각(at)으로 찾음
+/* ═══════════════ 🎧 문장 듣기 (문법 순서 회화 · 한국어 → 일본어 여성 → 남성) ═══════════════ */
+// 챕터 여러 개를 이어 붙인 '권(vol)' mp3 하나에서 위치만 옮겨 다님. 아이폰은 화면이 꺼진 동안 새 파일을 불러오지 못해서,
+// 챕터마다 파일을 바꾸면 잠금 화면에서 다음 챕터로 안 넘어감 → 같은 파일 안에서 이어 재생.
+// 챕터 시작 위치 = off(권 파일 안의 초), 문장 시각 at = 챕터 안의 초
 const LA = window.LA = new Audio(); LA.preload = 'auto';
-const LS = { list: [], idx: 0, rep: 0, cur: 0, si: -1, key: '' };
+const LS = { list: [], rep: 0, cur: 0, vol: '', si: -1, key: '', on: false };
 // 옵션 객체는 하나만 유지 (새로 만들면 버튼이 옛 객체를 바꿔 선택이 안 되는 문제가 생김) — 빠진 값만 채움
 const lsOpt = () => { S.ls = S.ls || {}; for (const [k, v] of Object.entries({ from: 1, to: 1, rep: 1, rate: 1, pos: null })) if (!(k in S.ls)) S.ls[k] = v; return S.ls; };
 const lsCh = n => window.LISTEN && LISTEN.ch.find(c => c.n === n);
 const hlJ = j => esc(j).replace(/\[([^\]]*)\]/g, '<b class="hl">$1</b>');
 const lsSentAt = (c, t) => { let i = -1; c.s.forEach((x, k) => { if (t >= x.at[0] - 0.05) i = k; }); return i; };
-function lsLoad(n, t, play) {
+const lsRel = c => LA.currentTime - c.off;                                   // 챕터 안에서의 시각
+const lsChAt = t => { let r = null; for (const c of LISTEN.ch) if (c.v === LS.vol && t >= c.off - 0.05) r = c; return r; };
+// 챕터 n 의 rel 초 위치로 이동 (다른 권 파일이면 그 파일을 불러옴)
+function lsSeek(n, rel, play) {
   const c = lsCh(n); if (!c) return;
-  const go = () => { LA.playbackRate = lsOpt().rate; if (t) LA.currentTime = t; if (play) LA.play().catch(() => {}); lsUI(); };
-  if (LS.cur !== n) { LS.cur = n; LS.si = -1; LA.src = c.f; LA.defaultPlaybackRate = lsOpt().rate; LA.addEventListener('loadedmetadata', go, { once: true }); LA.load(); }
+  const go = () => { LA.playbackRate = lsOpt().rate; LA.currentTime = c.off + (rel || 0); LS.cur = n; LS.si = -1; LS.key = ''; if (play) LA.play().catch(() => {}); lsMeta(c); lsUI(); };
+  if (LS.vol !== c.v) { LS.vol = c.v; LA.src = c.v; LA.defaultPlaybackRate = lsOpt().rate; LA.addEventListener('loadedmetadata', go, { once: true }); LA.load(); }
   else go();
-  lsMeta(c);
 }
 function lsStart(n, si) {
-  const o = lsOpt(); LS.list = [];
-  for (let k = o.from; k <= o.to; k++) if (lsCh(k)) LS.list.push(k);
-  if (n && !LS.list.includes(n)) { o.from = o.to = n; save(); LS.list = [n]; }
+  const o = lsOpt();
+  if (n && (n < o.from || n > o.to)) { o.from = o.to = n; save(); }
+  LS.list = []; for (let k = o.from; k <= o.to; k++) if (lsCh(k)) LS.list.push(k);
   if (!LS.list.length) return;
-  LS.idx = Math.max(0, LS.list.indexOf(n || LS.list[0])); LS.rep = 0;
-  const c = lsCh(LS.list[LS.idx]);
-  lsLoad(c.n, si != null ? c.s[si].at[0] : 0, true);
+  LS.rep = 0; LS.on = true;
+  const c = lsCh(n || LS.list[0]);
+  lsSeek(c.n, si != null ? c.s[si].at[0] : 0, true);
+}
+// 범위 끝: 반복이 남았으면 범위 처음으로, 다 들었으면 멈추고 처음 위치에 대기
+function lsRangeEnd() {
+  const o = lsOpt(); LS.rep++;
+  if (o.rep && LS.rep >= o.rep) { LS.on = false; LS.rep = 0; LA.pause(); lsSeek(LS.list[0], 0, false); return; }
+  lsSeek(LS.list[0], 0, true);
 }
 function lsStep(d) {
   const c = lsCh(LS.cur); if (!c) return lsStart();
-  let i = Math.max(0, lsSentAt(c, LA.currentTime));
-  if (d < 0 && LA.currentTime - c.s[i].at[0] > 2) d = 0;      // 문장 중간이면 그 문장 처음으로
+  const rel = lsRel(c); let i = Math.max(0, lsSentAt(c, rel));
+  if (d < 0 && rel - c.s[i].at[0] > 2) d = 0;                               // 문장 중간이면 그 문장 처음으로
   i += d;
-  const play = !LA.paused;
-  if (i < 0 && LS.idx > 0) { LS.idx--; const p = lsCh(LS.list[LS.idx]); lsLoad(p.n, p.s[p.s.length - 1].at[0], play); }
-  else if (i >= c.s.length && LS.idx + 1 < LS.list.length) { LS.idx++; lsLoad(LS.list[LS.idx], 0, play); }
-  else { LA.currentTime = c.s[Math.min(Math.max(i, 0), c.s.length - 1)].at[0]; lsUI(); }
+  const play = !LA.paused, k = LS.list.indexOf(c.n);
+  if (i < 0) { const p = k > 0 && lsCh(LS.list[k - 1]); p ? lsSeek(p.n, p.s[p.s.length - 1].at[0], play) : lsSeek(c.n, c.s[0].at[0], play); }
+  else if (i >= c.s.length) { const nx = k >= 0 && lsCh(LS.list[k + 1]); if (nx) lsSeek(nx.n, nx.s[0].at[0], play); }
+  else lsSeek(c.n, c.s[i].at[0], play);
 }
-LA.addEventListener('ended', () => {
-  if (LS.idx + 1 < LS.list.length) LS.idx++;
-  else { LS.rep++; const o = lsOpt(); if (o.rep && LS.rep >= o.rep) { LS.key = ''; lsUI(); return; } LS.idx = 0; }
-  lsLoad(LS.list[LS.idx], 0, true);
-});
 LA.addEventListener('timeupdate', () => {
-  const c = lsCh(LS.cur); if (!c) return;
-  const i = lsSentAt(c, LA.currentTime);
+  if (!LS.vol || !window.LISTEN) return;
+  const c = lsChAt(LA.currentTime); if (!c) return;
+  if (LS.on && LS.list.length && c.n > LS.list[LS.list.length - 1]) return lsRangeEnd();   // 범위 다음 챕터로 들어섬 = 범위 끝
+  if (c.n !== LS.cur) { LS.cur = c.n; lsMeta(c); }
+  const i = lsSentAt(c, lsRel(c));
   if (i !== LS.si) { LS.si = i; S.ls.pos = { c: c.n, s: Math.max(0, i) }; save(); }
   lsUI();
 });
-LA.addEventListener('play', () => lsUI()); LA.addEventListener('pause', () => lsUI());
+LA.addEventListener('ended', () => {
+  if (!LS.on) return;
+  const nx = LS.list.find(k => k > LS.cur);
+  if (nx && lsCh(nx).v !== LS.vol) return lsSeek(nx, 0, true);             // 범위가 다음 권 파일로 이어질 때 (드묾)
+  lsRangeEnd();
+});
+LA.addEventListener('play', () => { LS.on = LS.list.length > 0; lsUI(); }); LA.addEventListener('pause', () => lsUI());
 function lsMeta(c) {
   if (!('mediaSession' in navigator) || !window.MediaMetadata) return;
   try {
@@ -2102,9 +2116,9 @@ function lsUI() {
     if ($('#lsResume')) $('#lsResume').onclick = () => lsStart(p.n, o.pos.s);
     LS.key = ''; return;
   }
-  const i = Math.max(0, lsSentAt(c, LA.currentTime)), x = c.s[i], t = LA.currentTime;
+  const t = lsRel(c), i = Math.max(0, lsSentAt(c, t)), x = c.s[i];
   const seg = t < x.at[1] ? 'k' : t < x.at[2] ? 'f' : 'm';
-  const done = (LS.idx * 10 + i + 1), total = LS.list.length * 10;
+  const total = Math.max(1, LS.list.length) * 10, done = Math.max(0, LS.list.indexOf(c.n)) * 10 + i + 1;
   const key = `${c.n}-${i}-${seg}-${LA.paused}-${done}`;
   if (key !== LS.key) {
     LS.key = key;
@@ -2141,7 +2155,7 @@ function renderListen() {
         ${c.s.map((x, k) => `<button class="lsrow" data-c="${c.n}" data-s="${k}"><span class="jp" lang="ja">${hlJ(x.j)}</span><span class="ly jp" lang="ja">${esc(x.y)}</span><span class="lk">${esc(x.k)}</span></button>`).join('')}</details>`).join('')}</div>
     <p class="muted" style="text-align:center;font-size:.75rem;margin:8px 0">음성: ${esc(LISTEN.voice)}</p>`;
   const sc = $('#scrListen');
-  const restart = () => { if (LS.cur) { LA.pause(); LS.cur = 0; LS.key = ''; } renderListen(); };
+  const restart = () => { if (LS.cur) { LA.pause(); LS.cur = 0; LS.list = []; LS.on = false; LS.key = ''; } renderListen(); };
   sc.querySelectorAll('[data-lq]').forEach(b => b.onclick = () => { o.to = Math.min(N, o.from + +b.dataset.lq - 1); save(); restart(); });
   $('#lsFrom').onchange = e => { o.from = +e.target.value; if (o.to < o.from) o.to = o.from; save(); restart(); };
   $('#lsTo').onchange = e => { o.to = +e.target.value; save(); restart(); };

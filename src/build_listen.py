@@ -20,6 +20,7 @@ OUT = os.path.join(ROOT, 'data', 'audio')
 SR = 24000
 GAP = {'lead': 0.4, 'title': 1.0, 'k': 0.7, 'f': 0.7, 'm': 1.6}   # 쉬는 시간(초): 한국어 뒤·여성 뒤·남성 뒤(다음 문장 전)
 KBPS = '40k'
+VOL = 50                                  # 권 파일 하나에 넣을 챕터 수 (50챕터 ≈ 96분 ≈ 29MB, GitHub 파일 한도 100MB 안)
 
 strip = lambda j: j.replace('[', '').replace(']', '')
 
@@ -125,17 +126,29 @@ def main():
                 at.append(round(t, 2)); add(pcm(cache_path(VOICE[v], txt))); add(silence(GAP[v]))
             at.append(round(t, 2))
             out_s.append(dict(j=s['j'], y=s['y'], k=s['k'], at=at))
-        raw = b''.join(buf)
-        wav = os.path.join(CACHE, f'_ch{ci:02d}.wav'); mp3 = os.path.join(OUT, f'ch{ci:02d}.mp3')
+        chapters.append(dict(n=ci, t=ch['t'], g=ch['g'], dur=round(t, 2), s=out_s, raw=b''.join(buf)))
+    # 권(vol) 파일: 챕터 VOL개를 mp3 하나로 이어 붙임 — 아이폰은 화면이 꺼진 동안 새 파일을 불러오지 못하므로,
+    # 챕터가 바뀌어도 같은 파일 안에서 위치만 옮기게 함. off = 권 파일 안에서 챕터가 시작하는 시각(초)
+    for f in os.listdir(OUT):
+        if f.endswith('.mp3'): os.remove(os.path.join(OUT, f))
+    size = 0
+    for vi in range(0, len(chapters), VOL):
+        vol = chapters[vi:vi + VOL]; name = f'vol{vi // VOL + 1:02d}.mp3'
+        off = 0.0
+        for c in vol:
+            c['off'] = round(off, 3); off += len(c['raw']) / 2 / SR
+        wav = os.path.join(CACHE, '_' + name[:-4] + '.wav'); mp3 = os.path.join(OUT, name)
         with wave.open(wav, 'wb') as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(raw)
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wav, '-ac', '1', '-ar', str(SR), '-b:a', KBPS, mp3], check=True)
-        h = hashlib.md5(open(mp3, 'rb').read()).hexdigest()[:8]
-        chapters.append(dict(n=ci, t=ch['t'], g=ch['g'], f=f'data/audio/ch{ci:02d}.mp3?v={h}', dur=round(t, 2), s=out_s))
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(b''.join(c['raw'] for c in vol))
+        # 고정 비트레이트(CBR) — 긴 파일에서도 위치 이동이 정확함
+        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wav, '-ac', '1', '-ar', str(SR), '-codec:a', 'libmp3lame', '-b:a', KBPS, mp3], check=True)
+        h = hashlib.md5(open(mp3, 'rb').read()).hexdigest()[:8]; size += os.path.getsize(mp3)
+        for c in vol:
+            c['v'] = f'data/audio/{name}?v={h}'; del c['raw']
     js = 'window.LISTEN=' + json.dumps(dict(ch=chapters, voice='Microsoft Neural (SunHi · Nanami · Keita)'), ensure_ascii=False, separators=(',', ':')) + ';\n'
     open(os.path.join(ROOT, 'data', 'listen.js'), 'w', encoding='utf-8').write(js)
     write_index()
-    total = sum(c['dur'] for c in chapters); size = sum(os.path.getsize(os.path.join(OUT, f'ch{c["n"]:02d}.mp3')) for c in chapters)
+    total = sum(c['dur'] for c in chapters)
     rep = [f'챕터 {len(chapters)} · 문장 {sum(len(c["s"]) for c in chapters)} · 총 {total / 60:.1f}분 · 음성 파일 {size / 1e6:.1f}MB',
            f'오류 0건, 참고 {len(infos)}건'] + ['INFO ' + i for i in infos]
     open(os.path.join(HERE, 'verify_listen.txt'), 'w', encoding='utf-8').write('\n'.join(rep) + '\n')
