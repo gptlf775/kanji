@@ -2136,6 +2136,7 @@ function lsUI() {
     document.querySelectorAll('#scrListen .lsrow').forEach(b => b.classList.toggle('cur', +b.dataset.c === c.n && +b.dataset.s === i));
   }
 }
+const LS_GROUP = { 1: '🌱 N5 문법 순서 (1~20)', 21: '🌿 N4 문법 순서 (21~60)', 61: '💬 상황별 실전 회화 (61~100)' };   // 챕터 목록의 묶음 제목
 function renderListen() {
   if (!ensureData(['LISTEN'], 'Listen', '🎧 문장 듣기', renderListen)) return;
   const o = lsOpt(), N = LISTEN.ch.length;
@@ -2150,10 +2151,10 @@ function renderListen() {
       <div class="optrow"><span class="lab">챕터</span>${sel('lsFrom', 1, o.from)} ~ ${sel('lsTo', o.from, o.to)} <span class="muted" style="font-size:.85rem">${cnt}챕터 · ${cnt * 10}문장 · 약 ${Math.round(LISTEN.ch.filter(c => c.n >= o.from && c.n <= o.to).reduce((a, c) => a + c.dur, 0) / 60)}분</span></div>
       <div class="optrow"><span class="lab">반복</span>${[[1, '1번'], [2, '2번'], [3, '3번'], [0, '계속']].map(([v, t]) => tg('data-lr', v, o.rep, t)).join('')}</div>
       <div class="optrow"><span class="lab">속도</span>${[[0.75, '0.75'], [0.9, '0.9'], [1, '보통'], [1.2, '1.2']].map(([v, t]) => tg('data-lv', v, o.rate, t)).join('')}</div>
-      <p class="muted" style="font-size:.8rem;margin-top:6px">지금 준비된 챕터: 1 ~ ${N} (N5 문법 순서 · 계속 추가 예정)</p></div>
+      <p class="muted" style="font-size:.8rem;margin-top:6px">챕터 1~20 N5 문법 순서 · 21~60 N4 문법 순서 · 61~100 상황별 실전 회화 (공항·식당·병원·회사…)</p></div>
     <div class="card" id="lsNow"></div>
     <div class="card"><h2>📖 챕터 내용</h2><p class="muted" style="font-size:.85rem">문장을 누르면 거기서부터 들려줘요. 색칠된 부분이 그 챕터의 문법이에요.</p>
-      ${LISTEN.ch.map(c => `<details class="cnt" ${c.n === LS.cur ? 'open' : ''}><summary><b>${c.n}.</b> ${esc(c.t)}</summary>
+      ${LISTEN.ch.map(c => `${LS_GROUP[c.n] ? `<h3 style="margin:14px 0 4px">${LS_GROUP[c.n]}</h3>` : ''}<details class="cnt" ${c.n === LS.cur ? 'open' : ''}><summary><b>${c.n}.</b> ${esc(c.t)}</summary>
         <p class="tip" style="margin:6px 0">💡 ${esc(c.g)}</p>
         ${c.s.map((x, k) => `<button class="lsrow" data-c="${c.n}" data-s="${k}"><span class="jp" lang="ja">${hlJ(x.j)}</span><span class="ly jp" lang="ja">${esc(x.y)}</span><span class="lk">${esc(x.k)}</span></button>`).join('')}</details>`).join('')}</div>
     <p class="muted" style="text-align:center;font-size:.75rem;margin:8px 0">음성: ${esc(LISTEN.voice)}</p>`;

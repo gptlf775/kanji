@@ -20,7 +20,7 @@ OUT = os.path.join(ROOT, 'data', 'audio')
 SR = 24000
 GAP = {'lead': 0.4, 'title': 1.0, 'k': 0.7, 'f': 0.7, 'm': 1.6}   # 쉬는 시간(초): 한국어 뒤·여성 뒤·남성 뒤(다음 문장 전)
 KBPS = '40k'
-VOL = 50                                  # 권 파일 하나에 넣을 챕터 수 (50챕터 ≈ 96분 ≈ 29MB, GitHub 파일 한도 100MB 안)
+VOL = 100                                 # 권 파일 하나에 넣을 챕터 수 (100챕터 ≈ 3시간 ≈ 58MB, GitHub 파일 한도 100MB 안) — 권이 나뉘면 잠금 중 다음 권으로 못 넘어감
 
 strip = lambda j: j.replace('[', '').replace(']', '')
 
@@ -126,7 +126,11 @@ def main():
                 at.append(round(t, 2)); add(pcm(cache_path(VOICE[v], txt))); add(silence(GAP[v]))
             at.append(round(t, 2))
             out_s.append(dict(j=s['j'], y=s['y'], k=s['k'], at=at))
-        chapters.append(dict(n=ci, t=ch['t'], g=ch['g'], dur=round(t, 2), s=out_s, raw=b''.join(buf)))
+        # 챕터 음성은 임시 wav 로 저장 (100챕터를 한꺼번에 메모리에 두지 않음)
+        cw = os.path.join(CACHE, f'_ch{ci:03d}.wav')
+        with wave.open(cw, 'wb') as w:
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(b''.join(buf))
+        chapters.append(dict(n=ci, t=ch['t'], g=ch['g'], dur=round(t, 2), s=out_s, wav=cw))
     # 권(vol) 파일: 챕터 VOL개를 mp3 하나로 이어 붙임 — 아이폰은 화면이 꺼진 동안 새 파일을 불러오지 못하므로,
     # 챕터가 바뀌어도 같은 파일 안에서 위치만 옮기게 함. off = 권 파일 안에서 챕터가 시작하는 시각(초)
     for f in os.listdir(OUT):
@@ -135,16 +139,18 @@ def main():
     for vi in range(0, len(chapters), VOL):
         vol = chapters[vi:vi + VOL]; name = f'vol{vi // VOL + 1:02d}.mp3'
         off = 0.0
-        for c in vol:
-            c['off'] = round(off, 3); off += len(c['raw']) / 2 / SR
         wav = os.path.join(CACHE, '_' + name[:-4] + '.wav'); mp3 = os.path.join(OUT, name)
         with wave.open(wav, 'wb') as w:
-            w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes(b''.join(c['raw'] for c in vol))
+            w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR)
+            for c in vol:
+                with wave.open(c['wav']) as r: fr = r.readframes(r.getnframes())
+                c['off'] = round(off, 3); off += len(fr) / 2 / SR
+                w.writeframes(fr)
         # 고정 비트레이트(CBR) — 긴 파일에서도 위치 이동이 정확함
         subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', wav, '-ac', '1', '-ar', str(SR), '-codec:a', 'libmp3lame', '-b:a', KBPS, mp3], check=True)
         h = hashlib.md5(open(mp3, 'rb').read()).hexdigest()[:8]; size += os.path.getsize(mp3)
         for c in vol:
-            c['v'] = f'data/audio/{name}?v={h}'; del c['raw']
+            c['v'] = f'data/audio/{name}?v={h}'; del c['wav']
     js = 'window.LISTEN=' + json.dumps(dict(ch=chapters, voice='Microsoft Neural (SunHi · Nanami · Keita)'), ensure_ascii=False, separators=(',', ':')) + ';\n'
     open(os.path.join(ROOT, 'data', 'listen.js'), 'w', encoding='utf-8').write(js)
     write_index()

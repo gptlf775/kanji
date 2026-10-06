@@ -1,1 +1,1 @@
-window.KANJI_AVAILABLE=[1, 2, 3, 4, 5, 6];window.KANJI_VER={"1": "aa67e988", "2": "f094f9ef", "3": "8160b842", "4": "2a42dbb5", "5": "a5a06c6c", "6": "b4a68f81"};window.GRAM_VER="f36624d5";window.VOCAB_VER="8b90f723";window.KANA_VER="674dfcb3";window.LISTEN_VER="a54ed008";
+window.KANJI_AVAILABLE=[1, 2, 3, 4, 5, 6];window.KANJI_VER={"1": "aa67e988", "2": "f094f9ef", "3": "8160b842", "4": "2a42dbb5", "5": "a5a06c6c", "6": "b4a68f81"};window.GRAM_VER="f36624d5";window.VOCAB_VER="8b90f723";window.KANA_VER="674dfcb3";window.LISTEN_VER="c52515c5";

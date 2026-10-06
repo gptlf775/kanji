@@ -248,3 +248,8 @@ CHAPTERS = [
     ['暇な[時]、何をしますか。', 'ひまな とき、なにを しますか。', '한가할 때 무엇을 합니까?'],
     ['寝る[時]、電気を消してください。', 'ねる とき、でんきを けして ください。', '잘 때 불을 꺼 주세요.']]},
 ]
+
+# 21~60챕터: N4 문법 순서 / 61~100챕터: 상황별 실전 회화
+from listen_src_n4 import CH_N4
+from listen_src_talk import CH_TALK
+CHAPTERS += CH_N4 + CH_TALK
