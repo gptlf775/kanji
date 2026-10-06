@@ -2037,8 +2037,10 @@ function onboarding() {
 // 챕터 여러 개를 이어 붙인 '권(vol)' mp3 하나에서 위치만 옮겨 다님. 아이폰은 화면이 꺼진 동안 새 파일을 불러오지 못해서,
 // 챕터마다 파일을 바꾸면 잠금 화면에서 다음 챕터로 안 넘어감 → 같은 파일 안에서 이어 재생.
 // 챕터 시작 위치 = off(권 파일 안의 초), 문장 시각 at = 챕터 안의 초
-const LA = window.LA = new Audio(); LA.preload = 'auto';
-const LS = { list: [], rep: 0, cur: 0, vol: '', si: -1, key: '', on: false };
+// loop = 파일 끝에서 멈추지 않고 처음으로 이어짐. 아이폰은 '재생이 끝난' 소리를 백그라운드에서 다시 틀지 못하므로,
+// 파일 끝에서도 계속 '재생 중'으로 두고, 처음으로 돌아온 순간(아래 timeupdate)에 범위 처음으로 옮김
+const LA = window.LA = new Audio(); LA.preload = 'auto'; LA.loop = true;
+const LS = { list: [], rep: 0, cur: 0, vol: '', si: -1, key: '', on: false, lastT: 0 };
 // 옵션 객체는 하나만 유지 (새로 만들면 버튼이 옛 객체를 바꿔 선택이 안 되는 문제가 생김) — 빠진 값만 채움
 const lsOpt = () => { S.ls = S.ls || {}; for (const [k, v] of Object.entries({ from: 1, to: 1, rep: 1, rate: 1, pos: null })) if (!(k in S.ls)) S.ls[k] = v; return S.ls; };
 const lsCh = n => window.LISTEN && LISTEN.ch.find(c => c.n === n);
@@ -2049,7 +2051,7 @@ const lsChAt = t => { let r = null; for (const c of LISTEN.ch) if (c.v === LS.vo
 // 챕터 n 의 rel 초 위치로 이동 (다른 권 파일이면 그 파일을 불러옴)
 function lsSeek(n, rel, play) {
   const c = lsCh(n); if (!c) return;
-  const go = () => { LA.playbackRate = lsOpt().rate; LA.currentTime = c.off + (rel || 0); LS.cur = n; LS.si = -1; LS.key = ''; if (play) LA.play().catch(() => {}); lsMeta(c); lsUI(); };
+  const go = () => { LA.playbackRate = lsOpt().rate; LA.currentTime = LS.lastT = c.off + (rel || 0); LS.cur = n; LS.si = -1; LS.key = ''; if (play) LA.play().catch(() => {}); lsMeta(c); lsUI(); };
   if (LS.vol !== c.v) { LS.vol = c.v; LA.src = c.v; LA.defaultPlaybackRate = lsOpt().rate; LA.addEventListener('loadedmetadata', go, { once: true }); LA.load(); }
   else go();
 }
@@ -2080,18 +2082,19 @@ function lsStep(d) {
 }
 LA.addEventListener('timeupdate', () => {
   if (!LS.vol || !window.LISTEN) return;
-  const c = lsChAt(LA.currentTime); if (!c) return;
+  const tNow = LA.currentTime, wrapped = LS.lastT > LA.duration - 3 && tNow < 3;   // 파일 끝 → 처음으로 넘어감
+  LS.lastT = tNow;
+  if (LS.on && wrapped) {
+    const nx = LS.list.find(k => k > LS.cur);
+    if (nx && lsCh(nx).v !== LS.vol) return lsSeek(nx, 0, true);            // 범위가 다음 권 파일로 이어질 때 (드묾)
+    return lsRangeEnd();
+  }
+  const c = lsChAt(tNow); if (!c) return;
   if (LS.on && LS.list.length && c.n > LS.list[LS.list.length - 1]) return lsRangeEnd();   // 범위 다음 챕터로 들어섬 = 범위 끝
   if (c.n !== LS.cur) { LS.cur = c.n; lsMeta(c); }
   const i = lsSentAt(c, lsRel(c));
   if (i !== LS.si) { LS.si = i; S.ls.pos = { c: c.n, s: Math.max(0, i) }; save(); }
   lsUI();
-});
-LA.addEventListener('ended', () => {
-  if (!LS.on) return;
-  const nx = LS.list.find(k => k > LS.cur);
-  if (nx && lsCh(nx).v !== LS.vol) return lsSeek(nx, 0, true);             // 범위가 다음 권 파일로 이어질 때 (드묾)
-  lsRangeEnd();
 });
 LA.addEventListener('play', () => { LS.on = LS.list.length > 0; lsUI(); }); LA.addEventListener('pause', () => lsUI());
 function lsMeta(c) {
