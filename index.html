@@ -2037,7 +2037,8 @@ function onboarding() {
 // 챕터 파일 하나를 끝까지 재생하고 다음 챕터로 넘어감 → 화면을 꺼도 이어서 들을 수 있음. 문장 위치는 listen.js 의 시각(at)으로 찾음
 const LA = window.LA = new Audio(); LA.preload = 'auto';
 const LS = { list: [], idx: 0, rep: 0, cur: 0, si: -1, key: '' };
-const lsOpt = () => (S.ls = Object.assign({ from: 1, to: 1, rep: 1, rate: 1, pos: null }, S.ls || {}));
+// 옵션 객체는 하나만 유지 (새로 만들면 버튼이 옛 객체를 바꿔 선택이 안 되는 문제가 생김) — 빠진 값만 채움
+const lsOpt = () => { S.ls = S.ls || {}; for (const [k, v] of Object.entries({ from: 1, to: 1, rep: 1, rate: 1, pos: null })) if (!(k in S.ls)) S.ls[k] = v; return S.ls; };
 const lsCh = n => window.LISTEN && LISTEN.ch.find(c => c.n === n);
 const hlJ = j => esc(j).replace(/\[([^\]]*)\]/g, '<b class="hl">$1</b>');
 const lsSentAt = (c, t) => { let i = -1; c.s.forEach((x, k) => { if (t >= x.at[0] - 0.05) i = k; }); return i; };
