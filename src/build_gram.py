@@ -69,7 +69,8 @@ def main():
     for r in verbs + adjs:
         if (r[0], r[1]) in seen: errors.append(f'중복: {r[0]}({r[1]})')
         seen.add((r[0], r[1]))
-        if re.search(r'[ァ-ヶ\s]', r[1]): errors.append(f'{r[0]}: 읽기 "{r[1]}" 에 가타카나·공백')
+        # 읽기에 가타카나·공백이 섞이면 오류 (단, 외래어 ハンサム처럼 표기 = 읽기인 낱말은 허용)
+        if re.search(r'[ァ-ヶ\s]', r[1]) and r[0] != r[1]: errors.append(f'{r[0]}: 읽기 "{r[1]}" 에 가타카나·공백')
     print('JMdict 읽는 중…')
     by_wy, by_y, common = load_jm()
     def pos_of(w, y):
