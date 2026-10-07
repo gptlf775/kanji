@@ -1598,7 +1598,7 @@ function renderGram(tab) {
   if (tb.id === 'naadj') body += wordList(G, 'na');
   if (tb.pat) body += patList(G.pat.filter(p => p.lv === tb.pat));
   if (['vform', 'te', 'verbs', 'iadj', 'naadj'].includes(tb.id)) body = `<div class="card" style="text-align:center"><button class="btn main" id="goCprac">✏️ 활용형 맞히기 연습 (무한 문제)</button>
-    <p class="muted" style="font-size:.8rem;margin-top:6px">書く → て형은? · 書かなかった는 무슨 모양? — 동사·형용사를 직접 바꿔 보며 익혀요</p></div>` + body;
+    <p class="muted" style="font-size:.8rem;margin-top:6px">書く → て형은? · 書かなかった는 무슨 모양? · 원형만 뜻 맞히기(食べる = ?) — 동사·형용사 무한 연습</p></div>` + body;
   $('#scrGram').innerHTML = `<div class="tabs">${tabs}</div><div class="gram">${body}</div>`;
   const sc = $('#scrGram');
   sc.querySelectorAll('[data-gt]').forEach(b => b.onclick = () => renderGram(b.dataset.gt));
@@ -1860,7 +1860,25 @@ function conjWrong(e, k) {
   }
   return out;
 }
+// 원형만 (사전형 그대로): 원형 → 뜻 / 뜻 → 원형 / 듣고 뜻. 오답 보기는 같은 품사에서 뜻이 다른 낱말로
+const CP_DICT = { djk: '📖 원형 → 뜻', dkj: '🔤 뜻 → 원형', dhr: '👂 듣고 뜻' };
+function dictQ(e) {
+  const ds = [], usedKo = new Set([e.ko]), usedW = new Set([e.w]);
+  shuffle(cpPool().filter(x => x.t === e.t)).forEach(x => { if (ds.length < 3 && !usedKo.has(x.ko) && !usedW.has(x.w)) { usedKo.add(x.ko); usedW.add(x.w); ds.push(x); } });
+  if (!ds.length) return null;
+  const tag = e.t === 'v' ? `동사 · ${GNAME[e.g]}` : CPK[e.t];
+  const wordHTML = x => `<span class="jp" lang="ja" style="font-size:1.25rem">${esc(x.w)}</span>${x.w !== x.y ? `<small class="jp" lang="ja">${esc(x.y)}</small>` : ''}`;
+  const after = `<p class="qsub"><span class="jp" lang="ja">${esc(e.w)}${e.w !== e.y ? ` (${esc(e.y)})` : ''}</span> = ${esc(e.ko)} · ${tag}</p>`;
+  const opts = shuffle([e, ...ds]);
+  if (S.cp.m === 'dkj') return { ask: '이 뜻의 일본어 원형은?', body: `<div class="pword" style="font-size:2rem">${esc(e.ko)}</div><div class="qsub">${tag}</div>`,
+    say: e.y, sayAfter: true, choices: opts.map(x => ({ html: wordHTML(x), ok: x === e })), after };
+  const ko = opts.map(x => ({ html: esc(x.ko), ok: x === e }));
+  if (S.cp.m === 'dhr') return { ask: '잘 듣고 알맞은 뜻을 고르세요', body: speakerHTML(esc(e.w + (e.w !== e.y ? '（' + e.y + '）' : ''))), say: e.y, sayFirst: true, choices: ko, after };
+  return { ask: '이 말의 뜻은?', body: `<div class="pword jp" lang="ja" style="font-size:2.4rem">${linkK(e.w)}</div><div class="qsub">${e.w !== e.y ? `<span class="jp" lang="ja">${esc(e.y)}</span> · ` : ''}${tag}</div>`,
+    say: e.y, sayAfter: true, choices: ko, after };
+}
 function cpracQ(e) {
+  if (CP_DICT[S.cp.m]) return dictQ(e);
   const R = conjOf(e), all = S.cp.set === 'all' ? cpAll(e.t) : CP_BASIC[e.t];
   const forms = shuffle(all.filter(k => R[k] && R[k][0] !== '—'));
   const ko = GRAM.formKo[e.t];
@@ -1890,11 +1908,12 @@ function renderCprac() {
   if (!CPS) CPS = { ok: 0, ng: 0, run: 0, last: '' };
   const o = S.cp;
   $('#scrCprac').innerHTML = `<div class="card">
-    <div class="optrow"><span class="lab">풀이 방법</span><button class="tog ${o.m === 'make' ? 'on' : ''}" data-cm="make">🔀 모양 만들기</button><button class="tog ${o.m === 'name' ? 'on' : ''}" data-cm="name">🔎 모양 알아보기</button></div>
+    <div class="optrow"><span class="lab">활용형</span><button class="tog ${o.m === 'make' ? 'on' : ''}" data-cm="make">🔀 모양 만들기</button><button class="tog ${o.m === 'name' ? 'on' : ''}" data-cm="name">🔎 모양 알아보기</button></div>
+    <div class="optrow"><span class="lab">원형만</span>${Object.entries(CP_DICT).map(([k, t]) => `<button class="tog ${o.m === k ? 'on' : ''}" data-cm="${k}">${t}</button>`).join('')}</div>
     ${togRow('품사', ['v', 'i', 'na'], CPK, o.kinds, 'ck')}
-    <div class="optrow"><span class="lab">범위</span><button class="tog ${o.set === 'basic' ? 'on' : ''}" data-cs="basic">기본 4가지</button><button class="tog ${o.set === 'all' ? 'on' : ''}" data-cs="all">모든 활용형</button></div>
+    ${CP_DICT[o.m] ? '' : `<div class="optrow"><span class="lab">범위</span><button class="tog ${o.set === 'basic' ? 'on' : ''}" data-cs="basic">기본 4가지</button><button class="tog ${o.set === 'all' ? 'on' : ''}" data-cs="all">모든 활용형</button></div>`}
     <div class="optrow"><span class="lab">급수</span>${[[0, '전체'], [5, 'N5'], [4, 'N4']].map(([v, t]) => `<button class="tog ${o.lv === v ? 'on' : ''}" data-cl="${v}">${t}</button>`).join('')}</div>
-    <p class="muted" style="font-size:.8rem">기본 4가지 = 동사 ます·ない·た·て형 / 형용사 부정·과거·て형·부사(명사 꾸미기). 오답 보기는 실제로 많이 하는 실수(書くます·帰て·高いじゃない·きれくない)로 만들어요.</p>
+    <p class="muted" style="font-size:.8rem">${CP_DICT[o.m] ? '원형만 = 사전에 실린 기본 모양(食べる·高い·静か) 그대로 뜻을 익혀요. 바꾼 모양(て·ない 등)은 나오지 않아요.' : '기본 4가지 = 동사 ます·ない·た·て형 / 형용사 부정·과거·て형·부사(명사 꾸미기). 오답 보기는 실제로 많이 하는 실수(書くます·帰て·高いじゃない·きれくない)로 만들어요.'}</p>
     <div class="pstat" id="cStat"></div></div>
     <div class="card" id="cQ"></div>`;
   const sc = $('#scrCprac');
