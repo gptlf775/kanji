@@ -155,7 +155,7 @@ def write_index():
     fv = lambda name: md5(os.path.join(dd, name)) if os.path.exists(os.path.join(dd, name)) else ''
     open(os.path.join(dd, 'index.js'), 'w', encoding='utf-8').write(
         f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};'
-        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};window.LISTEN_VER={json.dumps(fv("listen.js"))};\n')
+        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};window.LISTEN_VER={json.dumps(fv("listen.js"))};window.POS_VER={json.dumps(fv("pos.js"))};\n')
 
 def main(grade):
     J = json.load(open(os.path.join(REF_DIR, 'jouyou.json'), encoding='utf-8'))

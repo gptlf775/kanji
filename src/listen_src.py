@@ -253,3 +253,8 @@ CHAPTERS = [
 from listen_src_n4 import CH_N4
 from listen_src_talk import CH_TALK
 CHAPTERS += CH_N4 + CH_TALK
+
+# 쓰임이 많은 30개 챕터에 11~20번 문장 추가
+from listen_src_extra import EXTRA
+for _n, _s in EXTRA.items():
+    CHAPTERS[_n - 1]['s'] = CHAPTERS[_n - 1]['s'] + _s

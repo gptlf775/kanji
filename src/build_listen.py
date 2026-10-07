@@ -85,14 +85,16 @@ def tts_text(tagger, j, y, infos, tag):
         surf = ''.join(toks[t]['s'] for g in grp for t in range(g[0], g[1])); kana = ''.join(g[2] for g in grp)
         kanji = re.search(r'[一-龯々]', surf)
         use_kana = kanji and (any(not g[3] for g in grp) or set(surf) & FORCE_CHARS or any(w in surf for w in FORCE_WORDS))
-        if use_kana and KEEP_RE.fullmatch(surf) and not set(surf) & FORCE_CHARS: use_kana = False
+        # 읽기가 다른 부분이 私·日本 뿐이면(毎日日本語 등) 한자 그대로 — 음성 엔진은 이 낱말을 바르게 읽고, 가나로 바꾸면 끊어 읽기가 틀어짐
+        bad = [''.join(toks[t]['s'] for t in range(g[0], g[1])) for g in grp if not g[3]]
+        if use_kana and bad and all(KEEP_RE.fullmatch(x) for x in bad) and not set(surf) & FORCE_CHARS: use_kana = False
         part = len(grp) == 1 and grp[0][1] - grp[0][0] == 1 and toks[grp[0][0]]['p'] == '助詞' and surf in ('は', 'へ')
         if use_kana and kana != surf: infos.append(f'{tag}: {surf} → 음성은 {kana}')
         pieces.append([kana if use_kana else surf, bool(use_kana), part and surf])
     out = []
     for n, (txt, kn, part) in enumerate(pieces):
         prev_k = n > 0 and pieces[n - 1][1]; next_k = n + 1 < len(pieces) and pieces[n + 1][1]
-        if part == 'は' and next_k: txt = 'わ'
+        if part == 'は' and next_k: txt = 'は、'          # わ로 바꾸면 뒤 가나와 붙어 다른 말로 들림(わ+らいげつ → 笑い) → は 뒤에 쉼표
         elif part == 'へ' and (prev_k or next_k): txt = 'え'
         out.append(txt)
     return ''.join(out)
@@ -135,7 +137,7 @@ def main():
     V = vocab_set()
     jobs, plan = [], []
     for ci, ch in enumerate(CHAPTERS, 1):
-        if len(ch['s']) != 10: errors.append(f'챕터 {ci}: 문장 {len(ch["s"])}개 (10개여야 함)')
+        if len(ch['s']) not in (10, 20): errors.append(f'챕터 {ci}: 문장 {len(ch["s"])}개 (10개 또는 20개)')
         try: items = [('k', title_tts(ci, ch['t']))]
         except ValueError as e: errors.append(str(e)); continue
         sents = []

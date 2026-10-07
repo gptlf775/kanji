@@ -6,3 +6,4 @@ desktop.ini
 promo/_make/
 src/audit_listen.json
 src/audit_listen.jsonl
+src/audit_pos.jsonl

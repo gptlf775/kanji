@@ -532,7 +532,7 @@ function renderHome() {
     </div>
     <div class="menu">
       <button id="goSheet" class="wide"><span>📋</span>한 장 정리 <small class="muted" style="display:block;font-weight:normal">히라가나·가타카나 (연습 문제) · 숫자·날짜·세는 말…</small></button>
-      <button id="goListen" class="wide"><span>🎧</span>문장 듣기 <small class="muted" style="display:block;font-weight:normal">문법 순서 회화 · 한국어 → 일본어 여성 → 남성 자동 재생</small></button>
+      <button id="goListen" class="wide"><span>🎧</span>문장 듣기 <small class="muted" style="display:block;font-weight:normal">문법 순서 회화 · 품사별(형용사·동사) 듣기 · 한국어 → 일본어 여성 → 남성</small></button>
       <button id="goGram"><span>🔀</span>활용어 <small class="muted" style="display:block;font-weight:normal">문법 · 동사·형용사 활용</small></button>
       <button id="goVocab"><span>📒</span>단어장 <small class="muted" style="display:block;font-weight:normal">N5·N4 많이 쓰는 순</small></button>
       <button id="goKprac"><span>✏️</span>한자 연습</button>
@@ -1674,7 +1674,7 @@ function patList(ps) {
 
 
 /* ═══════════════ 자료 불러오기 (활용어·단어장은 처음 열 때만) ═══════════════ */
-const DATA_FILE = { GRAM: ['gram', 'GRAM_VER'], VOCAB: ['vocab', 'VOCAB_VER'], LISTEN: ['listen', 'LISTEN_VER'] };
+const DATA_FILE = { GRAM: ['gram', 'GRAM_VER'], VOCAB: ['vocab', 'VOCAB_VER'], LISTEN: ['listen', 'LISTEN_VER'], POSD: ['pos', 'POS_VER'] };
 function ensureData(names, screen, title, again) {
   const miss = names.filter(n => !window[n]);
   if (!miss.length) return true;
@@ -2059,9 +2059,9 @@ function onboarding() {
 // loop = 파일 끝에서 멈추지 않고 처음으로 이어짐. 아이폰은 '재생이 끝난' 소리를 백그라운드에서 다시 틀지 못하므로,
 // 파일 끝에서도 계속 '재생 중'으로 두고, 처음으로 돌아온 순간(아래 timeupdate)에 범위 처음으로 옮김
 const LA = window.LA = new Audio(); LA.preload = 'auto'; LA.loop = true;
-const LS = { list: [], rep: 0, cur: 0, vol: '', si: -1, key: '', on: false, lastT: 0 };
+const LS = { list: [], rep: 0, cur: 0, vol: '', si: -1, key: '', on: false, lastT: 0, mode: 'ch', pl: [], pi: 0, pcur: -1 };   // mode: ch 챕터 / pos 품사별
 // 옵션 객체는 하나만 유지 (새로 만들면 버튼이 옛 객체를 바꿔 선택이 안 되는 문제가 생김) — 빠진 값만 채움
-const lsOpt = () => { S.ls = S.ls || {}; for (const [k, v] of Object.entries({ from: 1, to: 1, rep: 1, rate: 1, pos: null })) if (!(k in S.ls)) S.ls[k] = v; return S.ls; };
+const lsOpt = () => { S.ls = S.ls || {}; for (const [k, v] of Object.entries({ from: 1, to: 1, rep: 1, rate: 1, pos: null, mode: 'ch', pk: ['i', 'na', 'v'], plv: 0, pord: 'shuf' })) if (!(k in S.ls)) S.ls[k] = v; return S.ls; };
 const lsCh = n => window.LISTEN && LISTEN.ch.find(c => c.n === n);
 const hlJ = j => esc(j).replace(/\[([^\]]*)\]/g, '<b class="hl">$1</b>');
 const lsSentAt = (c, t) => { let i = -1; c.s.forEach((x, k) => { if (t >= x.at[0] - 0.05) i = k; }); return i; };
@@ -2079,7 +2079,7 @@ function lsStart(n, si) {
   if (n && (n < o.from || n > o.to)) { o.from = o.to = n; save(); }
   LS.list = []; for (let k = o.from; k <= o.to; k++) if (lsCh(k)) LS.list.push(k);
   if (!LS.list.length) return;
-  LS.rep = 0; LS.on = true;
+  LS.rep = 0; LS.on = true; LS.mode = 'ch';
   const c = lsCh(n || LS.list[0]);
   lsSeek(c.n, si != null ? c.s[si].at[0] : 0, true);
 }
@@ -2100,6 +2100,7 @@ function lsStep(d) {
   else lsSeek(c.n, c.s[i].at[0], play);
 }
 LA.addEventListener('timeupdate', () => {
+  if (LS.mode === 'pos') return posTick();
   if (!LS.vol || !window.LISTEN) return;
   const tNow = LA.currentTime, wrapped = LS.lastT > LA.duration - 3 && tNow < 3;   // 파일 끝 → 처음으로 넘어감
   LS.lastT = tNow;
@@ -2115,19 +2116,20 @@ LA.addEventListener('timeupdate', () => {
   if (i !== LS.si) { LS.si = i; S.ls.pos = { c: c.n, s: Math.max(0, i) }; save(); }
   lsUI();
 });
-LA.addEventListener('play', () => { LS.on = LS.list.length > 0; lsUI(); }); LA.addEventListener('pause', () => lsUI());
+LA.addEventListener('play', () => { LS.on = LS.mode === 'pos' ? LS.pl.length > 0 : LS.list.length > 0; lsUI(); }); LA.addEventListener('pause', () => lsUI());
 function lsMeta(c) {
   if (!('mediaSession' in navigator) || !window.MediaMetadata) return;
   try {
     navigator.mediaSession.metadata = new MediaMetadata({ title: `챕터 ${c.n} · ${c.t.split(' — ')[0]}`, artist: '한자 1026 · 문장 듣기', album: c.t,
       artwork: [{ src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' }] });
     const h = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
-    h('play', () => LA.play()); h('pause', () => LA.pause()); h('previoustrack', () => lsStep(-1)); h('nexttrack', () => lsStep(1));
+    h('play', () => LA.play()); h('pause', () => LA.pause()); h('previoustrack', () => lsAnyStep(-1)); h('nexttrack', () => lsAnyStep(1));
   } catch (e) {}
 }
 // 재생 중 화면: 지금 문장·지금 목소리·진행 막대 (바뀔 때만 다시 그림)
 function lsUI() {
   if (cur !== 'Listen' || !$('#lsNow')) return;
+  if (lsOpt().mode === 'pos') return posUI();
   const c = lsCh(LS.cur), o = lsOpt();
   if (!c) {
     const p = o.pos && lsCh(o.pos.c);
@@ -2140,12 +2142,13 @@ function lsUI() {
   }
   const t = lsRel(c), i = Math.max(0, lsSentAt(c, t)), x = c.s[i];
   const seg = t < x.at[1] ? 'k' : t < x.at[2] ? 'f' : 'm';
-  const total = Math.max(1, LS.list.length) * 10, done = Math.max(0, LS.list.indexOf(c.n)) * 10 + i + 1;
+  const cnts = LS.list.map(n => lsCh(n).s.length), k0 = Math.max(0, LS.list.indexOf(c.n));
+  const total = Math.max(1, cnts.reduce((a, b) => a + b, 0)), done = cnts.slice(0, k0).reduce((a, b) => a + b, 0) + i + 1;
   const key = `${c.n}-${i}-${seg}-${LA.paused}-${done}`;
   if (key !== LS.key) {
     LS.key = key;
     $('#lsNow').innerHTML = `<div class="lsnow">
-      <div class="muted" style="font-size:.85rem">챕터 ${c.n} · ${esc(c.t)} · ${i + 1}/10${LS.list.length > 1 ? ` · 전체 ${done}/${total}` : ''}${o.rep !== 1 ? ` · 반복 ${LS.rep + 1}${o.rep ? '/' + o.rep : ''}` : ''}</div>
+      <div class="muted" style="font-size:.85rem">챕터 ${c.n} · ${esc(c.t)} · ${i + 1}/${c.s.length}${LS.list.length > 1 ? ` · 전체 ${done}/${total}` : ''}${o.rep !== 1 ? ` · 반복 ${LS.rep + 1}${o.rep ? '/' + o.rep : ''}` : ''}</div>
       <div class="lj jp" lang="ja">${hlJ(x.j)}</div><div class="ly jp" lang="ja">${esc(x.y)}</div><div class="lk">${esc(x.k)}</div>
       <div class="lsvo"><span class="${seg === 'k' ? 'on' : ''}">🇰🇷 한국어</span><span class="${seg === 'f' ? 'on' : ''}">👩 여성</span><span class="${seg === 'm' ? 'on' : ''}">👨 남성</span></div>
       <div class="lsctl"><button id="lsPrev" aria-label="이전 문장">⏮</button><button class="play" id="lsPlay">${LA.paused ? '▶' : '⏸'}</button><button id="lsNext" aria-label="다음 문장">⏭</button></div>
@@ -2155,19 +2158,90 @@ function lsUI() {
     document.querySelectorAll('#scrListen .lsrow').forEach(b => b.classList.toggle('cur', +b.dataset.c === c.n && +b.dataset.s === i));
   }
 }
+/* ── 🔤 품사별 듣기: い형용사·な형용사·동사 낱말마다 한 문장 (한국어 → 여성 → 남성 → 원형), 파일 하나 안에서 섞어 무한 재생 ── */
+const POS_K = { i: 'い형용사', na: 'な형용사', v: '동사' };
+const posPool = () => { const o = lsOpt(); return POSD.items.map((x, i) => i).filter(i => o.pk.includes(POSD.items[i].t) && (!o.plv || POSD.items[i].lv === o.plv)); };
+function posStart(idx) {
+  const o = lsOpt(), pool = posPool(); if (!pool.length) return;
+  LS.mode = 'pos'; LS.on = true;
+  LS.pl = o.pord === 'shuf' ? shuffle(pool) : pool;
+  if (idx != null) { LS.pl = [idx, ...LS.pl.filter(i => i !== idx)]; }
+  LS.pi = 0; posSeek(LS.pl[0], true);
+}
+function posSeek(idx, play) {
+  const it = POSD.items[idx];
+  const go = () => { LA.playbackRate = lsOpt().rate; LA.currentTime = it.at[0]; LS.pcur = idx; LS.key = ''; if (play) LA.play().catch(() => {}); posMeta(it); lsUI(); };
+  if (LS.vol !== POSD.v) { LS.vol = POSD.v; LS.cur = 0; LA.src = POSD.v; LA.defaultPlaybackRate = lsOpt().rate; LA.addEventListener('loadedmetadata', go, { once: true }); LA.load(); }
+  else go();
+}
+// 다음 낱말: 목록 끝이면 다시 섞어서 처음부터 (끝없이)
+function posNext() {
+  LS.pi++;
+  if (LS.pi >= LS.pl.length) { LS.pl = lsOpt().pord === 'shuf' ? shuffle(LS.pl) : LS.pl; LS.pi = 0; }
+  posSeek(LS.pl[LS.pi], !LA.paused || LS.on);
+}
+function posStep(d) {
+  const it = POSD.items[LS.pcur]; if (!it) return posStart();
+  if (d < 0) {
+    if (LA.currentTime - it.at[1] > 2 || LS.pi === 0) return posSeek(LS.pcur, !LA.paused);      // 중간이면 그 낱말 처음으로
+    LS.pi--; return posSeek(LS.pl[LS.pi], !LA.paused);
+  }
+  posNext();
+}
+// 낱말 하나가 끝나면(원형 뒤 쉼 구간) 다음 낱말 위치로 — 같은 파일 안 이동이라 잠금 중에도 이어짐
+function posTick() {
+  const it = POSD.items[LS.pcur]; if (!it) return;
+  const t = LA.currentTime;
+  if (LS.on && (t >= it.at[5] + 0.8 || t < it.at[0] - 1)) return posNext();
+  lsUI();
+}
+const lsAnyStep = d => LS.mode === 'pos' ? posStep(d) : lsStep(d);
+function posMeta(it) {
+  if (!('mediaSession' in navigator) || !window.MediaMetadata) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: `${it.w} · ${it.ko}`, artist: `한자 1026 · 품사별 듣기 (${POS_K[it.t]})`, album: '품사별 듣기',
+      artwork: [{ src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' }] });
+    const h = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch (e) {} };
+    h('play', () => LA.play()); h('pause', () => LA.pause()); h('previoustrack', () => lsAnyStep(-1)); h('nexttrack', () => lsAnyStep(1));
+  } catch (e) {}
+}
+function posUI() {
+  const it = LS.mode === 'pos' && POSD.items[LS.pcur], o = lsOpt();
+  if (!it) {
+    $('#lsNow').innerHTML = `<div class="lsnow"><p class="muted">▶를 누르면 고른 품사의 낱말을 ${o.pord === 'shuf' ? '섞어서' : '차례대로'} 끝없이 들려줘요.</p>
+      <div class="lsctl"><button class="play" id="lsPlay">▶</button></div></div>`;
+    $('#lsPlay').onclick = () => posStart(); LS.key = ''; return;
+  }
+  const t = LA.currentTime, seg = t < it.at[2] ? 'k' : t < it.at[3] ? 'f' : t < it.at[4] ? 'm' : 'b';
+  const key = `p${LS.pcur}-${seg}-${LA.paused}`;
+  if (key === LS.key) return;
+  LS.key = key;
+  $('#lsNow').innerHTML = `<div class="lsnow">
+    <div class="muted" style="font-size:.85rem">${POS_K[it.t]}${it.t === 'v' ? ' · ' + GNAME_LS[it.g] : ''} · N${it.lv} · ${LS.pi + 1}/${LS.pl.length}</div>
+    <div class="lj jp" lang="ja">${hlJ(it.j)}</div><div class="ly jp" lang="ja">${esc(it.y)}</div><div class="lk">${esc(it.k)}</div>
+    <div class="tip" style="margin-top:10px;text-align:center;${seg === 'b' ? 'outline:2px solid var(--accent)' : ''}">📖 원형 <span class="jp" lang="ja" style="font-size:1.5rem;margin:0 4px">${esc(it.w)}</span>${it.w !== it.wy ? `<span class="jp" lang="ja">(${esc(it.wy)})</span>` : ''} — ${esc(it.ko)}</div>
+    <div class="lsvo"><span class="${seg === 'k' ? 'on' : ''}">🇰🇷 한국어</span><span class="${seg === 'f' ? 'on' : ''}">👩 여성</span><span class="${seg === 'm' ? 'on' : ''}">👨 남성</span><span class="${seg === 'b' ? 'on' : ''}">📖 원형</span></div>
+    <div class="lsctl"><button id="lsPrev" aria-label="이전 낱말">⏮</button><button class="play" id="lsPlay">${LA.paused ? '▶' : '⏸'}</button><button id="lsNext" aria-label="다음 낱말">⏭</button></div></div>`;
+  $('#lsPrev').onclick = () => posStep(-1); $('#lsNext').onclick = () => posStep(1);
+  $('#lsPlay').onclick = () => LA.paused ? LA.play().catch(() => {}) : LA.pause();
+}
+const GNAME_LS = { '1': '1그룹', '1k': '1그룹', '1a': '1그룹', '1r': '1그룹', '2': '2그룹', '3s': '3그룹', '3k': '3그룹' };
 const LS_GROUP = { 1: '🌱 N5 문법 순서 (1~20)', 21: '🌿 N4 문법 순서 (21~60)', 61: '💬 상황별 실전 회화 (61~100)' };   // 챕터 목록의 묶음 제목
 function renderListen() {
-  if (!ensureData(['LISTEN'], 'Listen', '🎧 문장 듣기', renderListen)) return;
+  if (!ensureData(['LISTEN', 'POSD'], 'Listen', '🎧 문장 듣기', renderListen)) return;
   const o = lsOpt(), N = LISTEN.ch.length;
+  const modeTabs = `<div class="tabs" style="margin-bottom:10px"><button class="${o.mode === 'ch' ? 'on' : ''}" data-lm="ch">📚 챕터 듣기</button><button class="${o.mode === 'pos' ? 'on' : ''}" data-lm="pos">🔤 품사별 듣기</button></div>`;
+  if (o.mode === 'pos') return renderPosListen(modeTabs);
   o.from = Math.min(Math.max(1, o.from), N); o.to = Math.min(Math.max(o.from, o.to), N);
   const sel = (id, a, v) => `<select class="lssel" id="${id}">${Array.from({ length: N - a + 1 }, (_, k) => k + a).map(n => `<option value="${n}" ${n === v ? 'selected' : ''}>${n}</option>`).join('')}</select>`;
   const tg = (attr, val, now, t) => `<button class="tog ${val === now ? 'on' : ''}" ${attr}="${val}">${t}</button>`;
   const cnt = o.to - o.from + 1;
-  $('#scrListen').innerHTML = `
+  const sents = LISTEN.ch.filter(c => c.n >= o.from && c.n <= o.to).reduce((a, c) => a + c.s.length, 0);
+  $('#scrListen').innerHTML = `${modeTabs}
     <div class="card"><h2>🎧 문장 듣기</h2>
-      <p class="muted" style="font-size:.88rem">문법 순서로 만든 일상 회화를 <b>한국어 → 일본어 여성 → 일본어 남성</b> 순서로 들려줘요. 한 챕터 = 10문장 (약 2분). 화면을 꺼도 이어서 들을 수 있고, 잠금 화면·이어폰 버튼으로 이전·다음 문장으로 넘길 수 있어요.</p>
-      <div class="optrow"><span class="lab">분량</span>${[[1, '10문장'], [5, '50문장'], [10, '100문장']].map(([k, t]) => `<button class="tog ${cnt === k ? 'on' : ''}" data-lq="${k}">${t}</button>`).join('')}</div>
-      <div class="optrow"><span class="lab">챕터</span>${sel('lsFrom', 1, o.from)} ~ ${sel('lsTo', o.from, o.to)} <span class="muted" style="font-size:.85rem">${cnt}챕터 · ${cnt * 10}문장 · 약 ${Math.round(LISTEN.ch.filter(c => c.n >= o.from && c.n <= o.to).reduce((a, c) => a + c.dur, 0) / 60)}분</span></div>
+      <p class="muted" style="font-size:.88rem">문법 순서로 만든 일상 회화를 <b>한국어 → 일본어 여성 → 일본어 남성</b> 순서로 들려줘요. 한 챕터 = 10문장 (쓰임이 많은 문법은 20문장). 화면을 꺼도 이어서 들을 수 있고, 잠금 화면·이어폰 버튼으로 이전·다음 문장으로 넘길 수 있어요.</p>
+      <div class="optrow"><span class="lab">분량</span>${[[1, '1챕터'], [5, '5챕터'], [10, '10챕터']].map(([k, t]) => `<button class="tog ${cnt === k ? 'on' : ''}" data-lq="${k}">${t}</button>`).join('')}</div>
+      <div class="optrow"><span class="lab">챕터</span>${sel('lsFrom', 1, o.from)} ~ ${sel('lsTo', o.from, o.to)} <span class="muted" style="font-size:.85rem">${cnt}챕터 · ${sents}문장 · 약 ${Math.round(LISTEN.ch.filter(c => c.n >= o.from && c.n <= o.to).reduce((a, c) => a + c.dur, 0) / 60)}분</span></div>
       <div class="optrow"><span class="lab">반복</span>${[[1, '1번'], [2, '2번'], [3, '3번'], [0, '계속']].map(([v, t]) => tg('data-lr', v, o.rep, t)).join('')}</div>
       <div class="optrow"><span class="lab">속도</span>${[[0.75, '0.75'], [0.9, '0.9'], [1, '보통'], [1.2, '1.2']].map(([v, t]) => tg('data-lv', v, o.rate, t)).join('')}</div>
       <p class="muted" style="font-size:.8rem;margin-top:6px">챕터 1~20 N5 문법 순서 · 21~60 N4 문법 순서 · 61~100 상황별 실전 회화 (공항·식당·병원·회사…)</p></div>
@@ -2185,6 +2259,39 @@ function renderListen() {
   sc.querySelectorAll('[data-lr]').forEach(b => b.onclick = () => { o.rep = +b.dataset.lr; save(); renderListen(); });
   sc.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { o.rate = +b.dataset.lv; LA.playbackRate = LA.defaultPlaybackRate = o.rate; save(); renderListen(); });
   sc.querySelectorAll('.lsrow').forEach(b => b.onclick = () => lsStart(+b.dataset.c, +b.dataset.s));
+  lsModeTabs();
+  show('Listen', '🎧 문장 듣기');
+  LS.key = ''; lsUI();
+}
+// 모드 탭: 바꾸면 재생을 멈추고 그 모드 화면으로
+function lsModeTabs() {
+  $('#scrListen').querySelectorAll('[data-lm]').forEach(b => b.onclick = () => {
+    const o = lsOpt(); if (o.mode === b.dataset.lm) return;
+    LA.pause(); LS.on = false; LS.cur = 0; LS.list = []; LS.pl = []; LS.pcur = -1; LS.key = ''; LS.mode = b.dataset.lm;
+    o.mode = b.dataset.lm; save(); renderListen();
+  });
+}
+function renderPosListen(modeTabs) {
+  const o = lsOpt(), pool = posPool();
+  const tg = (attr, val, now, t) => `<button class="tog ${val === now ? 'on' : ''}" ${attr}="${val}">${t}</button>`;
+  const mins = Math.round(pool.reduce((a, i) => a + POSD.items[i].at[6] - POSD.items[i].at[0], 0) / 60);
+  $('#scrListen').innerHTML = `${modeTabs}
+    <div class="card"><h2>🔤 품사별 듣기</h2>
+      <p class="muted" style="font-size:.88rem">낱말마다 일상 문장 하나를 <b>한국어 → 일본어 여성 → 일본어 남성 → 원형</b> 순서로 들려줘요. 문장 속 모양(과거·부정·て형…)을 듣고 원형과 연결해 보세요. 끝없이 이어지고, 화면을 꺼도 들을 수 있어요.</p>
+      ${togRow('품사', ['i', 'na', 'v'], POS_K, o.pk, 'lpk')}
+      <div class="optrow"><span class="lab">급수</span>${[[0, '전체'], [5, 'N5'], [4, 'N4']].map(([v, t]) => tg('data-lpl', v, o.plv, t)).join('')}</div>
+      <div class="optrow"><span class="lab">순서</span>${tg('data-lpo', 'shuf', o.pord, '🔀 섞기')}${tg('data-lpo', 'seq', o.pord, '➡️ 차례대로')}</div>
+      <div class="optrow"><span class="lab">속도</span>${[[0.75, '0.75'], [0.9, '0.9'], [1, '보통'], [1.2, '1.2']].map(([v, t]) => tg('data-lv', v, o.rate, t)).join('')}</div>
+      <p class="muted" style="font-size:.8rem;margin-top:6px">고른 낱말 ${pool.length}개 · 한 바퀴 약 ${mins}분 · 다 들으면 다시 섞어서 계속</p></div>
+    <div class="card" id="lsNow"></div>
+    <p class="muted" style="text-align:center;font-size:.75rem;margin:8px 0">음성: ${esc(LISTEN.voice)}</p>`;
+  const sc = $('#scrListen');
+  const restart = () => { LA.pause(); LS.on = false; LS.pl = []; LS.pcur = -1; LS.key = ''; renderListen(); };
+  sc.querySelectorAll('[data-lpk]').forEach(b => b.onclick = () => { o.pk = toggleSet(o.pk, ['i', 'na', 'v'], b.dataset.lpk); save(); restart(); });
+  sc.querySelectorAll('[data-lpl]').forEach(b => b.onclick = () => { o.plv = +b.dataset.lpl; save(); restart(); });
+  sc.querySelectorAll('[data-lpo]').forEach(b => b.onclick = () => { o.pord = b.dataset.lpo; save(); restart(); });
+  sc.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { o.rate = +b.dataset.lv; LA.playbackRate = LA.defaultPlaybackRate = o.rate; save(); renderListen(); });
+  lsModeTabs();
   show('Listen', '🎧 문장 듣기');
   LS.key = ''; lsUI();
 }
