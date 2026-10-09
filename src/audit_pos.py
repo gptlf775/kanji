@@ -16,13 +16,13 @@ LOG = os.path.join(HERE, 'audit_pos.jsonl')
 
 def jobs():
     tagger = _tagger()
-    meta = {r[0]: r for r in parse(G.VERBS_N5, 5) + parse(G.VERBS_N4, 4) + parse(G.ADJS_N5, 5) + parse(G.ADJS_N4, 4)}
+    meta = {r[0]: r for r in parse(G.VERBS_N5, 5) + parse(G.VERBS_N4, 4) + parse(G.ADJS_N5, 5) + parse(G.ADJS_N4, 4) + parse(G.ADVS_N5, 5) + parse(G.ADVS_N4, 4)}
     for t, name, L in POS:
         for w, j, y, k in L:
-            tt = tts_text(tagger, j, y, [], w); base = base_tts(meta[w][1])
+            tt = tts_text(tagger, j, y, [], w); by = meta[w][1] + ('だ' if t == 'na' else ''); base = base_tts(by)
             yield dict(id=w, kind='k', want=k, fn=cpath(VOICE['k'], ko_tts(k)), lang='ko')
             for v in ('f', 'm'): yield dict(id=w, kind=v, want=y, tts=tt, fn=cpath(VOICE[v], tt), lang='ja')
-            yield dict(id=w, kind='base', want=meta[w][1], tts=base, fn=cpath(VOICE['f'], base, BASE_RATE), lang='ja')
+            yield dict(id=w, kind='base', want=by, tts=base, fn=cpath(VOICE['f'], base, BASE_RATE), lang='ja')
 
 def main():
     from faster_whisper import WhisperModel

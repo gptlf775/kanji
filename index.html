@@ -1822,11 +1822,13 @@ function nextWprac() {
 let CPS = null;
 const CP_BASIC = { v: ['masu', 'nai', 'ta', 'te'], i: ['neg', 'past', 'te', 'adv'], na: ['neg', 'past', 'te', 'attr'] };
 const cpAll = t => (t === 'v' ? VFORMS : AFORMS[t]).map(f => f[0]).filter(k => k !== 'dict');
-const CPK = { v: '동사', i: 'い형용사', na: 'な형용사' };
+const CPK = { v: '동사', i: 'い형용사', na: 'な형용사', adv: '부사' };
 function cpPool() {
   const o = S.cp, out = [];
   if (o.kinds.includes('v')) GRAM.verbs.forEach(r => { if (!o.lv || r[4] === o.lv) out.push({ w: r[0], y: r[1], t: 'v', g: r[2], ko: r[3] }); });
   ['i', 'na'].forEach(t => { if (o.kinds.includes(t)) GRAM.adjs.forEach(r => { if (r[2] === t && (!o.lv || r[4] === o.lv)) out.push({ w: r[0], y: r[1], t, g: '', ko: r[3] }); }); });
+  // 부사는 모양이 바뀌지 않으므로 '원형만' 연습에서만
+  if (o.kinds.includes('adv') && CP_DICT[o.m] && GRAM.advs) GRAM.advs.forEach(r => { if (!o.lv || r[4] === o.lv) out.push({ w: r[0], y: r[1], t: 'adv', g: '', ko: r[3] }); });
   return out;
 }
 const conjOf = e => e.t === 'v' ? conjVerb(e.w, e.y, e.g) : conjAdj(e.w, e.y, e.t);
@@ -1862,20 +1864,21 @@ function conjWrong(e, k) {
 }
 // 원형만 (사전형 그대로): 원형 → 뜻 / 뜻 → 원형 / 듣고 뜻. 오답 보기는 같은 품사에서 뜻이 다른 낱말로
 const CP_DICT = { djk: '📖 원형 → 뜻', dkj: '🔤 뜻 → 원형', dhr: '👂 듣고 뜻' };
+const dW = x => x.w + (x.t === 'na' ? '(だ)' : ''), dY = x => x.y + (x.t === 'na' ? 'だ' : '');   // な형용사 기본형은 ～だ
 function dictQ(e) {
   const ds = [], usedKo = new Set([e.ko]), usedW = new Set([e.w]);
   shuffle(cpPool().filter(x => x.t === e.t)).forEach(x => { if (ds.length < 3 && !usedKo.has(x.ko) && !usedW.has(x.w)) { usedKo.add(x.ko); usedW.add(x.w); ds.push(x); } });
   if (!ds.length) return null;
   const tag = e.t === 'v' ? `동사 · ${GNAME[e.g]}` : CPK[e.t];
-  const wordHTML = x => `<span class="jp" lang="ja" style="font-size:1.25rem">${esc(x.w)}</span>${x.w !== x.y ? `<small class="jp" lang="ja">${esc(x.y)}</small>` : ''}`;
-  const after = `<p class="qsub"><span class="jp" lang="ja">${esc(e.w)}${e.w !== e.y ? ` (${esc(e.y)})` : ''}</span> = ${esc(e.ko)} · ${tag}</p>`;
+  const wordHTML = x => `<span class="jp" lang="ja" style="font-size:1.25rem">${esc(dW(x))}</span>${x.w !== x.y ? `<small class="jp" lang="ja">${esc(dY(x))}</small>` : ''}`;
+  const after = `<p class="qsub"><span class="jp" lang="ja">${esc(dW(e))}${e.w !== e.y ? ` (${esc(dY(e))})` : ''}</span> = ${esc(e.ko)} · ${tag}</p>`;
   const opts = shuffle([e, ...ds]);
   if (S.cp.m === 'dkj') return { ask: '이 뜻의 일본어 원형은?', body: `<div class="pword" style="font-size:2rem">${esc(e.ko)}</div><div class="qsub">${tag}</div>`,
-    say: e.y, sayAfter: true, choices: opts.map(x => ({ html: wordHTML(x), ok: x === e })), after };
+    say: dY(e), sayAfter: true, choices: opts.map(x => ({ html: wordHTML(x), ok: x === e })), after };
   const ko = opts.map(x => ({ html: esc(x.ko), ok: x === e }));
-  if (S.cp.m === 'dhr') return { ask: '잘 듣고 알맞은 뜻을 고르세요', body: speakerHTML(esc(e.w + (e.w !== e.y ? '（' + e.y + '）' : ''))), say: e.y, sayFirst: true, choices: ko, after };
-  return { ask: '이 말의 뜻은?', body: `<div class="pword jp" lang="ja" style="font-size:2.4rem">${linkK(e.w)}</div><div class="qsub">${e.w !== e.y ? `<span class="jp" lang="ja">${esc(e.y)}</span> · ` : ''}${tag}</div>`,
-    say: e.y, sayAfter: true, choices: ko, after };
+  if (S.cp.m === 'dhr') return { ask: '잘 듣고 알맞은 뜻을 고르세요', body: speakerHTML(esc(dW(e) + (e.w !== e.y ? '（' + dY(e) + '）' : ''))), say: dY(e), sayFirst: true, choices: ko, after };
+  return { ask: '이 말의 뜻은?', body: `<div class="pword jp" lang="ja" style="font-size:2.4rem">${linkK(e.w)}${e.t === 'na' ? '<span style="font-size:1.4rem">(だ)</span>' : ''}</div><div class="qsub">${e.w !== e.y ? `<span class="jp" lang="ja">${esc(dY(e))}</span> · ` : ''}${tag}</div>`,
+    say: dY(e), sayAfter: true, choices: ko, after };
 }
 function cpracQ(e) {
   if (CP_DICT[S.cp.m]) return dictQ(e);
@@ -1910,15 +1913,15 @@ function renderCprac() {
   $('#scrCprac').innerHTML = `<div class="card">
     <div class="optrow"><span class="lab">활용형</span><button class="tog ${o.m === 'make' ? 'on' : ''}" data-cm="make">🔀 모양 만들기</button><button class="tog ${o.m === 'name' ? 'on' : ''}" data-cm="name">🔎 모양 알아보기</button></div>
     <div class="optrow"><span class="lab">원형만</span>${Object.entries(CP_DICT).map(([k, t]) => `<button class="tog ${o.m === k ? 'on' : ''}" data-cm="${k}">${t}</button>`).join('')}</div>
-    ${togRow('품사', ['v', 'i', 'na'], CPK, o.kinds, 'ck')}
+    ${togRow('품사', CP_DICT[o.m] ? ['v', 'i', 'na', 'adv'] : ['v', 'i', 'na'], CPK, CP_DICT[o.m] ? o.kinds : o.kinds.filter(k => k !== 'adv'), 'ck')}
     ${CP_DICT[o.m] ? '' : `<div class="optrow"><span class="lab">범위</span><button class="tog ${o.set === 'basic' ? 'on' : ''}" data-cs="basic">기본 4가지</button><button class="tog ${o.set === 'all' ? 'on' : ''}" data-cs="all">모든 활용형</button></div>`}
     <div class="optrow"><span class="lab">급수</span>${[[0, '전체'], [5, 'N5'], [4, 'N4']].map(([v, t]) => `<button class="tog ${o.lv === v ? 'on' : ''}" data-cl="${v}">${t}</button>`).join('')}</div>
-    <p class="muted" style="font-size:.8rem">${CP_DICT[o.m] ? '원형만 = 사전에 실린 기본 모양(食べる·高い·静か) 그대로 뜻을 익혀요. 바꾼 모양(て·ない 등)은 나오지 않아요.' : '기본 4가지 = 동사 ます·ない·た·て형 / 형용사 부정·과거·て형·부사(명사 꾸미기). 오답 보기는 실제로 많이 하는 실수(書くます·帰て·高いじゃない·きれくない)로 만들어요.'}</p>
+    <p class="muted" style="font-size:.8rem">${CP_DICT[o.m] ? '원형만 = 기본형(食べる·高い·静かだ) 그대로 뜻을 익혀요. 바꾼 모양(て·ない 등)은 나오지 않아요. 부사(とても·よく…)도 여기서 연습할 수 있어요.' : '기본 4가지 = 동사 ます·ない·た·て형 / 형용사 부정·과거·て형·부사(명사 꾸미기). 오답 보기는 실제로 많이 하는 실수(書くます·帰て·高いじゃない·きれくない)로 만들어요.'}</p>
     <div class="pstat" id="cStat"></div></div>
     <div class="card" id="cQ"></div>`;
   const sc = $('#scrCprac');
   sc.querySelectorAll('[data-cm]').forEach(b => b.onclick = () => { o.m = b.dataset.cm; save(); renderCprac(); });
-  sc.querySelectorAll('[data-ck]').forEach(b => b.onclick = () => { o.kinds = toggleSet(o.kinds, ['v', 'i', 'na'], b.dataset.ck); save(); renderCprac(); });
+  sc.querySelectorAll('[data-ck]').forEach(b => b.onclick = () => { const all = CP_DICT[o.m] ? ['v', 'i', 'na', 'adv'] : ['v', 'i', 'na']; o.kinds = toggleSet(o.kinds.filter(k => all.includes(k)), all, b.dataset.ck); save(); renderCprac(); });
   sc.querySelectorAll('[data-cs]').forEach(b => b.onclick = () => { o.set = b.dataset.cs; save(); renderCprac(); });
   sc.querySelectorAll('[data-cl]').forEach(b => b.onclick = () => { o.lv = +b.dataset.cl; save(); renderCprac(); });
   cStat(); nextCprac();
@@ -2061,7 +2064,7 @@ function onboarding() {
 const LA = window.LA = new Audio(); LA.preload = 'auto'; LA.loop = true;
 const LS = { list: [], rep: 0, cur: 0, vol: '', si: -1, key: '', on: false, lastT: 0, mode: 'ch', pl: [], pi: 0, pcur: -1 };   // mode: ch 챕터 / pos 품사별
 // 옵션 객체는 하나만 유지 (새로 만들면 버튼이 옛 객체를 바꿔 선택이 안 되는 문제가 생김) — 빠진 값만 채움
-const lsOpt = () => { S.ls = S.ls || {}; for (const [k, v] of Object.entries({ from: 1, to: 1, rep: 1, rate: 1, pos: null, mode: 'ch', pk: ['i', 'na', 'v'], plv: 0, pord: 'shuf' })) if (!(k in S.ls)) S.ls[k] = v; return S.ls; };
+const lsOpt = () => { S.ls = S.ls || {}; for (const [k, v] of Object.entries({ from: 1, to: 1, rep: 1, rate: 1, pos: null, mode: 'ch', pk: ['i', 'na', 'v', 'adv'], plv: 0, pord: 'shuf' })) if (!(k in S.ls)) S.ls[k] = v; return S.ls; };
 const lsCh = n => window.LISTEN && LISTEN.ch.find(c => c.n === n);
 const hlJ = j => esc(j).replace(/\[([^\]]*)\]/g, '<b class="hl">$1</b>');
 const lsSentAt = (c, t) => { let i = -1; c.s.forEach((x, k) => { if (t >= x.at[0] - 0.05) i = k; }); return i; };
@@ -2159,7 +2162,7 @@ function lsUI() {
   }
 }
 /* ── 🔤 품사별 듣기: い형용사·な형용사·동사 낱말마다 한 문장 (한국어 → 여성 → 남성 → 원형), 파일 하나 안에서 섞어 무한 재생 ── */
-const POS_K = { i: 'い형용사', na: 'な형용사', v: '동사' };
+const POS_K = { i: 'い형용사', na: 'な형용사', v: '동사', adv: '부사' };
 const posPool = () => { const o = lsOpt(); return POSD.items.map((x, i) => i).filter(i => o.pk.includes(POSD.items[i].t) && (!o.plv || POSD.items[i].lv === o.plv)); };
 function posStart(idx) {
   const o = lsOpt(), pool = posPool(); if (!pool.length) return;
@@ -2278,7 +2281,7 @@ function renderPosListen(modeTabs) {
   $('#scrListen').innerHTML = `${modeTabs}
     <div class="card"><h2>🔤 품사별 듣기</h2>
       <p class="muted" style="font-size:.88rem">낱말마다 일상 문장 하나를 <b>한국어 → 일본어 여성 → 일본어 남성 → 원형</b> 순서로 들려줘요. 문장 속 모양(과거·부정·て형…)을 듣고 원형과 연결해 보세요. 끝없이 이어지고, 화면을 꺼도 들을 수 있어요.</p>
-      ${togRow('품사', ['i', 'na', 'v'], POS_K, o.pk, 'lpk')}
+      ${togRow('품사', ['i', 'na', 'v', 'adv'], POS_K, o.pk, 'lpk')}
       <div class="optrow"><span class="lab">급수</span>${[[0, '전체'], [5, 'N5'], [4, 'N4']].map(([v, t]) => tg('data-lpl', v, o.plv, t)).join('')}</div>
       <div class="optrow"><span class="lab">순서</span>${tg('data-lpo', 'shuf', o.pord, '🔀 섞기')}${tg('data-lpo', 'seq', o.pord, '➡️ 차례대로')}</div>
       <div class="optrow"><span class="lab">속도</span>${[[0.75, '0.75'], [0.9, '0.9'], [1, '보통'], [1.2, '1.2']].map(([v, t]) => tg('data-lv', v, o.rate, t)).join('')}</div>
@@ -2287,7 +2290,7 @@ function renderPosListen(modeTabs) {
     <p class="muted" style="text-align:center;font-size:.75rem;margin:8px 0">음성: ${esc(LISTEN.voice)}</p>`;
   const sc = $('#scrListen');
   const restart = () => { LA.pause(); LS.on = false; LS.pl = []; LS.pcur = -1; LS.key = ''; renderListen(); };
-  sc.querySelectorAll('[data-lpk]').forEach(b => b.onclick = () => { o.pk = toggleSet(o.pk, ['i', 'na', 'v'], b.dataset.lpk); save(); restart(); });
+  sc.querySelectorAll('[data-lpk]').forEach(b => b.onclick = () => { o.pk = toggleSet(o.pk, ['i', 'na', 'v', 'adv'], b.dataset.lpk); save(); restart(); });
   sc.querySelectorAll('[data-lpl]').forEach(b => b.onclick = () => { o.plv = +b.dataset.lpl; save(); restart(); });
   sc.querySelectorAll('[data-lpo]').forEach(b => b.onclick = () => { o.pord = b.dataset.lpo; save(); restart(); });
   sc.querySelectorAll('[data-lv]').forEach(b => b.onclick = () => { o.rate = +b.dataset.lv; LA.playbackRate = LA.defaultPlaybackRate = o.rate; save(); renderListen(); });

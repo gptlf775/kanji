@@ -31,6 +31,7 @@ def pos_code(desc):
     if 'yoi/ii class' in d: return 'adj-ix'
     if d.startswith('adjective (keiyoushi)'): return 'adj-i'
     if 'keiyodoshi' in d: return 'adj-na'
+    if d.startswith('adverb') or d.startswith('adverbial noun'): return 'adv'
     return None
 
 def load_jm():
@@ -65,8 +66,9 @@ def main():
     errors, infos = [], []
     verbs = parse(G.VERBS_N5, 5) + parse(G.VERBS_N4, 4)
     adjs = parse(G.ADJS_N5, 5) + parse(G.ADJS_N4, 4)
+    advs = parse(G.ADVS_N5, 5) + parse(G.ADVS_N4, 4)
     seen = set()
-    for r in verbs + adjs:
+    for r in verbs + adjs + advs:
         if (r[0], r[1]) in seen: errors.append(f'중복: {r[0]}({r[1]})')
         seen.add((r[0], r[1]))
         # 읽기에 가타카나·공백이 섞이면 오류 (단, 외래어 ハンサム처럼 표기 = 읽기인 낱말은 허용)
@@ -98,6 +100,10 @@ def main():
         if t == 'i' and not ({'adj-i', 'adj-ix'} & P): errors.append(f'{w}({y}): い형용사인데 JMdict 품사 {sorted(P)}')
         if t == 'na' and 'adj-na' not in P: errors.append(f'{w}({y}): な형용사인데 JMdict 품사 {sorted(P)}')
         if (w, y) not in common: infos.append(f'{w}({y}): JMdict 흔한 말 표시 없음')
+    # 부사: JMdict 에 부사(adv) 품사로 있는지 — '一緒に'처럼 명사+に 꼴은 사전 표제어가 없을 수 있어 참고로만
+    for r in advs:
+        P = pos_of(r[0], r[1]) or by_y.get(r[1], set())
+        if 'adv' not in P: infos.append(f'{r[0]}({r[1]}): JMdict 부사 표시 없음 {sorted(P)} (명사·な형용사 + に 꼴일 수 있음)')
     irregular = [f'{r[0]}={r[2]}' for r in verbs if r[2] in ('1k', '1a', '1r')]
     # 예문 읽기
     tagger = _tagger()
@@ -123,11 +129,11 @@ def main():
     for t, d, inline in G.GLOSS:
         if not d: errors.append(f'용어 "{t}" 풀이 없음')
         if inline and t not in txt_all: infos.append(f'용어 "{t}" 는 본문에 나오지 않음 (사전에만 표시)')
-    data = dict(tabs=G.TABS, demo=demo, verbs=verbs, adjs=adjs, pat=pats, formKo=G.FORM_KO, gloss=G.GLOSS)
+    data = dict(tabs=G.TABS, demo=demo, verbs=verbs, adjs=adjs, advs=advs, pat=pats, formKo=G.FORM_KO, gloss=G.GLOSS)
     js = 'window.GRAM=' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n'
     open(os.path.join(ROOT, 'data', 'gram.js'), 'w', encoding='utf-8').write(js)
     write_index()
-    rep = [f'동사 {len(verbs)} (N5 {sum(1 for r in verbs if r[4] == 5)} · N4 {sum(1 for r in verbs if r[4] == 4)}) · 형용사 {len(adjs)} · 문법 패턴 {len(pats)} · 예문 {len(exs)}',
+    rep = [f'동사 {len(verbs)} (N5 {sum(1 for r in verbs if r[4] == 5)} · N4 {sum(1 for r in verbs if r[4] == 4)}) · 형용사 {len(adjs)} · 부사 {len(advs)} · 문법 패턴 {len(pats)} · 예문 {len(exs)}',
            f'불규칙 자동 표시: {", ".join(irregular)}',
            f'오류 {len(errors)}건, 참고 {len(infos)}건'] + ['ERR ' + e for e in errors] + ['INFO ' + i for i in infos]
     txt = '\n'.join(rep)

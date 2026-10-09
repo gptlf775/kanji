@@ -38,7 +38,8 @@ async def synth(jobs):
 
 # 원형 음성: は·へ로 시작하는 가나 낱말은 음성 엔진이 첫 글자를 조사(わ·え)로 읽음 (はいる → わいる) → 가타카나로 넘김
 kata = lambda s: ''.join(chr(ord(c) + 0x60) if 'ぁ' <= c <= 'ゖ' else c for c in s)
-base_tts = lambda y: (kata(y) if y[0] in 'はへ' else y) + '。'
+KATA_BASE = {'だいぶ'}                    # 음성 검수에서 '라이브'처럼 들린 것 → 가타카나로 넘기면 바르게 읽힘
+base_tts = lambda y: (kata(y) if y[0] in 'はへ' or y in KATA_BASE else y) + '。'
 
 def too_short(fn, text):
     return len(pcm(fn)) / 2 / SR < 0.35 + 0.045 * len(re.sub(r'[\s、。，．！？!?…「」]', '', text))
@@ -46,11 +47,12 @@ def too_short(fn, text):
 def main():
     errors, infos = [], []
     verbs = parse(G.VERBS_N5, 5) + parse(G.VERBS_N4, 4); adjs = parse(G.ADJS_N5, 5) + parse(G.ADJS_N4, 4)
-    meta = {r[0]: r for r in verbs + adjs}           # 표기 → [표기, 읽기, 그룹/품사, 뜻, 급수]
+    advs = parse(G.ADVS_N5, 5) + parse(G.ADVS_N4, 4)
+    meta = {r[0]: r for r in verbs + adjs + advs}           # 표기 → [표기, 읽기, 그룹/품사, 뜻, 급수]
     tagger = _tagger()
     items, jobs = [], []
     for t, name, L in POS:
-        want = [r[0] for r in (verbs if t == 'v' else [a for a in adjs if a[2] == t])]
+        want = [r[0] for r in (verbs if t == 'v' else advs if t == 'adv' else [a for a in adjs if a[2] == t])]
         got = [x[0] for x in L]
         for w in want:
             if w not in got: errors.append(f'{name}: {w} 문장 없음')
@@ -59,8 +61,8 @@ def main():
             if j.count('[') != j.count(']'): errors.append(f'{w}: [ ] 짝'); continue
             try: tt = tts_text(tagger, j, y, infos, f'{t}:{w}')
             except ValueError as e: errors.append(str(e)); continue
-            m = meta[w]; base = base_tts(m[1])
-            items.append(dict(t=t, w=w, wy=m[1], ko=m[3], g=m[2] if t == 'v' else '', lv=m[4], j=j, y=y, k=k, tt=tt, base=base))
+            m = meta[w]; by = m[1] + ('だ' if t == 'na' else ''); base = base_tts(by)   # な형용사 기본형은 ～だ
+            items.append(dict(t=t, w=w + ('(だ)' if t == 'na' else ''), wy=by, ko=m[3], g=m[2] if t == 'v' else '', lv=m[4], j=j, y=y, k=k, tt=tt, base=base))
             jobs += [(VOICE['k'], ko_tts(k), cpath(VOICE['k'], ko_tts(k)), ''), (VOICE['f'], tt, cpath(VOICE['f'], tt), ''),
                      (VOICE['m'], tt, cpath(VOICE['m'], tt), ''), (VOICE['f'], base, cpath(VOICE['f'], base, BASE_RATE), BASE_RATE)]
     if errors:
@@ -99,7 +101,7 @@ def main():
     js = 'window.POSD=' + json.dumps(dict(v=f'data/audio/pos01.mp3?v={h}', dur=round(t, 2), items=out), ensure_ascii=False, separators=(',', ':')) + ';\n'
     open(os.path.join(ROOT, 'data', 'pos.js'), 'w', encoding='utf-8').write(js)
     write_index()
-    rep = [f'낱말 {len(items)} (い {sum(i["t"] == "i" for i in items)} · な {sum(i["t"] == "na" for i in items)} · 동사 {sum(i["t"] == "v" for i in items)}) · {t / 60:.1f}분 · {os.path.getsize(mp3) / 1e6:.1f}MB',
+    rep = [f'낱말 {len(items)} (い {sum(i["t"] == "i" for i in items)} · な {sum(i["t"] == "na" for i in items)} · 동사 {sum(i["t"] == "v" for i in items)} · 부사 {sum(i["t"] == "adv" for i in items)}) · {t / 60:.1f}분 · {os.path.getsize(mp3) / 1e6:.1f}MB',
            f'오류 0건, 참고 {len(infos)}건'] + ['INFO ' + i for i in infos]
     open(os.path.join(HERE, 'verify_pos.txt'), 'w', encoding='utf-8').write('\n'.join(rep) + '\n')
     print('\n'.join(rep[:2]))
