@@ -219,12 +219,12 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .lsrow.cur{background:var(--accent-soft);border-radius:8px;}
 .gspage{width:794px;min-height:1123px;background:#fff;color:#2f2b28;padding:22px 28px 16px;font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;font-size:12.5px;line-height:1.45;box-sizing:border-box;}
 .gspage .jp{font-family:var(--jp);font-weight:600;}
-.gspage .gshead{background:linear-gradient(135deg,#FF8A65,#F6A23C);color:#fff;border-radius:14px;padding:14px 18px;margin-bottom:12px;}
-.gspage .gshead h1{font-size:27px;margin:0;line-height:1.2;} .gspage .gshead p{margin:4px 0 0;font-size:13px;opacity:.95;}
-.gspage h2{font-size:15px;margin:9px 0 4px;color:#C2512B;border-left:5px solid #FF8A65;padding-left:7px;}
+.gspage .gshead{background:linear-gradient(135deg,#FF8A65,#F6A23C);color:#fff;border-radius:14px;padding:11px 18px;margin-bottom:8px;}
+.gspage .gshead h1{font-size:25px;margin:0;line-height:1.2;} .gspage .gshead p{margin:4px 0 0;font-size:13px;opacity:.95;}
+.gspage h2{font-size:15px;margin:6px 0 3px;color:#C2512B;border-left:5px solid #FF8A65;padding-left:7px;}
 .gspage table{width:100%;border-collapse:collapse;margin:2px 0;}
-.gspage th{background:#FFE6DA;font-size:11.5px;padding:4px 5px;border:1px solid #F0D3C3;text-align:center;}
-.gspage td{border:1px solid #EEE3D8;padding:3px 5px;vertical-align:middle;}
+.gspage th{background:#FFE6DA;font-size:11.5px;padding:3px 4px;line-height:1.3;border:1px solid #F0D3C3;text-align:center;}
+.gspage td{border:1px solid #EEE3D8;padding:2px 5px;vertical-align:middle;}
 .gspage tr:nth-child(even) td{background:#FFFAF5;}
 .gspage td.f{font-size:15px;white-space:nowrap;} .gspage td.f small{display:block;font-size:10px;color:#8A8178;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:normal;}
 .gspage b.h{color:#D9480F;background:#FFF0E6;border-radius:3px;padding:0 1px;}
@@ -233,13 +233,26 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .gspage .lab{font-weight:bold;white-space:nowrap;}
 .gspage ul{margin:3px 0 0 18px;padding:0;} .gspage li{margin:2px 0;}
 .gspage .ng{color:#C92A2A;} .gspage .ok{color:#2B8A3E;}
-.gspage .chips{display:flex;flex-wrap:wrap;gap:3px 4px;justify-content:flex-start;text-align:left;}
+.gspage .chips{display:flex;flex-wrap:wrap;gap:2px 3px;justify-content:flex-start;text-align:left;margin:4px 0;line-height:1.35;}
 .gspage .chips span{border:1px solid #EEE3D8;border-radius:6px;padding:0 4px;font-size:10.5px;background:#FFFCF8;}
 .gspage .chips span .jp{font-size:12.5px;}
 .gspage .gsr{font-size:10px;color:#8A8178;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;font-weight:normal;}
 .gspage .chips span.gk{background:#FF8A65;color:#fff;border-color:#FF8A65;font-weight:bold;font-size:12px;}
 .gspage .grp{font-weight:bold;color:#C2512B;margin:4px 0 1px;font-size:11.5px;}
 .gspage .foot{margin-top:10px;text-align:right;font-size:10px;color:#A39A92;}
+.gspage td.tp{white-space:nowrap;text-align:center;font-weight:bold;color:#C2512B;font-size:14px;line-height:1.2;}
+.gspage td.tp .jp{font-size:11px;}
+.gspage tr.bandb td{background:#FFF6EE;} .gspage tr.banda td{background:#fff;}
+.gspage tr.banda + tr.bandb td, .gspage tr.bandb + tr.banda td{border-top:2px solid #F0B79A;}
+.gspage .w[data-y]{cursor:pointer;}
+.gspage li .w, .gspage p .w{border-bottom:1px dotted #E8A88A;}
+.gspage.gsprint li .w, .gspage.gsprint p .w{border-bottom:none;}
+.gsstage{-webkit-touch-callout:none;}
+.gspop{position:fixed;z-index:60;background:#2F2B28;color:#fff;border-radius:14px;padding:10px 14px;max-width:300px;box-shadow:0 6px 24px rgba(0,0,0,.35);pointer-events:none;text-align:center;}
+.gspop .t{font-family:var(--jp);font-size:1.6rem;font-weight:600;line-height:1.25;}
+.gspop .y{font-family:var(--jp);font-size:1.05rem;color:#FFD3BC;margin-top:2px;}
+.gspop .m{font-size:.9rem;margin-top:4px;} .gspop .n{font-size:.8rem;color:#C9BFB6;margin-top:2px;}
+.gspage [data-y].on{outline:3px solid #FF8A65;outline-offset:1px;border-radius:3px;}
 .gslist{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .gslist button{background:#fff;border-radius:14px;padding:14px 10px;text-align:left;box-shadow:0 2px 8px rgba(120,90,60,.07);}
 .gslist button b{display:block;font-size:1.05rem;} .gslist button small{color:var(--sub);font-size:.8rem;}
@@ -470,6 +483,7 @@ function show(name, title) {
   $('#btnBack').style.display = name === 'Home' ? 'none' : '';
   window.scrollTo(0, 0);
   stopAnim(); if (window.closeKanaStroke) closeKanaStroke();
+  if (window.gsPop) gsPop(null);
 }
 
 /* ═══════════════ 뒤로가기 (◀ 버튼) ═══════════════ */
@@ -2338,78 +2352,107 @@ function renderPosListen(modeTabs) {
 // 저장용 PNG(data/sheets/ID.png, 3배 해상도)는 src/build_sheets.py 가 이 화면(?sheet=ID)을 찍어 만듦
 const GS_W = 794;
 const gsHL = (base, f) => { let i = 0; while (i < base.length && i < f.length && base[i] === f[i]) i++; return esc(f.slice(0, i)) + (i < f.length ? `<b class="h">${esc(f.slice(i))}</b>` : ''); };
-const gsCell = (base, f, r, baseY) => `<td class="f jp" lang="ja">${gsHL(base, f)}${r && r !== f ? `<small>${esc(r)}</small>` : ''}</td>`;
+// 꾹 누르면 뜨는 말풍선 자료: 읽기(y)·뜻(m)·설명(n) — 저장용 그림에는 보이지 않음
+const gsD = (y, m, n) => ` data-y="${esc(y)}" data-m="${esc(m || '')}" data-n="${esc(n || '')}"`;
+const gsCell = (base, f, y, m, n, sub) => `<td class="f jp" lang="ja"${gsD(y || f, m, n)}>${gsHL(base, f)}${sub ? `<small>${esc(sub)}</small>` : ''}</td>`;
+const gsMean = m => m.replace(/\s*\(.*\)/, '').split(/[·,]/)[0];
+// 활용어 목록에서 읽기·뜻 찾기 (없으면 그냥 글자)
+const gsW = (t, y, m) => { const r = GRAM.verbs.concat(GRAM.adjs, GRAM.advs || []).find(r => r[0] === t);
+  y = y || (r && (r[1] + (r[2] === 'na' ? '' : ''))); m = m || (r && r[3]) || '';
+  return y ? `<span class="w jp" lang="ja"${gsD(y, m)}>${esc(t)}</span>` : `<span class="jp" lang="ja">${esc(t)}</span>`; };
+const gsWs = s => s.split(' · ').map(t => gsW(t)).join(' · ');
+const GS_FORM = { masu: 'ます형 (정중)', nai: 'ない형 (부정)', te: 'て형 (~하고·~해서)', ta: 'た형 (과거)', ba: 'ば형 (~하면)', vol: '의지형 (~하자)', pot: '가능형 (~할 수 있다)',
+  nakatta: '과거 부정', tai: '~하고 싶다', imp: '명령형 (거친 말)', pass: '수동형 (~당하다)', caus: '사역형 (~시키다)', causp: '사역수동 (억지로 ~하다)' };
 function gsNa() {
-  const w = '静か', y = 'しずか', R = conjAdj(w, y, 'na');
-  const C = (f) => `<td class="f jp" lang="ja">${gsHL(w, f)}</td>`;
-  const M = (h, rest) => `<td class="f jp" lang="ja">${esc(w)}<b class="h">${esc(h)}</b>${esc(rest || '')}</td>`;   // 바뀌는 부분만 색칠
-  const I = conjAdj('高い', 'たかい', 'i'), Ih = (f, rest) => `<td class="f jp" lang="ja">${gsHL('高', f)}${esc(rest || '')}</td>`;
-  const naList = GRAM.adjs.filter(r => r[2] === 'na').map(r => `<span><span class="jp" lang="ja">${esc(r[0])}</span> ${esc(r[3].replace(/\s*\(★.*\)/, ''))}</span>`).join('');
+  const w = '静か', y = 'しずか', R = conjAdj(w, y, 'na'), mean = '静か(だ) · 조용하다';
+  const AF = { dict: '기본형 (보통 현재)', desu: '정중 현재', neg: '부정', past: '과거', pastneg: '과거 부정', te: 'て형 (~하고·~해서)', adv: '부사 (~하게)', ba: '가정 (~하면)' };
+  const C = (k, f, fy) => `<td class="f jp" lang="ja"${gsD(fy || (R[k] && R[k][1]), mean, AF[k] || '')}>${gsHL(w, f || R[k][0])}</td>`;
+  const M = (h, rest, ry, n) => `<td class="f jp" lang="ja"${gsD(y + h + (ry || rest || ''), mean, n)}>${esc(w)}<b class="h">${esc(h)}</b>${esc(rest || '')}</td>`;   // 바뀌는 부분만 색칠
+  const I = conjAdj('高い', 'たかい', 'i'), im = '高い · 높다·비싸다';
+  const Ih = (k, n) => `<td class="f jp" lang="ja"${gsD(I[k][1], im, n)}>${gsHL('高', I[k][0])}</td>`;
+  const J = (t, ty, m) => `<span class="w jp" lang="ja"${gsD(ty, m)}>${esc(t)}</span>`;
+  const naList = GRAM.adjs.filter(r => r[2] === 'na').map(r => `<span class="w"${gsD(r[1] + 'だ', r[3])}><span class="jp" lang="ja">${esc(r[0])}</span> ${esc(r[3].replace(/\s*\(★.*\)/, ''))}</span>`).join('');
   return `<div class="gshead"><h1>な형용사 한 장 공략</h1><p>성질·상태를 나타내지만 <b>명사처럼 활용</b>하는 말 · 기본형은 <b>～だ</b> (静かだ) · 사전에는 だ를 뺀 静か · 주로 한자어·외래어</p></div>
   <h2>① 문장 끝 — 보통체(반말) · 정중체(존댓말)</h2>
   <table><tr><th style="width:15%"></th><th>보통체</th><th>정중체</th><th style="width:30%">뜻</th></tr>
-    <tr><td class="lab">현재</td>${C(R.dict[0])}${C(R.desu[0])}<td>조용하다 · 조용합니다</td></tr>
-    <tr><td class="lab">과거</td>${C(R.past[0])}${C('静かでした')}<td>조용했다 · 조용했습니다</td></tr>
-    <tr><td class="lab">부정</td>${C(R.neg[0])}${C('静かじゃありません')}<td>조용하지 않다 · 않습니다</td></tr>
-    <tr><td class="lab">과거 부정</td>${C(R.pastneg[0])}${C('静かじゃありませんでした')}<td>조용하지 않았다 · 않았습니다</td></tr></table>
+    <tr><td class="lab">현재</td>${C('dict')}${C('desu')}<td>조용하다 · 조용합니다</td></tr>
+    <tr><td class="lab">과거</td>${C('past')}${C('', '静かでした', 'しずかでした')}<td>조용했다 · 조용했습니다</td></tr>
+    <tr><td class="lab">부정</td>${C('neg')}${C('', '静かじゃありません', 'しずかじゃありません')}<td>조용하지 않다 · 않습니다</td></tr>
+    <tr><td class="lab">과거 부정</td>${C('pastneg')}${C('', '静かじゃありませんでした', 'しずかじゃありませんでした')}<td>조용하지 않았다 · 않았습니다</td></tr></table>
   <p class="rule">じゃ = では (글·격식은 では: 静かではありません) · 정중 부정은 静かじゃないです·静かじゃなかったです 도 OK</p>
   <h2>② 다른 말과 이어질 때 — 어미 だ가 바뀌는 곳</h2>
   <table><tr><th style="width:21%">쓰임</th><th style="width:22%">규칙</th><th>예</th><th style="width:27%">뜻</th></tr>
-    <tr><td class="lab">명사 꾸미기</td><td>だ → <b class="h">な</b> + 명사</td>${M('な', '町')}<td>조용한 동네</td></tr>
-    <tr><td class="lab">부사 (~하게)</td><td>だ → <b class="h">に</b></td>${M('に', '話す')}<td>조용히 말하다</td></tr>
-    <tr><td class="lab">~하고 · ~해서</td><td>だ → <b class="h">で</b></td>${M('で', 'きれいな町')}<td>조용하고 깨끗한 동네</td></tr>
-    <tr><td class="lab">~하면 (가정)</td><td>だ → <b class="h">なら</b></td>${M('なら')}<td>조용하다면</td></tr>
-    <tr><td class="lab">~해서 (이유)</td><td>だ → <b class="h">なので</b></td>${M('なので')}<td>조용해서</td></tr>
-    <tr><td class="lab">~해 보인다</td><td>だ를 빼고 + <b class="h">そう</b></td>${M('そう', 'だ')}<td>조용해 보인다</td></tr>
-    <tr><td class="lab">~해지다</td><td>だ → <b class="h">に</b> + なる</td>${M('に', 'なる')}<td>조용해지다</td></tr>
-    <tr><td class="lab">너무 ~하다</td><td>だ를 빼고 + <b class="h">すぎる</b></td>${M('すぎる')}<td>너무 조용하다</td></tr></table>
-  <h2>③ 헷갈리는 점</h2>
+    <tr><td class="lab">명사 꾸미기</td><td>だ → <b class="h">な</b> + 명사</td>${M('な', '町', 'まち', '조용한 동네')}<td>조용한 동네</td></tr>
+    <tr><td class="lab">부사 (~하게)</td><td>だ → <b class="h">に</b></td>${M('に', '話す', 'はなす', '조용히 말하다')}<td>조용히 말하다</td></tr>
+    <tr><td class="lab">~하고 · ~해서</td><td>だ → <b class="h">で</b></td>${M('で', 'きれいな町', 'きれいなまち', '조용하고 깨끗한 동네')}<td>조용하고 깨끗한 동네</td></tr>
+    <tr><td class="lab">~하면 (가정)</td><td>だ → <b class="h">なら</b></td>${M('なら', '', '', '조용하다면')}<td>조용하다면 <span class="rule">(격식: 静かであれば)</span></td></tr>
+    <tr><td class="lab">~해서 (이유)</td><td>だ → <b class="h">なので</b></td>${M('なので', '', '', '조용해서')}<td>조용해서</td></tr>
+    <tr><td class="lab">~해 보인다</td><td>だ를 빼고 + <b class="h">そう</b></td>${M('そう', 'だ', '', '조용해 보인다')}<td>조용해 보인다</td></tr>
+    <tr><td class="lab">~해지다</td><td>だ → <b class="h">に</b> + なる</td>${M('に', 'なる', '', '조용해지다')}<td>조용해지다</td></tr>
+    <tr><td class="lab">너무 ~하다</td><td>だ를 빼고 + <b class="h">すぎる</b></td>${M('すぎる', '', '', '너무 조용하다')}<td>너무 조용하다</td></tr></table>
+  <h2>③ 헷갈리는 점 · 특수한 경우</h2>
   <ul>
-    <li><b>い로 끝나도 な형용사</b>: きれい · 嫌い · 有名 → <span class="jp">きれいな花</span> <span class="ok">⭕</span> / <span class="jp">きれい花 · きれくない</span> <span class="ng">✕</span></li>
-    <li><b>명사는 の, な형용사는 な</b>: <span class="jp">学生の本</span> (학생의 책) / <span class="jp">静かな町</span> (조용한 동네)</li>
-    <li><b>好き · 嫌い · 上手 · 下手</b>는 대상에 <b>が</b>: <span class="jp">日本語が好きです</span> (일본어를 좋아합니다 — を ✕)</li>
-    <li>과거 정중은 <b>でした</b>: <span class="jp">静かでした</span> <span class="ok">⭕</span> / <span class="jp">静かかったです</span> <span class="ng">✕</span> (かった는 い형용사에만)</li></ul>
+    <li><b>い로 끝나도 な형용사</b>: ${J('きれい', 'きれい', '예쁘다·깨끗하다')} · ${J('嫌い', 'きらい', '싫어하다')} · ${J('有名', 'ゆうめい', '유명하다')} → ${J('きれいな花', 'きれいなはな', '예쁜 꽃')} <span class="ok">⭕</span> / <span class="jp">きれい花 · きれくない</span> <span class="ng">✕</span></li>
+    <li><b>同じ</b>(같다)는 명사 앞에서 <b>な 없이</b>: ${J('同じ本', 'おなじほん', '같은 책')} <span class="ok">⭕</span> / <span class="jp">同じな本</span> <span class="ng">✕</span> (나머지 활용은 な형용사와 같음: 同じだ·同じじゃない)</li>
+    <li><b>명사로도 쓰는 말</b>: 元気·自由·健康 → ${J('元気な子', 'げんきなこ', '건강한 아이')} (な형용사) / ${J('元気がない', 'げんきがない', '기운이 없다')} (명사)</li>
+    <li><b>명사는 の, な형용사는 な</b>: ${J('学生の本', 'がくせいのほん', '학생의 책')} (학생의 책) / ${J('静かな町', 'しずかなまち', '조용한 동네')} (조용한 동네)</li>
+    <li><b>好き · 嫌い · 上手 · 下手</b>는 대상에 <b>が</b>: ${J('日本語が好きです', 'にほんごがすきです', '일본어를 좋아합니다')} (일본어를 좋아합니다 — を ✕)</li>
+    <li>과거 정중은 <b>でした</b>: ${J('静かでした', 'しずかでした', '조용했습니다')} <span class="ok">⭕</span> / <span class="jp">静かかったです</span> <span class="ng">✕</span> (かった는 い형용사에만)</li></ul>
   <h2>④ い형용사와 나란히 비교</h2>
   <table><tr><th style="width:15%"></th><th>명사 꾸미기</th><th>부정</th><th>과거</th><th>~하고 (て형)</th><th>~하게 (부사)</th><th>~하면</th></tr>
-    <tr><td class="lab">い형용사 高い</td><td class="f jp" lang="ja">${esc(I.dict[0])}山</td>${Ih(I.neg[0])}${Ih(I.past[0])}${Ih(I.te[0])}${Ih(I.adv[0])}${Ih(I.ba[0])}</tr>
-    <tr><td class="lab">な형용사 静かだ</td>${M('な', '町')}${C(R.neg[0])}${C(R.past[0])}${C(R.te[0])}${C(R.adv[0])}${C(R.ba[0])}</tr></table>
+    <tr><td class="lab">い형용사 高い</td><td class="f jp" lang="ja"${gsD('たかいやま', im, '높은 산')}>${esc(I.dict[0])}山</td>${Ih('neg', '부정')}${Ih('past', '과거')}${Ih('te', 'て형 (~하고)')}${Ih('adv', '부사 (~하게)')}${Ih('ba', '가정 (~하면)')}</tr>
+    <tr><td class="lab">な형용사 静かだ</td>${M('な', '町', 'まち', '조용한 동네')}${C('neg')}${C('past')}${C('te')}${C('adv')}${C('ba')}</tr></table>
   <p class="rule">い형용사는 <b>い</b>가 바뀌고 (高<b>く</b>·高<b>かった</b>), な형용사는 <b>だ</b>가 바뀌어요 (静か<b>じゃ</b>·静か<b>だった</b>). 명사 앞에서 い형용사는 그대로, な형용사는 <b>な</b>.</p>
   <h2>⑤ 꼭 외울 な형용사 (${GRAM.adjs.filter(r => r[2] === 'na').length}개)</h2>
   <div class="chips">${naList}</div>
   <div class="foot">한자 1026 · 한 장 공략 · な형용사</div>`;
 }
 function gsV1() {
-  const V = [['会う', 'あう', 'う'], ['待つ', 'まつ', 'つ'], ['帰る', 'かえる', 'る'], ['死ぬ', 'しぬ', 'ぬ'], ['遊ぶ', 'あそぶ', 'ぶ'], ['読む', 'よむ', 'む'],
-             ['書く', 'かく', 'く'], ['泳ぐ', 'およぐ', 'ぐ'], ['話す', 'はなす', 'す'], ['行く', 'いく', 'く★']];
-  const TE = { 'う': 'って', 'つ': 'って', 'る': 'って', 'ぬ': 'んで', 'ぶ': 'んで', 'む': 'んで', 'く': 'いて', 'ぐ': 'いで', 'す': 'して', 'く★': 'って' };
+  // 6가지 종류 = て형·た형이 바뀌는 모양으로 나눔
+  const T = [['①', 'って', [['会う', 'あう'], ['待つ', 'まつ'], ['帰る', 'かえる']]], ['②', 'んで', [['死ぬ', 'しぬ'], ['遊ぶ', 'あそぶ'], ['読む', 'よむ']]],
+             ['③', 'いて', [['書く', 'かく']]], ['④', 'いで', [['泳ぐ', 'およぐ']]], ['⑤', 'して', [['話す', 'はなす']]], ['⑥', '行って', [['行く', 'いく']]]];
   const K = ['masu', 'nai', 'te', 'ta', 'ba', 'vol', 'pot'];
-  const rows = V.map(([w, y, e]) => { const R = conjVerb(w, y, w === '行く' ? '1k' : '1');
-    return `<tr><td class="f jp" lang="ja" style="text-align:center">${esc(w)} <span class="gsr">${esc(y)}</span></td>${K.map(k => gsCell(w.slice(0, -1), R[k][0])).join('')}</tr>`; }).join('');
-  const R = conjVerb('書く', 'かく', '1'), Cw = f => gsCell('書', f);
+  const VM = Object.fromEntries(GRAM.verbs.map(r => [r[0], r[3]]));
+  const rows = T.map(([no, te, vs], ti) => vs.map(([w, y], i) => { const R = conjVerb(w, y, w === '行く' ? '1k' : '1'), m = `${w} · ${gsMean(VM[w] || '')}`;
+    return `<tr class="${ti % 2 ? 'bandb' : 'banda'}">${i ? '' : `<td class="tp" rowspan="${vs.length}">${no}${vs.length > 1 ? '<br>' : ' '}<span class="jp">${te}</span></td>`}<td class="f jp" lang="ja" style="text-align:center"${gsD(y, m, '기본형')}>${esc(w)} <span class="gsr">${esc(y)}</span></td>${K.map(k => gsCell(w.slice(0, -1), R[k][0], R[k][1], m, GS_FORM[k])).join('')}</tr>`; }).join('')).join('');
+  const R = conjVerb('書く', 'かく', '1'), wm = '書く · 쓰다', Cw = (k, f, fy, sub) => gsCell('書', f || R[k][0], fy || R[k][1], wm, GS_FORM[k] || k, sub);
+  // 특수: 존경어 (ます 앞에서 る → い, 명령형도 い) · ある (ない형 = ない)
+  const SP = [['いらっしゃる', '계시다·오시다'], ['おっしゃる', '말씀하시다'], ['くださる', '주시다'], ['なさる', '하시다'], ['ござる', '있다 (매우 정중)'], ['ある', '있다 (사물)']];
+  const sk = [['masu', 'ます형'], ['nai', 'ない형'], ['imp', '명령형']];
+  const spCell = (w, k) => { if (w === 'ござる' && k !== 'masu') return '<td class="rule">—</td>';
+    const R2 = conjVerb(w, w, w === 'ある' ? '1r' : '1a'), f = R2[k];
+    if (!f || f[0] === '—') return '<td class="rule">—</td>';
+    const hot = (k === 'masu' || k === 'imp') && w !== 'ある' || (k === 'nai' && w === 'ある');
+    const n = k === 'imp' && w !== 'ある' ? '명령형 — 존경어라 공손함 (~하세요·~해 주세요)' : GS_FORM[k];
+    return `<td class="f jp" lang="ja"${gsD(f[1], w + ' · ' + SP.find(s => s[0] === w)[1], n)}>${hot ? `<b class="h">${esc(f[0])}</b>` : esc(f[0])}</td>`; };
   const groups = {};
   GRAM.verbs.filter(r => r[2].startsWith('1') && r[4] === 5).forEach(r => { const e = r[1].slice(-1); (groups[e] = groups[e] || []).push(r); });
   const order = ['う', 'く', 'ぐ', 'す', 'つ', 'ぬ', 'ぶ', 'む', 'る'];
-  const list = '<div class="chips">' + order.filter(e => groups[e]).map(e => `<span class="gk">～${e}</span>${groups[e].map(r => `<span><span class="jp" lang="ja">${esc(r[0])}</span> ${esc(r[3].replace(/\s*\(.*\)/, '').split(/[·,]/)[0])}</span>`).join('')}`).join('') + '</div>';
+  const list = '<div class="chips">' + order.filter(e => groups[e]).map(e => `<span class="gk">～${e}</span>${groups[e].map(r => `<span class="w"${gsD(r[1], r[3])}><span class="jp" lang="ja">${esc(r[0])}</span> ${esc(gsMean(r[3]))}</span>`).join('')}`).join('') + '</div>';
   return `<div class="gshead"><h1>1그룹 동사 한 장 공략</h1><p>옛 이름 <b>5단 동사</b> · 기본형 끝이 <b>う단</b> (う·く·ぐ·す·つ·ぬ·ぶ·む·る) · 끝 글자가 あ·い·う·え·お단을 오가며 바뀜</p></div>
   <h2>① 1그룹인지 구별하기</h2>
-  <ul><li><b>る가 아닌 글자</b>로 끝나면 → 모두 1그룹 (書く · 飲む · 話す · 待つ)</li>
-    <li><b>る</b>로 끝나도 る 앞이 <b>あ·う·お단</b>이면 → 1그룹 (分かる · 降る · 乗る) · い·え단이면 대부분 2그룹 (見る · 食べる)</li>
-    <li><b>예외 (2그룹처럼 보이지만 1그룹)</b>: <span class="jp">帰る · 入る · 走る · 知る · 切る · 要る · 減る · しゃべる</span> → 帰ります · 帰らない</li></ul>
-  <h2>② 모든 활용 — 끝 글자별 (색칠 = 바뀌는 부분)</h2>
-  <table><tr><th style="width:12%">기본형</th><th>ます형<br><span class="rule">う단→い단+ます</span></th><th>ない형<br><span class="rule">う단→あ단+ない</span></th><th>て형<br><span class="rule">끝소리별 (아래)</span></th><th>た형<br><span class="rule">て→た · で→だ</span></th><th>ば형<br><span class="rule">う단→え단+ば</span></th><th>의지형<br><span class="rule">う단→お단+う</span></th><th>가능형<br><span class="rule">う단→え단+る</span></th></tr>${rows}</table>
-  <p class="rule">て형 노래: <b>う·つ·る → って</b> · <b>ぬ·ぶ·む → んで</b> · <b>く → いて</b> · <b>ぐ → いで</b> · <b>す → して</b> · ★ 行く만 → 行って·行った (行いて ✕)<br>주의: う로 끝나면 ない형은 <b>わ</b> → 会わない (会あない ✕) · <b>ある</b>(있다)의 ない형은 그냥 <b>ない</b> (あらない ✕) · ます는 <b>い단</b>에 붙음 → 書きます (書くます ✕)</p>
-  <h2>③ 書く 하나로 보는 나머지 모양</h2>
-  <table><tr><th>정중 현재</th><th>정중 과거</th><th>정중 부정</th><th>정중 과거부정</th><th>보통 과거부정</th><th>~하고 싶다</th></tr>
-    <tr>${Cw('書きます')}${Cw('書きました')}${Cw('書きません')}${Cw('書きませんでした')}${Cw(R.nakatta[0], R.nakatta[1])}${Cw(R.tai[0], R.tai[1])}</tr>
-    <tr><th>명령형</th><th>수동형 (~당하다)</th><th>사역형 (~시키다)</th><th>사역수동</th><th>~하면서</th><th>~하러 가다</th></tr>
-    <tr>${Cw(R.imp[0], R.imp[1])}${Cw(R.pass[0], R.pass[1])}${Cw(R.caus[0], R.caus[1])}${Cw(R.causp[0], R.causp[1])}${Cw('書きながら')}${Cw('書きに行く')}</tr></table>
-  <h2>④ 자주 쓰는 1그룹 동사 (N5) — 끝 글자별</h2>
+  <ul><li><b>る가 아닌 글자</b>로 끝나면 → 모두 1그룹 (${gsWs('書く · 飲む · 話す · 待つ')})</li>
+    <li><b>る</b>로 끝나도 る 앞이 <b>あ·う·お단</b>이면 → 1그룹 (${gsWs('分かる · 降る · 乗る')}) · い·え단이면 대부분 2그룹 (${gsWs('見る · 食べる')})</li>
+    <li><b>예외 (2그룹처럼 보이지만 1그룹)</b>: ${gsWs('帰る · 入る · 走る · 知る · 切る · 要る · 減る · しゃべる')} → 帰ります · 帰らない</li>
+    <li><b>소리가 같은데 그룹이 다름</b> ⚠: ${gsW('切る')}(자르다·1) 切ります·切って ↔ ${gsW('着る')}(입다·2) 着ます·着て · ${gsW('要る')}(필요하다·1) ↔ ${gsW('いる')}(있다·2) · ${gsW('帰る')}(돌아가다·1) ↔ ${gsW('変える')}(바꾸다·2)</li></ul>
+  <h2>② 6가지 종류 — て형·た형이 바뀌는 모양으로 나눔 (색칠 = 바뀌는 부분)</h2>
+  <table><tr><th style="width:7%">종류</th><th style="width:12%">기본형</th><th>ます형<br><span class="rule">う단→い단+ます</span></th><th>ない형<br><span class="rule">う단→あ단+ない</span></th><th>て형</th><th>た형<br><span class="rule">て→た · で→だ</span></th><th>ば형<br><span class="rule">う단→え단+ば</span></th><th>의지형<br><span class="rule">う단→お단+う</span></th><th>가능형<br><span class="rule">う단→え단+る</span></th></tr>${rows}</table>
+  <p class="rule">て형: ① <b>う·つ·る→って</b> ② <b>ぬ·ぶ·む→んで</b> ③ <b>く→いて</b> ④ <b>ぐ→いで</b> ⑤ <b>す→して</b> ⑥ <b>行く→行って</b> · う로 끝나면 ない형은 <b>わ</b> (会わない)</p>
+  <h2>③ 특수 — 규칙에서 벗어나는 1그룹 (색칠 = 특수한 곳)</h2>
+  <table><tr><th style="width:13%"></th>${SP.map(([w, m]) => `<th class="w"${gsD(w, w + ' · ' + m, '기본형')}><span class="jp" lang="ja">${esc(w)}</span> <span class="rule">${esc(m.split('·')[0].replace(/ \(.*/, ''))}</span></th>`).join('')}</tr>
+    ${sk.map(([k, n]) => `<tr><td class="lab">${n}</td>${SP.map(([w]) => spCell(w, k)).join('')}</tr>`).join('')}</table>
+  <p class="rule">ます 앞·명령형에서 <b>る→い</b> (いらっしゃります ✕) → <b>ください·～なさい</b>의 뿌리 · 나머지(て형 등)는 규칙대로</p>
+  <h2>④ 書く 하나로 보는 나머지 모양</h2>
+  <table><tr><th>보통 과거부정</th><th>~하고 싶다</th><th>명령형 (거친 말)</th><th>수동형 ~당하다</th><th>사역형 ~시키다</th><th>사역수동</th><th>~하면서</th></tr>
+    <tr>${Cw('nakatta')}${Cw('tai')}${Cw('imp')}${Cw('pass')}${Cw('caus')}${Cw('causp', '書かされる', 'かかされる', '= 書かせられる')}${Cw('~하면서', '書きながら', 'かきながら')}</tr></table>
+  <p class="rule">사역수동은 줄여서 <b>書かされる</b>를 많이 씀 (= 書かせられる) · 단 す로 끝나는 동사는 줄이지 않음 → 話させられる</p>
+  <h2>⑤ 자주 쓰는 1그룹 동사 (N5) — 끝 글자별</h2>
   ${list}
   <div class="foot">한자 1026 · 한 장 공략 · 1그룹 동사</div>`;
 }
 const GSHEETS = [
-  { id: 'na', t: 'な형용사', d: '문장 끝 · な·に·で 바뀌는 곳 · い형용사와 비교 · 외울 목록', html: gsNa },
-  { id: 'v1', t: '1그룹 동사', d: '구별법 · 끝 글자별 모든 활용 · て형 노래 · 외울 목록', html: gsV1 },
+  { id: 'na', t: 'な형용사', d: '문장 끝 · な·に·で 바뀌는 곳 · 특수한 경우 · い형용사와 비교', html: gsNa },
+  { id: 'v1', t: '1그룹 동사', d: '구별법 · 6가지 종류 · 특수(존경어·ある) · 외울 목록', html: gsV1 },
 ];
 let GSV = { id: null, s: 1, x: 0, y: 0, fit: 1, blob: null };
 function renderGsheet(id) {
@@ -2427,7 +2470,7 @@ function renderGsheet(id) {
       <button id="gsPrev" class="nv" ${k ? '' : 'disabled style="opacity:.4"'}>‹</button><button id="gsNext" class="nv" ${k < GSHEETS.length - 1 ? '' : 'disabled style="opacity:.4"'}>›</button><span class="t"></span>
       <button id="gsFit">🔍 전체</button><button id="gsSave">⬇️ 저장</button></div>
     <div class="gsstage" id="gsStage"><div class="gspage" id="gsPage">${g.html()}</div></div>
-    <p class="muted" style="text-align:center;font-size:.78rem;margin-top:4px">두 손가락으로 확대 · 끌어서 이동 · 두 번 탭하면 확대/전체</p>`;
+    <p class="muted" style="text-align:center;font-size:.78rem;margin-top:4px">두 손가락으로 확대 · 끌어서 이동 · 두 번 탭 = 확대/전체 · <b>낱말을 꾹 누르면 읽기·뜻·발음</b></p>`;
   show('Gsheet', '📄 ' + g.t);
   $('#gsList').onclick = () => renderGsheet();
   if (k) $('#gsPrev').onclick = () => renderGsheet(GSHEETS[k - 1].id);
@@ -2454,21 +2497,56 @@ function gsInit() {
   const zoomAt = (ns, cx, cy) => { ns = Math.min(GSV.fit * 6, Math.max(GSV.fit * 0.9, ns)); GSV.x = cx - (cx - GSV.x) * ns / GSV.s; GSV.y = cy - (cy - GSV.y) * ns / GSV.s; GSV.s = ns; clamp(); apply(); };
   window.gsFit = () => { GSV.fit = st.clientWidth / GS_W; GSV.s = GSV.fit; GSV.x = 0; GSV.y = 0; clamp(); apply(); };
   gsFit();
-  const pts = new Map(); let pinch = null, lastTap = 0;
+  const pts = new Map(); let pinch = null, lastTap = 0, hold = null;
   const rel = e => { const r = st.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  const endHold = () => { if (!hold) return; clearTimeout(hold.timer);
+    if (hold.shown) { gsPop(null); if (!hold.spoke && !speechSynthesis.speaking && !speechSynthesis.pending) gsSay(hold.el.dataset.y); }   // 누르는 동안 소리가 막힌 기기(아이폰 등)는 뗄 때 읽어 줌
+    hold = null; };
   st.onpointerdown = e => {
     st.setPointerCapture(e.pointerId); pts.set(e.pointerId, rel(e));
+    endHold();
+    const el = pts.size === 1 && e.target.closest && e.target.closest('#gsPage [data-y]');
+    if (el) { const h = hold = { el, x: e.clientX, y: e.clientY, shown: false, spoke: false };
+      h.timer = setTimeout(() => { if (hold !== h) return; h.shown = true; lastTap = 0; gsPop(el, h.x, h.y); gsSay(el.dataset.y, () => { h.spoke = true; }); }, 400); }
     if (pts.size === 1) { const now = Date.now(), p = rel(e); if (now - lastTap < 300) { GSV.s > GSV.fit * 1.3 ? gsFit() : zoomAt(GSV.fit * 2.5, p.x, p.y); lastTap = 0; } else lastTap = now; }
     if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: GSV.s }; }
   };
+  st.oncontextmenu = e => e.preventDefault();
   st.onpointermove = e => {
     if (!pts.has(e.pointerId)) return;
     const prev = pts.get(e.pointerId), p = rel(e); pts.set(e.pointerId, p);
+    if (hold) { if (hold.shown) return; if (Math.hypot(e.clientX - hold.x, e.clientY - hold.y) > 8) { clearTimeout(hold.timer); hold = null; } }
     if (pts.size === 1) { GSV.x += p.x - prev.x; GSV.y += p.y - prev.y; clamp(); apply(); }
     else if (pts.size === 2 && pinch) { const [a, b] = [...pts.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y); zoomAt(pinch.s * d / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2); }
   };
-  st.onpointerup = st.onpointercancel = e => { pts.delete(e.pointerId); if (pts.size < 2) pinch = null; };
+  st.onpointerup = st.onpointercancel = e => { pts.delete(e.pointerId); if (pts.size < 2) pinch = null; endHold(); };
   st.onwheel = e => { e.preventDefault(); const p = rel(e); zoomAt(GSV.s * (e.deltaY < 0 ? 1.15 : 1 / 1.15), p.x, p.y); };
+}
+// 말풍선: 손가락 위쪽에 (화면 밖으로 안 나가게) · el 없으면 닫기
+function gsPop(el, x, y) {
+  let pop = $('#gsPop');
+  document.querySelectorAll('#gsPage [data-y].on').forEach(e => e.classList.remove('on'));
+  if (!el) { if (pop) pop.remove(); return; }
+  if (!pop) { pop = document.createElement('div'); pop.id = 'gsPop'; pop.className = 'gspop'; document.body.appendChild(pop); }
+  el.classList.add('on');
+  const t = (el.querySelector('.jp') || el).textContent.replace(/\s.*$/, '') || el.textContent;
+  const d = el.dataset;
+  pop.innerHTML = `<div class="t" lang="ja">${esc(t)}</div>${d.y && d.y !== t ? `<div class="y" lang="ja">${esc(d.y)}</div>` : ''}${d.m ? `<div class="m">${esc(d.m)}</div>` : ''}${d.n ? `<div class="n">${esc(d.n)}</div>` : ''}`;
+  const w = pop.offsetWidth, h = pop.offsetHeight;
+  pop.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, x - w / 2)) + 'px';
+  pop.style.top = (y - h - 40 > 8 ? y - h - 40 : y + 40) + 'px';
+}
+// 발음: 아이폰 기본 일본어 음성 · 실제로 소리가 시작되면 ok() (막히면 뗄 때 다시 읽음)
+function gsSay(text, ok) {
+  if (!canSpeak() || !text) return;
+  if (window.LA && !window.LA.paused) window.LA.pause();
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(ttsText(text));
+    u.lang = 'ja-JP'; u.rate = Math.min(S.rate, 0.9); if (jaVoice) u.voice = jaVoice;
+    if (ok) u.onstart = ok;
+    speechSynthesis.speak(u);
+  } catch (e) {}
 }
 // 저장: 미리 받아 둔 PNG → 공유 창(아이폰: '이미지 저장' → 사진 앱) · 안 되면 파일 내려받기
 async function gsSave(g) {
@@ -2504,7 +2582,7 @@ const SHEET_ONLY = new URLSearchParams(location.search).get('sheet');
 if (SHEET_ONLY) {
   // src/build_sheets.py 가 이 주소를 헤드리스 크롬으로 찍어 PNG로 저장
   document.body.innerHTML = '<div id="gsOnly"></div>'; document.body.style.background = '#fff'; document.body.style.margin = '0';
-  loadScript('data/gram.js?t=' + Date.now()).then(() => { const g = GSHEETS.find(x => x.id === SHEET_ONLY); $('#gsOnly').innerHTML = `<div class="gspage">${g.html()}</div>`;
+  loadScript('data/gram.js?t=' + Date.now()).then(() => { const g = GSHEETS.find(x => x.id === SHEET_ONLY); $('#gsOnly').innerHTML = `<div class="gspage gsprint">${g.html()}</div>`;
     document.fonts.ready.then(() => { document.title = 'READY ' + $('#gsOnly .gspage').scrollHeight; }); });
 } else loadGrades().then(() => {
   if (!D.items.length) { $('#scrHome').innerHTML = '<div class="card">⚠ 한자 데이터를 불러오지 못했어요. 새로고침 해 주세요.</div>'; show('Home'); return; }
