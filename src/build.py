@@ -153,9 +153,12 @@ def write_index():
     md5 = lambda p: hashlib.md5(open(p, 'rb').read()).hexdigest()[:8]
     ver = {str(g): md5(os.path.join(dd, f'g{g}.js')) for g in avail}
     fv = lambda name: md5(os.path.join(dd, name)) if os.path.exists(os.path.join(dd, name)) else ''
+    sd = os.path.join(dd, 'sheets')          # 📄 한 장 공략 그림(build_sheets.py) — 모두 합친 해시
+    sheets_ver = hashlib.md5(b''.join(open(os.path.join(sd, f), 'rb').read() for f in sorted(os.listdir(sd)) if f.endswith('.png'))).hexdigest()[:8] if os.path.isdir(sd) else ''
     open(os.path.join(dd, 'index.js'), 'w', encoding='utf-8').write(
         f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};'
-        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};window.LISTEN_VER={json.dumps(fv("listen.js"))};window.POS_VER={json.dumps(fv("pos.js"))};\n')
+        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};window.LISTEN_VER={json.dumps(fv("listen.js"))};window.POS_VER={json.dumps(fv("pos.js"))};'
+        f'window.SHEETS_VER={json.dumps(sheets_ver)};\n')
 
 def main(grade):
     J = json.load(open(os.path.join(REF_DIR, 'jouyou.json'), encoding='utf-8'))
