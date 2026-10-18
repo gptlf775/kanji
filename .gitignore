@@ -7,3 +7,4 @@ promo/_make/
 src/audit_listen.json
 src/audit_listen.jsonl
 src/audit_pos.jsonl
+src/audit_vocd.jsonl

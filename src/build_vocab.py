@@ -23,6 +23,19 @@ def main():
     rows = json.load(open(os.path.join(REF, 'jlpt', 'vocab_work.json'), encoding='utf-8'))
     rows, dropped = normalize(rows)
     rows = merge_variants(rows, gram)
+    # 보충 단어(vocab_extra.txt)·급수 보정(vocab_lv.txt) — 시중 N5 필수 단어 목록과 대조한 결과
+    ex_ko = {}
+    for n, line in enumerate(open(os.path.join(HERE, 'vocab_extra.txt'), encoding='utf-8'), 1):
+        if not line.strip() or line.startswith('#'): continue
+        parts = line.rstrip('\n').split('|')
+        if len(parts) != 5: errors.append(f'vocab_extra.txt {n}행 형식 오류: {line.strip()}'); continue
+        w, y, p, lv, k = parts
+        if any(r['w'] == w and r['y'] == y for r in rows): infos.append(f'보충 단어가 이미 목록에 있음: {w}({y})'); continue
+        rows.append(dict(w=w, y=y, en='', lv=int(lv), pos=[p], nf=99, cm=True)); ex_ko[(w, y)] = k
+    lvfix = {tuple(l.strip().split('|')) for l in open(os.path.join(HERE, 'vocab_lv.txt'), encoding='utf-8') if l.strip() and not l.startswith('#')}
+    for r in rows:
+        if (r['w'], r['y']) in lvfix: r['lv'] = 5; lvfix.discard((r['w'], r['y']))
+    for u in sorted(lvfix): errors.append(f'vocab_lv.txt 의 말이 목록에 없음: {u}')
     ko = {}
     kp = os.path.join(HERE, 'vocab_ko.txt')
     for n, line in enumerate(open(kp, encoding='utf-8').read().strip().splitlines(), 1):
@@ -38,7 +51,7 @@ def main():
     gcat = {k: v[:2] for k, v in gram.items()}
     for r in rows:
         key = (r['w'], r['y'])
-        k = gram[key][2] if key in gram else ko.get(key)
+        k = gram[key][2] if key in gram else ko.get(key) or ex_ko.get(key)
         if k: k = re.sub(r'\s*\(★[^)]*\)', '', k)      # 활용어 목록의 ★ 메모는 단어장에서 뺌
         if not k: errors.append(f'한국어 뜻 없음: {r["w"]}({r["y"]})'); continue
         if re.search(r'[A-Za-z]{3,}', k) and not re.search(r'(TV|CD|DVD|PC|OK)', k): infos.append(f'영어가 섞인 뜻: {r["w"]} = {k}')
@@ -63,7 +76,7 @@ def main():
     words.sort(key=lambda x: (x['core'], x['s'], -x['lv'], x['n']))
     infos.insert(0, f'기초어 우선 배치 {len(pos)}개')
     out = [[x['w'], x['y'], x['c'], x['k'], x['lv'], x['g']] for x in words]
-    data = dict(src='JLPT N5·N4 단어 목록: Jonathan Waller (tanos.co.uk, CC BY) · 한국어 뜻·품사 정리: 이 앱', words=out)
+    data = dict(src='JLPT N5·N4 단어 목록: Jonathan Waller (tanos.co.uk, CC BY) · N5 보충·급수 보정: 시중 N5 필수 단어 목록 대조 · 한국어 뜻·품사 정리: 이 앱', words=out)
     js = 'window.VOCAB=' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n'
     open(os.path.join(ROOT, 'data', 'vocab.js'), 'w', encoding='utf-8').write(js)
     write_index()

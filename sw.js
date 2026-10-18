@@ -3,7 +3,7 @@
 const CACHE = 'kanji1026-v6';
 const CORE = ['./', './index.html', './guide.html', './manifest.webmanifest',
   './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
-const DATA = ['./data/index.js', './data/gram.js', './data/vocab.js', './data/kana.js', './data/listen.js', './data/pos.js', ...[1, 2, 3, 4, 5, 6].map(g => `./data/g${g}.js`)];  // 없는 파일은 건너뜀
+const DATA = ['./data/index.js', './data/gram.js', './data/vocab.js', './data/kana.js', './data/listen.js', './data/pos.js', './data/vocd.js', ...[1, 2, 3, 4, 5, 6].map(g => `./data/g${g}.js`)];  // 없는 파일은 건너뜀
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(async c => {
