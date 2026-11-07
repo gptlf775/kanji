@@ -253,6 +253,11 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .gspop .y{font-family:var(--jp);font-size:1.05rem;color:#FFD3BC;margin-top:2px;}
 .gspop .m{font-size:.9rem;margin-top:4px;} .gspop .n{font-size:.8rem;color:#C9BFB6;margin-top:2px;}
 .gspage [data-y].on{outline:3px solid #FF8A65;outline-offset:1px;border-radius:3px;}
+.hwbox{position:relative;width:100%;max-width:340px;aspect-ratio:1;margin:0 auto;background:#fff;border:2px solid var(--line);border-radius:14px;overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+.hwbox canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block;}
+.hwbox .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--sub);font-size:.95rem;pointer-events:none;padding:20px;}
+.hwbtn{display:flex;gap:8px;max-width:340px;margin:8px auto 0;} .hwbtn button{flex:1;padding:10px;border-radius:12px;background:#F3EBE1;font-weight:bold;font-size:.92rem;}
+.hwbtn button:disabled{opacity:.45;}
 .gslist{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .gslist button{background:#fff;border-radius:14px;padding:14px 10px;text-align:left;box-shadow:0 2px 8px rgba(120,90,60,.07);}
 .gslist button b{display:block;font-size:1.05rem;} .gslist button small{color:var(--sub);font-size:.8rem;}
@@ -289,6 +294,7 @@ textarea{height:90px;font-size:12px;}
 .seg{display:flex;background:#F3EBE1;border-radius:12px;padding:3px;}
 .seg button{padding:8px 14px;border-radius:10px;font-weight:bold;}
 .seg button.on{background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.set .seg button{white-space:nowrap;padding:8px 10px;}
 .modal{position:fixed;inset:0;background:rgba(60,45,30,.35);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;}
 .modal .card{width:100%;max-width:420px;}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#3E3A36;color:#fff;
@@ -386,7 +392,7 @@ const KH = (() => {
 
 /* ═══════════════ 저장소 ═══════════════ */
 function defaultState() {
-  return { v: 1, mode: null, name: '', newPerDay: CFG.DEFAULT_NEW.kid, hangul: true, rate: 0.8,
+  return { v: 1, mode: null, name: '', newPerDay: CFG.DEFAULT_NEW.kid, hangul: true, rate: 0.8, review: true,
     srs: {}, streak: { n: 0, last: 0 }, stickers: '', today: { day: 0, newDone: 0, revDone: 0 },
     weak: {},                                                                   // 연습에서 틀린 한자 → 헷갈린 한자 (복습 일정과 별개)
     kana: { m: 'see', sets: { seion: true, daku: false, yoon: false, sp: false } }, kanaW: {},   // 가나 연습 옵션·약한 글자
@@ -532,7 +538,7 @@ const maxLv = it => (it.sent && it.sent.length) ? 5 : 4;          // 예문이 �
 const lvOf = k => (st(k) && st(k).lv) || 0;
 const isUsable = k => lvOf(k) >= 3;                               // '쓸 수 있는 한자' = 단어를 읽을 수 있음
 const isMast = k => { const s = st(k), it = D.byK[k]; return !!(s && it && s.lv >= maxLv(it) && s.b >= CFG.MASTER_BOX); };
-const isDue = k => !!st(k) && st(k).d <= dayNum();
+const isDue = k => S.review && !!st(k) && st(k).d <= dayNum();   // 설정에서 복습을 끄면 '오늘 복습'이 없음 (일정 자료는 그대로)
 function dueList() { return D.items.filter(it => isDue(it.k)).sort((a, b) => st(a.k).d - st(b.k).d || st(a.k).b - st(b.k).b); }
 function freshList() { return D.items.filter(it => !st(it.k)); }
 const newCap = () => Math.min(CFG.NEW_MAX, S.newPerDay + (S.today.bonus || 0));   // 하루 새 한자 상한 10자
@@ -567,7 +573,7 @@ function renderHome() {
       ${nothing ? `<div class="big">🎉</div><p style="margin:8px 0 14px">오늘 할 공부를 다 했어요!<br><span class="muted">많이 보는 것보다 내일 기억하는 게 더 중요해요.</span></p>
         <button class="btn sub" id="goExtra">🔁 헷갈린 한자 더 연습</button>
         ${canMore ? `<button class="btn ghost" id="goMore">➕ 새 한자 조금 더 (오늘 최대 ${CFG.NEW_MAX}자)</button>` : `<p class="muted" style="margin-top:10px">오늘 새 한자는 ${CFG.NEW_MAX}자까지 — 내일 또 만나요!</p>`}`
-      : `<div class="stat"><div><b>${due.length}</b><span class="muted">복습 (먼저)</span></div><div><b>${fresh.length}</b><span class="muted">새 한자</span></div></div>
+      : `<div class="stat"><div><b>${S.review ? due.length : '—'}</b><span class="muted">${S.review ? '복습 (먼저)' : '복습 꺼짐'}</span></div><div><b>${fresh.length}</b><span class="muted">새 한자</span></div></div>
         <button class="btn main" id="goStudy">▶ 공부 시작!</button>`}
     </div>
     <div class="card">
@@ -580,6 +586,7 @@ function renderHome() {
       <button id="goSheet" class="wide"><span>📋</span>한 장 정리 <small class="muted" style="display:block;font-weight:normal">히라가나·가타카나 (연습 문제) · 숫자·날짜·세는 말…</small></button>
       <button id="goListen" class="wide"><span>🎧</span>문장 듣기 <small class="muted" style="display:block;font-weight:normal">문법 순서 회화 · 품사별(형용사·동사) 듣기 · 한국어 → 일본어 여성 → 남성</small></button>
       <button id="goGsheet" class="wide"><span>📄</span>한 장 공략 <small class="muted" style="display:block;font-weight:normal">품사·활용 규칙을 한 장에 · 확대해서 보기 · 사진 저장·인쇄</small></button>
+      <button id="goDraw" class="wide"><span>✍️</span>손글씨로 한자 찾기 <small class="muted" style="display:block;font-weight:normal">손가락으로 쓰면 1026자에서 찾아 뜻·읽기·획순을 보여 줘요</small></button>
       <button id="goGram"><span>🔀</span>활용어 <small class="muted" style="display:block;font-weight:normal">문법 · 동사·형용사 활용</small></button>
       <button id="goVocab"><span>📒</span>단어장 <small class="muted" style="display:block;font-weight:normal">N5·N4 많이 쓰는 순</small></button>
       <button id="goKprac"><span>✏️</span>한자 연습</button>
@@ -597,6 +604,7 @@ function renderHome() {
   on('goExtra', () => startExtra());
   on('goList', () => renderList(listGrade));
   on('goSearch2', () => renderSearch());
+  on('goDraw', () => { searchMode = 'draw'; renderSearch(); });
   on('goRules', () => renderRules());
   on('goSheet', () => renderSheet());
   on('goGram', () => renderGram());
@@ -626,7 +634,7 @@ function renderList(g) {
   });
   $('#scrList').innerHTML = `<div class="tabs">${tabs}</div>
     <p class="muted" style="font-size:.8rem">초N = 일본 초등학교 N학년에서 배우는 한자</p>
-    <div class="legend"><span><i></i>아직</span><span><i style="background:var(--accent-soft)"></i>배우는 중</span><span><i style="background:#DCEBFA"></i>쓸 수 있음</span><span><i style="background:var(--ok-soft)"></i>익힘</span><span>🟠 오늘 복습</span></div>${body}`;
+    <div class="legend"><span><i></i>아직</span><span><i style="background:var(--accent-soft)"></i>배우는 중</span><span><i style="background:#DCEBFA"></i>쓸 수 있음</span><span><i style="background:var(--ok-soft)"></i>익힘</span>${S.review ? '<span>🟠 오늘 복습</span>' : ''}</div>${body}`;
   $('#scrList').querySelectorAll('.tabs button').forEach(b => b.onclick = () => renderList(+b.dataset.g));
   $('#scrList').querySelectorAll('.tile').forEach(b => b.onclick = () => renderCard(b.dataset.k, 'browse'));
   show('List', '📚 한자 목록');
@@ -828,9 +836,11 @@ function searchRows(q) {
   return { res };
 }
 function renderSearch() {
+  const seg = `<div class="seg" style="margin-bottom:10px">${[['mean', '📖 의미'], ['sound', '🔊 발음'], ['draw', '✍️ 쓰기']].map(([v, t]) => `<button data-sm="${v}" class="grow ${searchMode === v ? 'on' : ''}">${t}</button>`).join('')}</div>`;
+  if (searchMode === 'draw') return renderDraw(seg);
   const ph = searchMode === 'sound' ? '예: 아 · 학교 · よっか · がっこう · 四' : '예: 공부 · 물 · 넷 · 배우다 · 学校';
   $('#scrSearch').innerHTML = `<div class="card">
-    <div class="seg" style="margin-bottom:10px"><button data-sm="mean" class="grow ${searchMode === 'mean' ? 'on' : ''}">📖 의미로 찾기</button><button data-sm="sound" class="grow ${searchMode === 'sound' ? 'on' : ''}">🔊 발음으로 찾기</button></div>
+    ${seg}
     <input type="text" id="sq" placeholder="${ph}" value="${esc(searchQ)}" autocomplete="off">
     <p class="muted" style="font-size:.8rem;margin-top:6px">${searchMode === 'sound' ? '한글은 <b>한국 음</b>으로만 찾아요 (아 → 児 아이 아 · 芽 싹 아 …, 뜻에 \'아\'가 든 한자는 제외). 히라가나·가타카나는 일본어 읽기로 찾아요.' : '훈의 <b>뜻 부분</b>·한자 뜻·단어 뜻으로 찾아요 (한국 음은 제외).'}</p></div><div id="sres"></div>`;
   const row = x => `<button class="srow" data-k="${x.it.k}"><span class="c jp" lang="ja">${x.it.k}</span><span class="t"><b>${esc(x.it.hun)}</b> <span class="muted">초${x.it.g}</span><br><span class="jp" lang="ja">${esc(x.why)}</span></span></button>`;
@@ -854,6 +864,185 @@ function renderSearch() {
   run();
   show('Search', '🔍 한자 검색');
   if (!navReplay) setTimeout(() => $('#sq').focus(), 50);
+}
+
+/* ═══════════════ ✍️ 손글씨 인식 (1026자 · 인터넷 없이 기기 안에서) ═══════════════ */
+// 한자 카드의 획 자료(KanjiVG, it.st)를 그대로 본보기로 씀 → 내려받을 자료가 따로 없음
+// ① 글자 전체의 '선 방향 분포'(획순·획 수와 상관없음)로 후보 추림 → ② 획끼리 짝지어 비교 (획순이 달라도, 거꾸로 그어도 됨)
+const HW_N = 16, HW_G = 8, HW_D = 4;
+function hwResample(p, n) {
+  const L = [0]; for (let i = 1; i < p.length; i++) L[i] = L[i - 1] + Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]);
+  const T = L[L.length - 1], out = [];
+  if (!T) { for (let i = 0; i < n; i++) out.push(p[0].slice()); return out; }
+  for (let i = 0, j = 0; i < n; i++) {
+    const u = T * i / (n - 1);
+    while (j < p.length - 2 && L[j + 1] < u) j++;
+    const d = L[j + 1] - L[j], t = d ? (u - L[j]) / d : 0;
+    out.push([p[j][0] + (p[j + 1][0] - p[j][0]) * t, p[j][1] + (p[j + 1][1] - p[j][1]) * t]);
+  }
+  return out;
+}
+// SVG 획 경로(M·C·S·L) → 점 목록
+function hwPath(d) {
+  const pts = []; let x = 0, y = 0, cx = null, cy = null;
+  for (const [, c, a] of d.matchAll(/([MmLlCcSs])([^MmLlCcSs]*)/g)) {
+    const v = (a.match(/-?\d*\.?\d+(?:[eE][-+]?\d+)?/g) || []).map(Number), rel = c === c.toLowerCase(), C = c.toUpperCase();
+    if (C === 'M' || C === 'L') {
+      for (let i = 0; i < v.length; i += 2) { x = rel ? x + v[i] : v[i]; y = rel ? y + v[i + 1] : v[i + 1]; pts.push([x, y]); }
+      cx = cy = null; continue;
+    }
+    for (let i = 0; i < v.length; i += C === 'C' ? 6 : 4) {
+      const ox = rel ? x : 0, oy = rel ? y : 0; let x1, y1, x2, y2, ex, ey;
+      if (C === 'C') { x1 = ox + v[i]; y1 = oy + v[i + 1]; x2 = ox + v[i + 2]; y2 = oy + v[i + 3]; ex = ox + v[i + 4]; ey = oy + v[i + 5]; }
+      else { x1 = cx === null ? x : 2 * x - cx; y1 = cy === null ? y : 2 * y - cy; x2 = ox + v[i]; y2 = oy + v[i + 1]; ex = ox + v[i + 2]; ey = oy + v[i + 3]; }
+      for (let k = 1; k <= 12; k++) {
+        const t = k / 12, s = 1 - t;
+        pts.push([s * s * s * x + 3 * s * s * t * x1 + 3 * s * t * t * x2 + t * t * t * ex, s * s * s * y + 3 * s * s * t * y1 + 3 * s * t * t * y2 + t * t * t * ey]);
+      }
+      cx = x2; cy = y2; x = ex; y = ey;
+    }
+  }
+  return pts;
+}
+// 위치·크기 맞추기: 가운데로 옮기고 가로세로 비율은 일부만 맞춤 (길쭉하게·납작하게 써도 되도록)
+function hwNorm(strokes) {
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (const s of strokes) for (const [x, y] of s) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  const w = x1 - x0, h = y1 - y0, m = Math.max(w, h, 1e-6);
+  const sx = 1 / Math.max(Math.sqrt(w * m), m * 0.25), sy = 1 / Math.max(Math.sqrt(h * m), m * 0.25), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  return strokes.map(s => s.map(([x, y]) => [(x - cx) * sx, (y - cy) * sy]));
+}
+// 선 방향 분포: 칸(8×8)마다 네 방향(ㅡ ㅣ / \)의 선 길이 — 획순·획 수와 무관한 '글자 모양'
+function hwFeat(strokes) {
+  const G = HW_G, f = new Float32Array(G * G * HW_D);
+  const put = (x, y, o, w) => {
+    const gx = (x + 0.65) / 1.3 * G - 0.5, gy = (y + 0.65) / 1.3 * G - 0.5, ix = Math.floor(gx), iy = Math.floor(gy), ax = gx - ix, ay = gy - iy;
+    for (const [i, j, c] of [[ix, iy, (1 - ax) * (1 - ay)], [ix + 1, iy, ax * (1 - ay)], [ix, iy + 1, (1 - ax) * ay], [ix + 1, iy + 1, ax * ay]])
+      if (i >= 0 && i < G && j >= 0 && j < G) f[(j * G + i) * HW_D + o] += c * w;
+  };
+  for (const s of strokes) for (let i = 1; i < s.length; i++) {
+    const dx = s[i][0] - s[i - 1][0], dy = s[i][1] - s[i - 1][1], L = Math.hypot(dx, dy); if (!L) continue;
+    const a = ((Math.atan2(dy, dx) % Math.PI) + Math.PI) % Math.PI, q = a / (Math.PI / 4), o = Math.floor(q) % 4, t = q - Math.floor(q);
+    const mx = (s[i][0] + s[i - 1][0]) / 2, my = (s[i][1] + s[i - 1][1]) / 2;
+    put(mx, my, o, L * (1 - t)); put(mx, my, (o + 1) % 4, L * t);
+  }
+  let n = 0; for (let i = 0; i < f.length; i++) n += f[i] * f[i]; n = Math.sqrt(n) || 1;
+  for (let i = 0; i < f.length; i++) f[i] /= n;
+  return f;
+}
+// 획 짝짓기(헝가리안): 전체 차이가 가장 작은 짝을 찾음 (행 ≤ 열)
+function hwAssign(C) {
+  const n = C.length, m = C[0].length, u = new Float64Array(n + 1), v = new Float64Array(m + 1), p = new Int32Array(m + 1), way = new Int32Array(m + 1);
+  for (let i = 1; i <= n; i++) {
+    p[0] = i; let j0 = 0; const minv = new Float64Array(m + 1).fill(Infinity), used = new Uint8Array(m + 1);
+    do {
+      used[j0] = 1; const i0 = p[j0]; let d = Infinity, j1 = 0;
+      for (let j = 1; j <= m; j++) if (!used[j]) {
+        const cur = C[i0 - 1][j - 1] - u[i0] - v[j];
+        if (cur < minv[j]) { minv[j] = cur; way[j] = j0; }
+        if (minv[j] < d) { d = minv[j]; j1 = j; }
+      }
+      for (let j = 0; j <= m; j++) { if (used[j]) { u[p[j]] += d; v[j] -= d; } else minv[j] -= d; }
+      j0 = j1;
+    } while (p[j0] !== 0);
+    do { const j1 = way[j0]; p[j0] = p[j1]; j0 = j1; } while (j0);
+  }
+  let s = 0; for (let j = 1; j <= m; j++) if (p[j]) s += C[p[j] - 1][j - 1];
+  return s;
+}
+function hwStrokeDist(a, b) {
+  let f = 0, r = 0; const n = a.length;
+  for (let i = 0; i < n; i++) { f += Math.hypot(a[i][0] - b[i][0], a[i][1] - b[i][1]); r += Math.hypot(a[i][0] - b[n - 1 - i][0], a[i][1] - b[n - 1 - i][1]); }
+  return Math.min(f, r + 0.03 * n) / n;
+}
+function hwStrokeCost(q, t) {
+  const [A, B] = q.length <= t.length ? [q, t] : [t, q];
+  const s = hwAssign(A.map(a => B.map(b => hwStrokeDist(a, b))));
+  return s / B.length;
+}
+let HWT = null;
+function hwTemplates(items) {
+  if (HWT) return HWT;
+  HWT = items.filter(it => it.st && it.st.length).map(it => {
+    const s = hwNorm(it.st.map(d => hwResample(hwPath(d), HW_N)));
+    return { k: it.k, n: s.length, s, f: hwFeat(s) };
+  });
+  return HWT;
+}
+const HW_W = { top: 80, feat: 1.0, st: 1.0, more: 0.035, less: 0.05 };
+// 쓴 획들 → 후보 [{k, score}] (획은 [[x,y],…] 목록의 목록)
+function hwRecog(raw, items, want = 5) {
+  const T = hwTemplates(items), used = raw.filter(p => p.length).map(p => hwResample(p, HW_N));
+  if (!used.length) return [];
+  const q = hwNorm(used), f = hwFeat(q), n = q.length, W = HW_W;
+  const a = T.map(t => { let c = 0; for (let i = 0; i < f.length; i++) c += f[i] * t.f[i]; return { t, d: 1 - c }; }).sort((x, y) => x.d - y.d).slice(0, W.top);
+  for (const x of a) {
+    const dn = x.t.n - n;      // 본보기가 더 많음 = 이어 쓰거나 빠뜨림(흔함) · 더 적음 = 나눠 씀(드묾)
+    x.score = W.feat * x.d + W.st * hwStrokeCost(q, x.t.s) + (dn > 0 ? W.more * dn : W.less * -dn);
+  }
+  return a.sort((x, y) => x.score - y.score).slice(0, want).map(x => ({ k: x.t.k, score: x.score }));
+}
+/* ═══ 손글씨 인식 끝 ═══ */
+// 쓰는 칸: 획은 칸 크기에 대한 비율(0~1)로 보관 → 카드를 보고 ◀로 돌아와도 그대로 남음
+const HW = { strokes: [], cur: null, pid: null };
+function renderDraw(seg) {
+  $('#scrSearch').innerHTML = `<div class="card">${seg}
+    <div class="hwbox" id="hwBox"><canvas id="hwC"></canvas><div class="hint" id="hwHint">여기에 한자 한 글자를<br>손가락으로 써 보세요</div></div>
+    <div class="hwbtn"><button id="hwUndo">↩ 한 획 지우기</button><button id="hwClear">🗑 전체 지우기</button></div>
+    <p class="muted" id="hwTip" style="font-size:.8rem;margin-top:8px;text-align:center">획순이 틀려도 찾아요. 한 획 쓸 때마다 후보가 바뀌어요.<br>초등 배당 한자 1026자 안에서만 찾아요.</p></div><div id="hwRes"></div>`;
+  const sc = $('#scrSearch'), box = $('#hwBox'), cv = $('#hwC');
+  sc.querySelectorAll('[data-sm]').forEach(b => b.onclick = () => { searchMode = b.dataset.sm; renderSearch(); });
+  const resize = () => { const r = box.clientWidth, dpr = Math.min(window.devicePixelRatio || 1, 3); cv.width = cv.height = Math.round(r * dpr); hwDraw(); };
+  const at = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height]; };
+  const add = e => { const p = at(e), c = HW.cur, l = c[c.length - 1]; if (Math.hypot(p[0] - l[0], p[1] - l[1]) > 0.004) c.push(p); };
+  cv.onpointerdown = e => {
+    if (HW.pid !== null) return;                                  // 다른 손가락은 무시
+    e.preventDefault(); HW.pid = e.pointerId; HW.cur = [at(e)]; HW.strokes.push(HW.cur);
+    try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+    $('#hwHint').style.display = 'none'; hwDraw();
+  };
+  cv.onpointermove = e => {
+    if (e.pointerId !== HW.pid) return;
+    e.preventDefault();
+    const ev = e.getCoalescedEvents && e.getCoalescedEvents();
+    (ev && ev.length ? ev : [e]).forEach(add);
+    hwDraw();
+  };
+  cv.onpointerup = cv.onpointercancel = e => { if (e.pointerId !== HW.pid) return; HW.pid = null; HW.cur = null; hwResults(); };
+  // 아이폰: 쓰는 동안 화면이 움직이거나 확대되지 않게
+  ['touchstart', 'touchmove'].forEach(t => cv.addEventListener(t, e => e.preventDefault(), { passive: false }));
+  $('#hwUndo').onclick = () => { HW.strokes.pop(); hwDraw(); hwResults(); };
+  $('#hwClear').onclick = () => { HW.strokes = []; hwDraw(); hwResults(); };
+  show('Search', '✍️ 써서 찾기');
+  resize(); hwResults();
+  setTimeout(() => hwTemplates(D.items), 30);                     // 본보기 미리 준비 → 첫 획이 늦지 않게
+}
+function hwDraw() {
+  const cv = $('#hwC'); if (!cv) return;
+  const c = cv.getContext('2d'), W = cv.width;
+  c.clearRect(0, 0, W, W);
+  c.strokeStyle = '#EADFD2'; c.lineWidth = W / 300; c.setLineDash([W / 50, W / 50]);   // 가운데 십자 안내선
+  c.beginPath(); c.moveTo(W / 2, 0); c.lineTo(W / 2, W); c.moveTo(0, W / 2); c.lineTo(W, W / 2); c.stroke();
+  c.setLineDash([]); c.strokeStyle = '#2F2B28'; c.lineWidth = W / 42; c.lineCap = c.lineJoin = 'round';
+  for (const s of HW.strokes) {
+    c.beginPath(); c.moveTo(s[0][0] * W, s[0][1] * W);
+    if (s.length === 1) c.lineTo(s[0][0] * W + 0.1, s[0][1] * W);
+    for (let i = 1; i < s.length; i++) c.lineTo(s[i][0] * W, s[i][1] * W);
+    c.stroke();
+  }
+}
+function hwResults() {
+  const box = $('#hwRes'); if (!box) return;
+  const n = HW.strokes.length;
+  $('#hwHint').style.display = $('#hwTip').style.display = n ? 'none' : '';
+  $('#hwUndo').disabled = $('#hwClear').disabled = !n;
+  if (!n) { box.innerHTML = ''; return; }
+  const r = hwRecog(HW.strokes, D.items, 5);
+  box.innerHTML = `<p class="muted" style="margin:4px 2px;font-size:.85rem">${n}획 · 맞는 글자를 누르면 자세한 설명이 나와요</p>` + r.map(({ k }) => {
+    const it = D.byK[k], rd = coreReadings(it).map(x => kata2hira(x.stem + (x.okuri || ''))).join(' · ');
+    return `<button class="srow" data-k="${esc(k)}"><span class="c jp" lang="ja">${esc(k)}</span><span class="t"><b>${esc(it.hun)}</b> <span class="muted">초${esc(it.g)} · ${esc(it.sc)}획</span><br>${esc(it.m)}<br><span class="jp" lang="ja">${esc(rd)}</span></span></button>`;
+  }).join('');
+  box.querySelectorAll('.srow').forEach(b => b.onclick = () => renderCard(b.dataset.k, 'browse'));
 }
 
 /* ═══════════════ 문제 만들기 (숙련도 단계별) ═══════════════ */
@@ -1056,7 +1245,7 @@ function finishSession() {
     ${SES.newKs.length ? `<p>오늘 새로 배운 한자</p><div class="jp" lang="ja" style="font-size:2.4rem;letter-spacing:6px">${SES.newKs.join('')}</div>` : ''}
     ${Object.keys(SES.up).length ? `<p style="margin-top:8px">⬆️ 숙련도가 오른 한자</p><p class="jp" lang="ja" style="font-size:.95rem">${Object.entries(SES.up).map(([k, v]) => esc(k + ' ' + LV_NAME[v])).join(' · ')}</p>` : ''}
     <p class="muted" style="margin-top:10px">🔥 연속 ${S.streak.n}일째 공부 중!</p>
-    <p class="muted">내일은 오늘 배운 한자를 <b>읽기</b>로 다시 만나요. 잊을 때쯤 또 만나요 😊</p>
+    ${S.review ? '<p class="muted">내일은 오늘 배운 한자를 <b>읽기</b>로 다시 만나요. 잊을 때쯤 또 만나요 😊</p>' : ''}
     <button class="btn main" style="margin-top:14px" id="dHome">홈으로</button></div>`;
   $('#dHome').onclick = renderHome;
   show('Done', '🎉 완료');
@@ -2040,6 +2229,8 @@ function renderSet() {
     <div class="set"><span>이름</span><input type="text" id="sName" value="${esc(S.name)}" placeholder="(선택)" style="max-width:170px"></div>
     <div class="set"><span>모드</span><div class="seg"><button data-m="kid" class="${S.mode === 'kid' ? 'on' : ''}">🧒 어린이</button><button data-m="adult" class="${S.mode === 'adult' ? 'on' : ''}">🧑 어른</button></div></div>
     <div class="set"><span>하루 새 한자</span><div class="stepper"><button id="nMinus">−</button><b id="nVal">${S.newPerDay}</b><button id="nPlus">+</button></div></div>
+    <div class="set"><span>복습<br><small class="muted">오늘의 공부에 넣기</small></span><div class="seg"><button data-rv="1" class="${S.review ? 'on' : ''}">켜기</button><button data-rv="0" class="${!S.review ? 'on' : ''}">끄기</button></div></div>
+    ${S.review ? '' : `<p class="tip" style="margin:4px 0 8px;font-size:.85rem">복습을 끄면 오늘의 공부에 <b>새 한자만</b> 나와요. 지금까지의 진도와 복습 일정은 지워지지 않아요.<br>· '쓸 수 있음'·'익힘'은 복습 문제를 풀어야 오르므로 꺼 둔 동안에는 오르지 않아요.<br>· 다시 켜면 밀린 복습이 하루 최대 ${CFG.REVIEW_CAP}개씩 나와요.</p>`}
     <div class="set"><span>한글 발음 표시<br><small class="muted">참고용 근사치</small></span><div class="seg"><button data-h="1" class="${S.hangul ? 'on' : ''}">켜기</button><button data-h="0" class="${!S.hangul ? 'on' : ''}">끄기</button></div></div>
     <div class="set"><span>말하기 속도</span><div class="seg">${[0.6, 0.8, 1.0].map(v => `<button data-r="${v}" class="${S.rate === v ? 'on' : ''}">${v === 0.6 ? '느리게' : v === 0.8 ? '보통' : '빠르게'}</button>`).join('')}</div></div>
     <button class="btn sub" style="margin-top:14px" id="sTest">🔊 목소리 확인 (こんにちは)</button>
@@ -2065,6 +2256,7 @@ function renderSet() {
   s.querySelectorAll('[data-m]').forEach(b => b.onclick = () => { setMode(b.dataset.m, false); renderSet(); });
   $('#nMinus').onclick = () => { S.newPerDay = Math.max(1, S.newPerDay - 1); save(); $('#nVal').textContent = S.newPerDay; };
   $('#nPlus').onclick = () => { S.newPerDay = Math.min(CFG.NEW_MAX, S.newPerDay + 1); save(); $('#nVal').textContent = S.newPerDay; };
+  s.querySelectorAll('[data-rv]').forEach(b => b.onclick = () => { S.review = b.dataset.rv === '1'; save(); renderSet(); });
   s.querySelectorAll('[data-h]').forEach(b => b.onclick = () => { S.hangul = b.dataset.h === '1'; save(); renderSet(); });
   s.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { S.rate = +b.dataset.r; save(); renderSet(); });
   $('#sTest').onclick = () => { speak('こんにちは'); $('#sVoice').textContent = !canSpeak() ? '이 기기는 음성 합성을 지원하지 않아요' : jaVoice ? `목소리: ${jaVoice.name}` : '일본어 목소리를 찾지 못했어요. 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성에서 일본어를 받아 주세요.'; };
