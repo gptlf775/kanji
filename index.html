@@ -258,6 +258,9 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .hwbox .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--sub);font-size:.95rem;pointer-events:none;padding:20px;}
 .hwbtn{display:flex;gap:8px;max-width:340px;margin:8px auto 0;} .hwbtn button{flex:1;padding:10px;border-radius:12px;background:#F3EBE1;font-weight:bold;font-size:.92rem;}
 .hwbtn button:disabled{opacity:.45;}
+.hwps{width:44px;height:44px;display:block;margin:0 auto;} .hwps path{fill:none;stroke:#2F2B28;stroke-width:2.6px;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;}
+.hwpr .t{flex:1;min-width:0;}
+.hwpk{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:2px 0 8px;} .hwpk button{background:#fff;border-radius:12px;padding:6px 2px;box-shadow:0 1px 5px rgba(120,90,60,.07);text-align:center;min-width:0;} .hwpk .jp{display:block;font-size:1.6rem;line-height:1.25;} .hwpk small{display:block;font-size:.72rem;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .gslist{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .gslist button{background:#fff;border-radius:14px;padding:14px 10px;text-align:left;box-shadow:0 2px 8px rgba(120,90,60,.07);}
 .gslist button b{display:block;font-size:1.05rem;} .gslist button small{color:var(--sub);font-size:.8rem;}
@@ -960,36 +963,99 @@ function hwStrokeCost(q, t) {
   const s = hwAssign(A.map(a => B.map(b => hwStrokeDist(a, b))));
   return s / B.length;
 }
-let HWT = null;
+let HWT = null, HWR = null;
+// 글자별 획 점 목록 (글자 전체·부품 본보기가 함께 씀)
+function hwRaw(items) {
+  if (HWR) return HWR;
+  HWR = {};
+  for (const it of items) if (it.st && it.st.length) HWR[it.k] = it.st.map(d => hwResample(hwPath(d), HW_N));
+  return HWR;
+}
 function hwTemplates(items) {
   if (HWT) return HWT;
-  HWT = items.filter(it => it.st && it.st.length).map(it => {
-    const s = hwNorm(it.st.map(d => hwResample(hwPath(d), HW_N)));
+  const R = hwRaw(items);
+  HWT = items.filter(it => R[it.k]).map(it => {
+    const s = hwNorm(R[it.k]);
     return { k: it.k, n: s.length, s, f: hwFeat(s) };
   });
   return HWT;
 }
-const HW_W = { top: 80, feat: 1.0, st: 1.0, more: 0.035, less: 0.05 };
+const HW_W = { top: 80, feat: 1.0, st: 1.0, more: 0.035, less: 0.05, gap: 0.03, open: 0.06, near: 0.15 };
+// 방향 분포로 추린 뒤 획 짝짓기로 점수 매김 → 좋은 순서 [{t, score}]
+function hwRank(q, T) {
+  const f = hwFeat(q), n = q.length, W = HW_W, a = [];
+  for (const t of T) { let c = 0; for (let i = 0; i < f.length; i++) c += f[i] * t.f[i]; a.push({ t, d: 1 - c }); }
+  const b = a.sort((x, y) => x.d - y.d).slice(0, W.top);
+  for (const x of b) {
+    const dn = x.t.n - n;      // 본보기가 더 많음 = 이어 쓰거나 빠뜨림(흔함) · 더 적음 = 나눠 씀(드묾)
+    x.score = W.feat * x.d + W.st * hwStrokeCost(q, hwTplStrokes(x.t)) + (dn > 0 ? W.more * dn : W.less * -dn);
+  }
+  return b.sort((x, y) => x.score - y.score);
+}
+const hwTplStrokes = t => t.s || (t.s = hwNorm(t.i.map(x => HWR[t.k][x])));   // 부품 획은 쓸 때만 계산 → 메모리 절약
+const hwQuery = raw => { const u = raw.filter(p => p.length).map(p => hwResample(p, HW_N)); return u.length ? hwNorm(u) : null; };
 // 쓴 획들 → 후보 [{k, score}] (획은 [[x,y],…] 목록의 목록)
 function hwRecog(raw, items, want = 5) {
-  const T = hwTemplates(items), used = raw.filter(p => p.length).map(p => hwResample(p, HW_N));
-  if (!used.length) return [];
-  const q = hwNorm(used), f = hwFeat(q), n = q.length, W = HW_W;
-  const a = T.map(t => { let c = 0; for (let i = 0; i < f.length; i++) c += f[i] * t.f[i]; return { t, d: 1 - c }; }).sort((x, y) => x.d - y.d).slice(0, W.top);
-  for (const x of a) {
-    const dn = x.t.n - n;      // 본보기가 더 많음 = 이어 쓰거나 빠뜨림(흔함) · 더 적음 = 나눠 씀(드묾)
-    x.score = W.feat * x.d + W.st * hwStrokeCost(q, x.t.s) + (dn > 0 ? W.more * dn : W.less * -dn);
+  const T = hwTemplates(items), q = hwQuery(raw);
+  return q ? hwRank(q, T).slice(0, want).map(x => ({ k: x.t.k, score: x.score })) : [];
+}
+// 🧩 부품 찾기: 글자의 부분(隹·氵 등)을 본보기로 삼아, 부분만 쓴 것도 찾음 (KanjiVG 부품 묶음, data/parts.js)
+let HWP = null, HWF = null;     // HWP: 부품 본보기 · HWF: 부품 → 그 부품이 든 글자 목록
+function hwPartTemplates(items, parts, done) {
+  const R = hwRaw(items), list = [], fam = {}, T = [];
+  for (const it of items) for (const [e, ...i] of parts[it.k] || []) { list.push({ e, k: it.k, i, n: i.length }); (fam[e] = fam[e] || []).push(it.k); }
+  const step = () => {               // 나눠서 준비 → 그동안에도 쓰기가 끊기지 않게
+    const end = Math.min(T.length + 300, list.length);
+    while (T.length < end) { const t = list[T.length]; t.f = hwFeat(hwNorm(t.i.map(x => R[t.k][x]))); T.push(t); }
+    if (T.length < list.length) return done ? setTimeout(step) : step();
+    HWP = T; HWF = fam;
+    if (done) done();
+  };
+  step();
+}
+// 쓴 획들 → 닮은 부품 [{e, score, k, i}] (부품마다 가장 닮은 사례 하나) · skip: 시험 때 쓴 글자 자신을 빼는 용도
+function hwPartRecog(raw, want = 3, skip = null) {
+  const q = hwQuery(raw); if (!q || !HWP) return [];
+  const seen = new Set(), out = [];
+  for (const x of hwRank(q, skip ? HWP.filter(t => t.k !== skip) : HWP)) {
+    if (seen.has(x.t.e)) continue;
+    seen.add(x.t.e); out.push({ e: x.t.e, score: x.score, k: x.t.k, i: x.t.i });
+    if (out.length >= want) break;
   }
-  return a.sort((x, y) => x.score - y.score).slice(0, want).map(x => ({ k: x.t.k, score: x.score }));
+  return out;
+}
+// 부품 칸에 보일 것: 글자 전체보다 부품이 확실히 더 닮았을 때만, 1등과 비슷한 것까지
+function hwPartsToShow(parts, whole) {
+  if (!parts.length || !whole.length || parts[0].score >= whole[0].score - HW_W.gap) return [];
+  return parts.filter(p => p.score <= parts[0].score + HW_W.near);
 }
 /* ═══ 손글씨 인식 끝 ═══ */
 // 쓰는 칸: 획은 칸 크기에 대한 비율(0~1)로 보관 → 카드를 보고 ◀로 돌아와도 그대로 남음
-const HW = { strokes: [], cur: null, pid: null };
+const HW = { strokes: [], cur: null, pid: null, open: undefined, loading: false };
+// 널리 쓰는 부수 이름 (그 외 부품은 모양만 보여줌. 수록 한자와 같은 글자는 그 훈을 씀)
+const HW_PNAME = { '隹': '새 추', '亻': '사람인변', '氵': '삼수변', '扌': '재방변', '忄': '심방변', '艹': '초두머리', '⻌': '책받침', '宀': '갓머리', '冖': '민갓머리', '彳': '두인변', '疒': '병질엄', '广': '엄호', '厂': '민엄호', '囗': '큰입구몸', '刂': '선칼도방', '攵': '등글월문', '灬': '연화발', '礻': '보일시변', '衤': '옷의변', '亠': '돼지해머리', '儿': '어진사람인발' };
+function hwLoadParts() {
+  if (HWP || HW.loading) return;
+  HW.loading = true;
+  const ready = () => {
+    if (!window.KPARTS) { HW.loading = false; return; }      // 못 받으면 글자 전체 찾기만 작동, 다음에 다시 시도
+    hwPartTemplates(D.items, window.KPARTS, () => { HW.loading = false; if (cur === 'Search' && searchMode === 'draw') hwResults(); });
+  };
+  if (window.KPARTS) ready();
+  else loadScript('data/parts.js' + (window.PARTS_VER ? '?v=' + window.PARTS_VER : '?t=' + Date.now())).then(ready);
+}
+// 부품 모양: 글꼴에 없는 부품도 있으므로 글자 대신 실제 획으로 그림
+function hwPartSvg(p) {
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (const i of p.i) for (const [x, y] of HWR[p.k][i]) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  const m = Math.max(x1 - x0, y1 - y0, 1) * 1.16, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+  return `<svg class="hwps" viewBox="${(cx - m / 2).toFixed(1)} ${(cy - m / 2).toFixed(1)} ${m.toFixed(1)} ${m.toFixed(1)}" aria-hidden="true">${p.i.map(i => `<path d="${esc(D.byK[p.k].st[i])}"/>`).join('')}</svg>`;
+}
 function renderDraw(seg) {
   $('#scrSearch').innerHTML = `<div class="card">${seg}
     <div class="hwbox" id="hwBox"><canvas id="hwC"></canvas><div class="hint" id="hwHint">여기에 한자 한 글자를<br>손가락으로 써 보세요</div></div>
     <div class="hwbtn"><button id="hwUndo">↩ 한 획 지우기</button><button id="hwClear">🗑 전체 지우기</button></div>
-    <p class="muted" id="hwTip" style="font-size:.8rem;margin-top:8px;text-align:center">획순이 틀려도 찾아요. 한 획 쓸 때마다 후보가 바뀌어요.<br>초등 배당 한자 1026자 안에서만 찾아요.</p></div><div id="hwRes"></div>`;
+    <p class="muted" id="hwTip" style="font-size:.8rem;margin-top:8px;text-align:center">획순이 틀려도 찾아요. 한 획 쓸 때마다 후보가 바뀌어요.<br>부수나 일부분만 써도 그 모양이 든 한자를 찾아요.<br>초등 배당 한자 1026자 안에서만 찾아요.</p></div><div id="hwRes"></div>`;
   const sc = $('#scrSearch'), box = $('#hwBox'), cv = $('#hwC');
   sc.querySelectorAll('[data-sm]').forEach(b => b.onclick = () => { searchMode = b.dataset.sm; renderSearch(); });
   const resize = () => { const r = box.clientWidth, dpr = Math.min(window.devicePixelRatio || 1, 3); cv.width = cv.height = Math.round(r * dpr); hwDraw(); };
@@ -1008,14 +1074,14 @@ function renderDraw(seg) {
     (ev && ev.length ? ev : [e]).forEach(add);
     hwDraw();
   };
-  cv.onpointerup = cv.onpointercancel = e => { if (e.pointerId !== HW.pid) return; HW.pid = null; HW.cur = null; hwResults(); };
+  cv.onpointerup = cv.onpointercancel = e => { if (e.pointerId !== HW.pid) return; HW.pid = null; HW.cur = null; HW.open = undefined; hwResults(); };
   // 아이폰: 쓰는 동안 화면이 움직이거나 확대되지 않게
   ['touchstart', 'touchmove'].forEach(t => cv.addEventListener(t, e => e.preventDefault(), { passive: false }));
-  $('#hwUndo').onclick = () => { HW.strokes.pop(); hwDraw(); hwResults(); };
-  $('#hwClear').onclick = () => { HW.strokes = []; hwDraw(); hwResults(); };
+  $('#hwUndo').onclick = () => { HW.strokes.pop(); HW.open = undefined; hwDraw(); hwResults(); };
+  $('#hwClear').onclick = () => { HW.strokes = []; HW.open = undefined; hwDraw(); hwResults(); };
   show('Search', '✍️ 써서 찾기');
   resize(); hwResults();
-  setTimeout(() => hwTemplates(D.items), 30);                     // 본보기 미리 준비 → 첫 획이 늦지 않게
+  setTimeout(() => { hwTemplates(D.items); hwLoadParts(); }, 30);  // 본보기 미리 준비 → 첫 획이 늦지 않게
 }
 function hwDraw() {
   const cv = $('#hwC'); if (!cv) return;
@@ -1038,11 +1104,22 @@ function hwResults() {
   $('#hwUndo').disabled = $('#hwClear').disabled = !n;
   if (!n) { box.innerHTML = ''; return; }
   const r = hwRecog(HW.strokes, D.items, 5);
-  box.innerHTML = `<p class="muted" style="margin:4px 2px;font-size:.85rem">${n}획 · 맞는 글자를 누르면 자세한 설명이 나와요</p>` + r.map(({ k }) => {
+  const ps = n >= 2 ? hwPartsToShow(hwPartRecog(HW.strokes, 3), r) : [];    // 한 획만으로는 부품을 가릴 수 없음
+  // 처음 열어 둘 부품: 1등이 글자 전체보다 뚜렷이 닮았고 목록이 짧을 때만 (누르면 사용자가 고른 대로)
+  const auto = ps.length && ps[0].score < r[0].score - HW_W.open && HWF[ps[0].e].length <= 24 ? ps[0].e : null;
+  const open = HW.open === undefined ? auto : HW.open;
+  const partHtml = ps.map(p => {
+    const ks = HWF[p.e], on = open === p.e, name = HW_PNAME[p.e] || (D.byK[p.e] && D.byK[p.e].hun) || '';
+    return `<button class="srow hwpr" data-pe="${esc(p.e)}" aria-expanded="${on}"><span class="c">${hwPartSvg(p)}</span><span class="t">${name ? `<b>${esc(name)}</b> · ` : ''}<b>${ks.length}자</b>에 들어 있어요<br><span class="jp" lang="ja">${esc(ks.slice(0, 8).join(' '))}${ks.length > 8 ? ' …' : ''}</span></span><span class="muted">${on ? '▲' : '▼'}</span></button>`
+      + (on ? `<div class="hwpk">${ks.map(k => `<button data-k="${esc(k)}"><span class="jp" lang="ja">${esc(k)}</span><small>${esc(D.byK[k].hun)}</small></button>`).join('')}</div>` : '');
+  }).join('');
+  box.innerHTML = (partHtml ? `<h3 style="margin:8px 2px 2px;font-size:.95rem">🧩 이 모양이 들어간 한자</h3>${partHtml}<h3 style="margin:12px 2px 2px;font-size:.95rem">글자 전체로 찾은 후보</h3>` : '')
+    + `<p class="muted" style="margin:4px 2px;font-size:.85rem">${n}획 · 맞는 글자를 누르면 자세한 설명이 나와요</p>` + r.map(({ k }) => {
     const it = D.byK[k], rd = coreReadings(it).map(x => kata2hira(x.stem + (x.okuri || ''))).join(' · ');
     return `<button class="srow" data-k="${esc(k)}"><span class="c jp" lang="ja">${esc(k)}</span><span class="t"><b>${esc(it.hun)}</b> <span class="muted">초${esc(it.g)} · ${esc(it.sc)}획</span><br>${esc(it.m)}<br><span class="jp" lang="ja">${esc(rd)}</span></span></button>`;
   }).join('');
-  box.querySelectorAll('.srow').forEach(b => b.onclick = () => renderCard(b.dataset.k, 'browse'));
+  box.querySelectorAll('[data-k]').forEach(b => b.onclick = () => renderCard(b.dataset.k, 'browse'));
+  box.querySelectorAll('[data-pe]').forEach(b => b.onclick = () => { HW.open = open === b.dataset.pe ? null : b.dataset.pe; hwResults(); });
 }
 
 /* ═══════════════ 문제 만들기 (숙련도 단계별) ═══════════════ */
