@@ -154,7 +154,7 @@ def write_index():
     ver = {str(g): md5(os.path.join(dd, f'g{g}.js')) for g in avail}
     fv = lambda name: md5(os.path.join(dd, name)) if os.path.exists(os.path.join(dd, name)) else ''
     sd = os.path.join(dd, 'sheets')          # 📄 한 장 공략 그림(build_sheets.py) — 모두 합친 해시
-    sheets_ver = hashlib.md5(b''.join(open(os.path.join(sd, f), 'rb').read() for f in sorted(os.listdir(sd)) if f.endswith('.png'))).hexdigest()[:8] if os.path.isdir(sd) else ''
+    sheets_ver = hashlib.md5(b''.join(open(os.path.join(sd, f), 'rb').read() for f in sorted(os.listdir(sd)) if f.endswith('.png') or f == 'say.json')).hexdigest()[:8] if os.path.isdir(sd) else ''
     open(os.path.join(dd, 'index.js'), 'w', encoding='utf-8').write(
         f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};'
         f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};window.LISTEN_VER={json.dumps(fv("listen.js"))};window.POS_VER={json.dumps(fv("pos.js"))};window.VOCD_VER={json.dumps(fv("vocd.js"))};window.PARTS_VER={json.dumps(fv("parts.js"))};'
