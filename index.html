@@ -245,6 +245,10 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .gspage tr.bandb td{background:#FFF6EE;} .gspage tr.banda td{background:#fff;}
 .gspage tr.banda + tr.bandb td, .gspage tr.bandb + tr.banda td{border-top:2px solid #F0B79A;}
 .gspage .w[data-y]{cursor:pointer;}
+.gspage table.sm td.f{font-size:13.5px;}
+.gspage td.x{font-size:13.5px;} .gspage td.k{font-size:11.5px;} .gspage td.lab{font-size:12px;}
+.gspage .two{display:flex;gap:8px;} .gspage .two>div{flex:1;min-width:0;}
+.gspage td.f .gsr{margin-left:1px;}
 .gspage li .w, .gspage p .w{border-bottom:1px dotted #E8A88A;}
 .gspage.gsprint li .w, .gspage.gsprint p .w{border-bottom:none;}
 .gsstage{-webkit-touch-callout:none;}
@@ -2817,9 +2821,225 @@ function gsV1() {
   ${list}
   <div class="foot">한자 1026 · 한 장 공략 · 1그룹 동사</div>`;
 }
+// ── 공통 도우미 (1차~3차 시트) ──
+// [ ]로 감싼 곳 = 색칠 (바뀌거나 붙는 부분) · 읽기(y)는 대괄호 없이 따로 적음
+const gsMk = s => esc(s).replace(/\[([^\]]+)\]/g, '<b class="h">$1</b>');
+const gJ = (j, y, m, n) => `<span class="w jp" lang="ja"${gsD(y, m, n)}>${gsMk(j)}</span>`;          // 문장 속 낱말·예문
+const gX = (j, y, m, n) => `<td class="x jp" lang="ja"${gsD(y, m, n)}>${gsMk(j)}</td>`;              // 표 속 예문
+const gTr = (...c) => `<tr>${c.join('')}</tr>`;
+const gTh = (...h) => `<tr>${h.map(x => Array.isArray(x) ? `<th style="width:${x[1]}">${x[0]}</th>` : `<th>${x}</th>`).join('')}</tr>`;
+// 예문 줄: [쓰임, 규칙, 예문, 읽기, 뜻]
+const gRows = rows => rows.map(([a, b, j, y, k]) => gTr(`<td class="lab">${a}</td>`, `<td>${b}</td>`, gX(j, y, k, a), `<td class="k">${k}</td>`)).join('');
+// 목록용 짧은 뜻: (★…) 메모는 빼고, 괄호 밖의 첫 뜻만 — '(샤워를) 하다' · '있다 (사물·식물)'처럼 괄호 설명은 남김
+const gMean = m => { m = m.replace(/\s*\(★[^)]*\)/, ''); let d = 0;
+  for (let i = 0; i < m.length; i++) { const c = m[i]; if (c === '(') d++; else if (c === ')') d--; else if (!d && (c === '·' || c === ',')) return m.slice(0, i).trim(); }
+  return m.trim(); };
+const gChips = (rs, mean = r => gMean(r[3])) => rs.map(r => `<span class="w"${gsD(r[1] + (r[2] === 'na' ? 'だ' : ''), r[3])}><span class="jp" lang="ja">${esc(r[0])}</span> ${esc(mean(r))}</span>`).join('');
+const gFoot = t => `<div class="foot">한자 1026 · 한 장 공략 · ${t}</div>`;
+const gVM = () => Object.fromEntries(GRAM.verbs.map(r => [r[0], r[3]]));
+const DAN_I = 'いきぎしじちぢにひびぴみり', DAN_E = 'えけげせぜてでねへべぺめれ';
+
+function gsI() {
+  const w = '高い', y = 'たかい', R = conjAdj(w, y, 'i'), mean = '高い · 높다·비싸다';
+  const C = (k, n, base = '高', sub) => gsCell(base, R[k][0], R[k][1], mean, n, sub);
+  const P = (f, fy, n, sub) => gsCell(f.startsWith('高いで') ? '高い' : '高', f, fy, mean, n, sub);
+  const G = [['いい', 'いい', '좋다'], ['かっこいい', 'かっこいい', '멋있다']];
+  const gk = [['neg', '부정'], ['past', '과거'], ['te', 'て형'], ['adv', '부사'], ['ba', '가정'], ['sou', '~해 보인다']];
+  const yo = (stem, f) => esc(stem) + '<b class="h">よ</b>' + esc(f.slice(stem.length + 1));
+  const iList = GRAM.adjs.filter(r => r[2] === 'i');
+  return `<div class="gshead"><h1>い형용사 한 장 공략</h1><p>성질·상태를 나타내고 기본형이 <b>い</b>로 끝나는 말 (高い·おいしい) · 끝의 <b>い</b>가 바뀜 · 명사 앞에는 그대로 (高い山)</p></div>
+  <h2>① 문장 끝 — 보통체(반말) · 정중체(존댓말)</h2>
+  <table>${gTh(['', '13%'], '보통체', '정중체', ['뜻', '28%'])}
+    <tr><td class="lab">현재</td>${C('dict', '기본형', '高い')}${P('高いです', 'たかいです', '정중 현재')}<td class="k">비싸다 · 비쌉니다</td></tr>
+    <tr><td class="lab">과거</td>${C('past', '과거')}${P('高かったです', 'たかかったです', '정중 과거')}<td class="k">비쌌다 · 비쌌습니다</td></tr>
+    <tr><td class="lab">부정</td>${C('neg', '부정')}${P('高くないです', 'たかくないです', '정중 부정', '= 高くありません')}<td class="k">비싸지 않다 · 않습니다</td></tr>
+    <tr><td class="lab">과거 부정</td>${C('pastneg', '과거 부정')}${P('高くなかったです', 'たかくなかったです', '정중 과거 부정', '= 高くありませんでした')}<td class="k">비싸지 않았다 · 않았습니다</td></tr></table>
+  <p class="rule">정중체 = 보통체 + <b>です</b> · 과거는 い → <b>かった</b> 다음에 です (<span class="jp">高いでした</span> <span class="ng">✕</span>) · 과거 부정도 なかった + です (<span class="jp">高くないでした</span> <span class="ng">✕</span>)</p>
+  <h2>② 다른 말과 이어질 때 — い가 바뀌는 곳</h2>
+  <table>${gTh(['쓰임', '17%'], ['규칙', '22%'], '예', ['뜻', '24%'])}${gRows([
+    ['명사 꾸미기', '그대로 + 명사', '高い[山]', 'たかいやま', '높은 산'],
+    ['부사 (~하게)', 'い → <b class="h">く</b>', '高[く]飛ぶ', 'たかくとぶ', '높이 날다'],
+    ['~하고 · ~해서', 'い → <b class="h">くて</b>', '高[くて]買えない', 'たかくてかえない', '비싸서 살 수 없다'],
+    ['~하면 (가정)', 'い → <b class="h">ければ</b>', '高[ければ]買わない', 'たかければかわない', '비싸면 안 산다'],
+    ['~해지다', 'い → <b class="h">く</b> + なる', '高[く]なる', 'たかくなる', '비싸지다'],
+    ['~해 보인다', 'い를 빼고 + <b class="h">そう</b>', '高[そう]なかばん', 'たかそうなかばん', '비싸 보이는 가방'],
+    ['너무 ~하다', 'い를 빼고 + <b class="h">すぎる</b>', '高[すぎる]', 'たかすぎる', '너무 비싸다']])}</table>
+  <p class="rule">명사로 만들 때는 い → <b>さ</b>: ${gJ('山の高[さ]', 'やまのたかさ', '산의 높이')} (산의 높이)</p>
+  <h2>③ 특수한 경우 — いい는 よ로 바뀜 (색칠 = 특수한 곳)</h2>
+  <table class="sm">${gTh(['', '11%'], ...gk.map(x => x[1]))}
+    ${G.map(([g, gy, gm]) => { const Q = conjAdj(g, gy, 'i'), stem = g.slice(0, -2);
+      return `<tr><td class="lab"><span class="w jp" lang="ja"${gsD(gy, gm, '기본형')}>${esc(g)}</span><br><span class="rule">${gm}</span></td>${gk.map(([k, n]) => `<td class="f jp" lang="ja"${gsD(Q[k][1], `${g} · ${gm}`, n)}>${yo(stem, Q[k][0])}</td>`).join('')}</tr>`; }).join('')}</table>
+  <ul>
+    <li><b>いい</b>는 옛 모양 <b>よい</b>로 활용 — いい 그대로는 기본형·${gJ('いいです', 'いいです', '좋습니다')}·명사 꾸미기뿐 (<span class="jp">いくない · いかった</span> <span class="ng">✕</span>)</li>
+    <li><b>そう 특수</b>: いい → ${gJ('よさそう', 'よさそう', '좋아 보인다')}, ない(없다) → ${gJ('なさそう', 'なさそう', '없어 보인다')} (<span class="jp">よそう · なそう</span> <span class="ng">✕</span>) · 나머지는 い를 빼고 そう: ${gJ('おいしそう', 'おいしそう', '맛있어 보인다')}</li>
+    <li><b>大きな · 小さな</b>는 명사 앞에서만 쓰는 모양: ${gJ('大きな家', 'おおきないえ', '큰 집')} = ${gJ('大きい家', 'おおきいいえ', '큰 집')} / 문장 끝은 ${gJ('大きいです', 'おおきいです', '큽니다')} (<span class="jp">大きなです</span> <span class="ng">✕</span>)</li>
+    <li><b>多い · 少ない</b>는 명사 바로 앞에 잘 안 씀: ${gJ('多くの人', 'おおくのひと', '많은 사람')} (많은 사람) · ${gJ('人が多い', 'ひとがおおい', '사람이 많다')} (사람이 많다)</li>
+    <li><b>~たい · ~ない(부정)</b>도 い형용사처럼 활용: ${gJ('行きたくない', 'いきたくない', '가고 싶지 않다')} · ${gJ('行きたかった', 'いきたかった', '가고 싶었다')} · ${gJ('行かなかった', 'いかなかった', '가지 않았다')}</li>
+    <li><b>い로 끝나도 な형용사</b>: きれい·嫌い·有名 → ${gJ('きれいじゃない', 'きれいじゃない', '깨끗하지 않다')} (<span class="jp">きれくない</span> <span class="ng">✕</span>) · <b>남의 마음</b>(ほしい·嬉しい)은 ~がる: ${gJ('ほしがる', 'ほしがる', '갖고 싶어 하다')}</li></ul>
+  <h2>④ 꼭 외울 い형용사 (${iList.length}개)</h2>
+  <div class="chips">${gChips(iList)}</div>
+  ${gFoot('い형용사')}`;
+}
+
+function gsV2() {
+  const VM = gVM();
+  const T = [['い단<br>+ る', [['見る', 'みる'], ['起きる', 'おきる'], ['借りる', 'かりる']]], ['え단<br>+ る', [['食べる', 'たべる'], ['寝る', 'ねる'], ['教える', 'おしえる']]]];
+  const K = ['masu', 'nai', 'te', 'ta', 'ba', 'vol', 'pot'];
+  const rows = T.map(([no, vs], ti) => vs.map(([w, y], i) => { const R = conjVerb(w, y, '2'), m = `${w} · ${gsMean(VM[w] || '')}`;
+    return `<tr class="${ti % 2 ? 'bandb' : 'banda'}">${i ? '' : `<td class="tp" rowspan="${vs.length}">${no}</td>`}<td class="f jp" lang="ja" style="text-align:center"${gsD(y, m, '기본형')}>${esc(w)} <span class="gsr">${esc(y)}</span></td>${K.map(k => gsCell(w.slice(0, -1), R[k][0], R[k][1], m, GS_FORM[k])).join('')}</tr>`; }).join('')).join('');
+  const R = conjVerb('食べる', 'たべる', '2'), wm = '食べる · 먹다', Cw = (k, f, fy, sub) => gsCell('食べ', f || R[k][0], fy || R[k][1], wm, GS_FORM[k] || k, sub);
+  const two = GRAM.verbs.filter(r => r[2] === '2'), dan = r => r[1].slice(-2, -1);
+  const list = '<div class="chips">' + [['い단 + る', DAN_I], ['え단 + る', DAN_E]].map(([t, set]) => `<span class="gk">${t}</span>` + gChips(two.filter(r => set.includes(dan(r))))).join('') + '</div>';
+  return `<div class="gshead"><h1>2그룹 동사 한 장 공략</h1><p>옛 이름 <b>1단 동사</b> (い단 = 상1단 · え단 = 하1단) · る로 끝나고 る 앞이 <b>い단·え단</b> · <b>る를 떼고 붙이기만</b> → 가장 쉬움</p></div>
+  <h2>① 2그룹인지 구별하기</h2>
+  <ul><li>기본형이 <b>る</b>로 끝나고 る 바로 앞 소리가 <b>い단·え단</b>이면 → 대부분 2그룹 (${gsWs('見る · 起きる · 食べる · 寝る')})</li>
+    <li>한자 속에 숨은 소리는 <b>읽기로 확인</b>: 見る(<b>み</b>る) · 寝る(<b>ね</b>る) · 出る(<b>で</b>る) · 着る(<b>き</b>る) → 한자 바로 뒤에 る가 와도 2그룹</li>
+    <li><b>예외 (모양은 2그룹이지만 1그룹)</b>: ${gsWs('帰る · 入る · 走る · 知る · 切る · 要る')} → 帰ります · 帰らない (1그룹 시트 참고)</li>
+    <li><b>소리가 같은데 그룹이 다름</b> ⚠: ${gsW('着る')}(입다·2) 着ます ↔ ${gsW('切る')}(자르다·1) 切ります · ${gsW('いる')}(있다·2) いない ↔ ${gsW('要る')}(필요하다·1) 要らない · ${gsW('変える')}(바꾸다·2) ↔ ${gsW('帰る')}(돌아가다·1)</li></ul>
+  <h2>② 활용표 — る를 떼고 붙이기 (색칠 = 붙는 부분)</h2>
+  <table><tr><th style="width:7%">종류</th><th style="width:13%">기본형</th><th>ます형<br><span class="rule">る → ます</span></th><th>ない형<br><span class="rule">る → ない</span></th><th>て형<br><span class="rule">る → て</span></th><th>た형<br><span class="rule">る → た</span></th><th>ば형<br><span class="rule">る → れば</span></th><th>의지형<br><span class="rule">る → よう</span></th><th>가능형<br><span class="rule">る → られる</span></th></tr>${rows}</table>
+  <p class="rule">1그룹처럼 끝소리가 단을 오가지 않고, て형에 음편(って·んで…)도 없음 → <b>る 자리에 붙이기만</b></p>
+  <h2>③ 食べる 하나로 보는 나머지 모양</h2>
+  <table><tr><th>보통 과거부정</th><th>~하고 싶다</th><th>명령형 (거친 말)</th><th>수동형 ~당하다</th><th>사역형 ~시키다</th><th>사역수동</th><th>~하면서</th></tr>
+    <tr>${Cw('nakatta')}${Cw('tai')}${Cw('imp')}${Cw('pass')}${Cw('caus')}${Cw('causp')}${Cw('~하면서', '食べながら', 'たべながら')}</tr></table>
+  <h2>④ 헷갈리는 점 · 특수한 경우</h2>
+  <ul>
+    <li><b>られる 하나에 뜻이 셋</b>: ${gJ('食べられる', 'たべられる', '먹을 수 있다 · 먹히다 · 드시다')} = 먹을 수 있다(가능) · 먹히다(수동) · 드시다(존경) → 문맥으로 구별</li>
+    <li><b>ら 빠진 말</b>: ${gJ('見れる', 'みれる', '볼 수 있다 (회화)')} · ${gJ('食べれる', 'たべれる', '먹을 수 있다 (회화)')} — 회화에서 많이 쓰지만 시험·글은 ${gJ('見られる', 'みられる', '볼 수 있다')}</li>
+    <li><b>くれる</b>(나에게 주다)의 명령형은 ${gJ('くれ', 'くれ', '줘')} (<span class="jp">くれろ</span> <span class="ng">✕</span>) · 2그룹의 유일한 예외</li>
+    <li><b>ます형이 한 글자</b>: 見(ます) · 寝(ます) · 出(ます) · 着(ます) · い(ます) → 존경어는 규칙(お～になる) 대신 특별한 말 (<span class="jp">お見になる</span> <span class="ng">✕</span> → ${gJ('ご覧になる', 'ごらんになる', '보시다')})</li>
+    <li><b>사역수동은 줄이지 않음</b>: ${gJ('食べさせられる', 'たべさせられる', '억지로 먹게 되다')} (1그룹 書かされる 같은 줄임말 없음)</li>
+    <li><b>できる</b>(할 수 있다)는 그 자체가 가능의 뜻 → 가능형을 또 만들지 않음 (<span class="jp">できられる</span> <span class="ng">✕</span>)</li></ul>
+  <h2>⑤ 자주 쓰는 2그룹 동사 (N5·N4 ${two.length}개) — る 앞 소리별</h2>
+  ${list}
+  ${gFoot('2그룹 동사')}`;
+}
+
+function gsV3() {
+  const S = conjVerb('する', 'する', '3s'), Kr = conjVerb('来る', 'くる', '3k'), B = conjVerb('勉強する', 'べんきょうする', '3s');
+  const V = [['する', S, 'する · 하다', ''], ['来る', Kr, '来る · 오다', 'k'], ['勉強する', B, '勉強する · 공부하다', '']];
+  const cell = (R, k, m, kk) => { const [f, fy] = R[k];
+    if (f === '—') return '<td class="rule">—</td>';
+    if (kk) return `<td class="f jp" lang="ja"${gsD(fy, m, GS_FORM[k] || '기본형')}>${esc(f)}<small><b class="h">${esc(fy[0])}</b>${esc(fy.slice(1))}</small></td>`;
+    return gsCell(m.startsWith('勉強') ? '勉強' : f, f, fy, m, GS_FORM[k] || '기본형'); };   // する는 통째로 외우는 말이라 색칠 안 함
+  const tbl = ks => `<table><tr><th style="width:13%"></th>${ks.map(([k, t]) => `<th>${t}</th>`).join('')}</tr>${V.map(([w, R, m, kk]) => `<tr><td class="lab jp" lang="ja">${esc(w)}</td>${ks.map(([k]) => cell(R, k, m, kk)).join('')}</tr>`).join('')}</table>`;
+  const ku = (w, y, n) => gJ(w, y, '来る · 오다', n);
+  const su = (w, y, n) => gJ(w, y, 'する · 하다', n);
+  const list = GRAM.verbs.filter(r => r[2] === '3s' && r[0] !== 'する');
+  return `<div class="gshead"><h1>3그룹 동사 한 장 공략</h1><p>규칙을 따르지 않는 <b>불규칙 동사</b> 둘뿐: <b>する</b>(하다) · <b>来る</b>(오다) · 옛 이름 サ행 변격 · カ행 변격 → <b>통째로 외우기</b></p></div>
+  <h2>① 활용표 — 来る는 읽기가 바뀜 (작은 글씨 = 읽기, 색칠 = 바뀌는 첫소리)</h2>
+  ${tbl([['dict', '기본형'], ['masu', 'ます형'], ['nai', 'ない형'], ['te', 'て형'], ['ta', 'た형'], ['ba', 'ば형'], ['vol', '의지형']])}
+  ${tbl([['pot', '가능형'], ['imp', '명령형 (거친 말)'], ['pass', '수동형'], ['caus', '사역형'], ['causp', '사역수동'], ['tai', '~하고 싶다']])}
+  <h2>② 첫소리로 외우기</h2>
+  <div class="two"><div><table>${gTh(['来る', '13%'], '이렇게 바뀌는 모양', ['교재 이름', '22%'])}
+    <tr><td class="tp">こ</td><td>${ku('来ない', 'こない', 'ない형')} · ${ku('来よう', 'こよう', '의지형')} · ${ku('来られる', 'こられる', '가능·수동')} · ${ku('来させる', 'こさせる', '사역형')} · ${ku('来い', 'こい', '명령형')}</td><td class="k">미연형 · 명령형</td></tr>
+    <tr><td class="tp">き</td><td>${ku('来ます', 'きます', 'ます형')} · ${ku('来て', 'きて', 'て형')} · ${ku('来た', 'きた', 'た형')} · ${ku('来たい', 'きたい', '~하고 싶다')}</td><td class="k">연용형</td></tr>
+    <tr><td class="tp">く</td><td>${ku('来る', 'くる', '기본형')} · ${ku('来れば', 'くれば', 'ば형')}</td><td class="k">종지형 · 가정형</td></tr></table></div>
+  <div><table>${gTh(['する', '13%'], '이렇게 바뀌는 모양', ['교재 이름', '22%'])}
+    <tr><td class="tp">し</td><td>${su('しない', 'しない', 'ない형')} · ${su('します', 'します', 'ます형')} · ${su('して', 'して', 'て형')} · ${su('しよう', 'しよう', '의지형')} · ${su('しろ', 'しろ', '명령형')}</td><td class="k">미연·연용·명령형</td></tr>
+    <tr><td class="tp">さ</td><td>${su('される', 'される', '수동형')} · ${su('させる', 'させる', '사역형')}</td><td class="k">미연형</td></tr>
+    <tr><td class="tp">す</td><td>${su('する', 'する', '기본형')} · ${su('すれば', 'すれば', 'ば형')}</td><td class="k">종지형 · 가정형</td></tr>
+    <tr><td class="tp">★</td><td>가능형은 ${su('できる', 'できる', '가능형 (할 수 있다)')} (<span class="jp">しられる · される</span> <span class="ng">✕</span>)</td><td class="k">다른 말</td></tr></table></div></div>
+  <h2>③ 명사 + する — 동작을 나타내는 명사에 する를 붙인 동사</h2>
+  <ul><li><b>する 부분만</b> 위 표대로 활용: ${gJ('勉強します', 'べんきょうします', '공부합니다')} · ${gJ('勉強しない', 'べんきょうしない', '공부하지 않는다')} · ${gJ('勉強して', 'べんきょうして', '공부하고')} · 가능형은 ${gJ('勉強できる', 'べんきょうできる', '공부할 수 있다')}</li>
+    <li>사이에 を를 넣어도 같은 뜻: ${gJ('勉強をする', 'べんきょうをする', '공부를 하다')} = ${gJ('勉強する', 'べんきょうする', '공부하다')}</li>
+    <li>경어: する → 존경 ${gJ('なさる', 'なさる', '하시다')} · 겸양 ${gJ('いたす', 'いたす', '하다 (겸양)')} → ${gJ('ご説明いたします', 'ごせつめいいたします', '설명해 드리겠습니다')}</li></ul>
+  <h2>④ 헷갈리는 점 · 특수한 경우</h2>
+  <ul><li><b>来る는 한자가 '来' 하나인데 읽기가 셋</b>(こ·き·く) → 한자만 보지 말고 <b>뒤에 붙은 글자</b>로 읽기를 정함: 来ない=<b>こ</b>ない · 来ます=<b>き</b>ます</li>
+    <li><b>て형 뒤의 くる</b>(~해 오다)는 히라가나로 쓰는 일이 많음: ${gJ('持ってくる', 'もってくる', '가져오다')} · ${gJ('帰ってくる', 'かえってくる', '돌아오다')}</li>
+    <li><b>ら 빠진 말</b>: ${gJ('来れる', 'これる', '올 수 있다 (회화)')}(회화) — 시험·글은 ${gJ('来られる', 'こられる', '올 수 있다')}</li>
+    <li>한자 한 글자 + する(${gJ('愛する', 'あいする', '사랑하다')})는 1그룹처럼 바뀌기도 함: ${gJ('愛さない', 'あいさない', '사랑하지 않는다')} (N3 이상 · 참고)</li></ul>
+  <h2>⑤ 자주 쓰는 명사 + する (N5·N4 ${list.length}개)</h2>
+  <div class="chips">${gChips(list)}</div>
+  ${gFoot('3그룹 동사')}`;
+}
+
+function gsNoun() {
+  const w = '学生', y = 'がくせい', mean = '学生 · 학생';
+  const P = (f, fy, n, sub) => gsCell(w, f, fy, mean, n, sub);
+  return `<div class="gshead"><h1>명사 · です 한 장 공략</h1><p>명사는 <b>끝이 바뀌지 않음</b> → 뒤에 붙는 <b>だ · です</b>가 바뀜 · な형용사와 활용이 똑같음 (다른 점은 명사를 꾸밀 때 <b>の</b>)</p></div>
+  <h2>① 문장 끝 — 보통체(반말) · 정중체(존댓말)</h2>
+  <table>${gTh(['', '13%'], '보통체', '정중체', ['뜻', '27%'])}
+    <tr><td class="lab">현재</td>${P('学生だ', 'がくせいだ', '보통 현재')}${P('学生です', 'がくせいです', '정중 현재')}<td class="k">학생이다 · 학생입니다</td></tr>
+    <tr><td class="lab">과거</td>${P('学生だった', 'がくせいだった', '보통 과거')}${P('学生でした', 'がくせいでした', '정중 과거')}<td class="k">학생이었다 · 이었습니다</td></tr>
+    <tr><td class="lab">부정</td>${P('学生じゃない', 'がくせいじゃない', '보통 부정')}${P('学生じゃありません', 'がくせいじゃありません', '정중 부정', '= 学生じゃないです')}<td class="k">학생이 아니다 · 아닙니다</td></tr>
+    <tr><td class="lab">과거 부정</td>${P('学生じゃなかった', 'がくせいじゃなかった', '보통 과거 부정')}${P('学生じゃありませんでした', 'がくせいじゃありませんでした', '정중 과거 부정', '= 学生じゃなかったです')}<td class="k">학생이 아니었다 · 아니었습니다</td></tr></table>
+  <p class="rule"><b>じゃ = では</b> (글·발표는 では: ${gJ('学生ではありません', 'がくせいではありません', '학생이 아닙니다')}) · 친구끼리는 だ를 빼고 말할 때가 많음</p>
+  <h2>② 다른 말과 이어질 때 — 명사 뒤에 붙는 말</h2>
+  <table>${gTh(['쓰임', '17%'], ['붙는 말', '21%'], '예', ['뜻', '27%'])}${gRows([
+    ['명사 꾸미기', '+ <b class="h">の</b> + 명사', '学生[の]本', 'がくせいのほん', '학생의 책'],
+    ['~이고 · ~이며', '+ <b class="h">で</b>', '兄は学生[で]、姉は先生です', 'あにはがくせいで、あねはせんせいです', '형은 학생이고 누나는 선생님입니다'],
+    ['~이라면 (가정)', '+ <b class="h">なら</b>', '学生[なら]安いです', 'がくせいならやすいです', '학생이라면 쌉니다'],
+    ['~이라서 (이유)', '+ <b class="h">なので</b> · <b class="h">だから</b>', '雨[なので]行きません', 'あめなのでいきません', '비가 와서 안 갑니다'],
+    ['~때', '+ <b class="h">の時</b>', '子ども[の時]', 'こどものとき', '어릴 때'],
+    ['~이 되다', '+ <b class="h">に</b> + なる', '先生[に]なる', 'せんせいになる', '선생님이 되다'],
+    ['~이 아니라', '+ <b class="h">じゃなくて</b>', '水[じゃなくて]お茶', 'みずじゃなくておちゃ', '물이 아니라 차']])}</table>
+  <h2>③ 묻기 · 추측 · 말끝</h2>
+  <table>${gTh(['쓰임', '17%'], ['붙는 말', '21%'], '예', ['뜻', '27%'])}${gRows([
+    ['질문', '+ <b class="h">か</b>', '学生です[か]', 'がくせいですか', '학생입니까?'],
+    ['추측 (정중)', '+ <b class="h">でしょう</b>', '明日は雨[でしょう]', 'あしたはあめでしょう', '내일은 비가 오겠지요'],
+    ['추측 (보통)', '+ <b class="h">だろう</b>', '明日は雨[だろう]', 'あしたはあめだろう', '내일은 비가 오겠지'],
+    ['맞장구 · 확인', '+ <b class="h">ね</b>', 'いい天気です[ね]', 'いいてんきですね', '날씨가 좋네요'],
+    ['알려 주기', '+ <b class="h">よ</b>', '今日は休みです[よ]', 'きょうはやすみですよ', '오늘은 쉬는 날이에요']])}</table>
+  <h2>④ 헷갈리는 점</h2>
+  <ul><li><b>동사·い형용사 뒤에는 だ를 안 붙임</b>: <span class="jp">行くだ · 高いだ</span> <span class="ng">✕</span> · 동사 정중은 ${gJ('行きます', 'いきます', '갑니다')} (<span class="jp">行くです</span> <span class="ng">✕</span>) · い형용사는 ${gJ('高いです', 'たかいです', '비쌉니다')} ⭕</li>
+    <li><b>보통체 질문은 だ를 빼고 끝을 올림</b>: ${gJ('学生？', 'がくせい', '학생이야?')} (<span class="jp">学生だか</span> <span class="ng">✕</span>)</li>
+    <li><b>정중 과거는 でした</b>: ${gJ('学生でした', 'がくせいでした', '학생이었습니다')} · 정중 과거 부정은 <span class="jp">じゃありませんでした</span> (<span class="jp">学生じゃないでした</span> <span class="ng">✕</span>)</li>
+    <li><b>명사끼리는 の로 이음</b>: ${gJ('日本の車', 'にほんのくるま', '일본 차')} · ${gJ('私の本', 'わたしのほん', '나의 책')} · な형용사는 な: ${gJ('静かな町', 'しずかなまち', '조용한 동네')}</li></ul>
+  <h2>⑤ 다른 품사를 명사로 만들기</h2>
+  <table>${gTh(['바꾸는 것', '22%'], ['방법', '22%'], '예', ['뜻', '27%'])}${gRows([
+    ['い형용사 → 명사', 'い → <b class="h">さ</b>', '重[さ]', 'おもさ', '무게'],
+    ['동사 → 명사', 'ます형 그대로', '休[み] · 帰[り] · 遊[び]', 'やすみ · かえり · あそび', '휴일 · 귀가 · 놀이'],
+    ['동사 → ~하는 것', '+ <b class="h">の</b> · <b class="h">こと</b>', '読む[の]が好きです', 'よむのがすきです', '읽는 것을 좋아합니다'],
+    ['な형용사 → 명사', '그대로', '元気がない', 'げんきがない', '기운이 없다']])}</table>
+  ${gFoot('명사 · です')}`;
+}
+
+function gsForms() {
+  const V = [['書く', 'かく', '1'], ['食べる', 'たべる', '2'], ['する', 'する', '3s'], ['来る', 'くる', '3k']];
+  const R = V.map(([w, y, g]) => conjVerb(w, y, g));
+  const VMn = { 書く: '쓰다', 食べる: '먹다', する: '하다', 来る: '오다' };
+  // 교재 이름 · 붙는 말 · 앞부분 뽑는 법(활용형에서 뒤 글자 떼기) · 1그룹 끝소리 · 한국어 예
+  const F = [['미연형', 'ない · (ら)れる · (さ)せる', 'nai', 'ない', 'あ단', '쓰지 않는다'], ['연용형', 'ます · たい · ながら<br>(음편: て · た)', 'masu', 'ます', 'い단', '씁니다'],
+    ['종지형', '문장 끝 (。)', 'dict', '', 'う단', '쓴다'], ['연체형', '명사', 'dict', '', 'う단', '쓰는 (사람)'],
+    ['가정형', 'ば', 'ba', 'ば', 'え단', '쓰면'], ['명령형', '— (그대로 끝)', 'imp', '', 'え단', '써라'], ['의지형 · 권유형', '(よ)う', 'vol', '', 'お단', '쓰자']];
+  const cell = (i, k, cut, lab) => { const [f, fy] = R[i][k], w = V[i][0], st = cut ? f.slice(0, -cut.length) : f;
+    const add = lab === '연체형' ? '人' : cut, addy = lab === '연체형' ? 'ひと' : cut;
+    return `<td class="f jp" lang="ja"${gsD(fy.slice(0, fy.length - cut.length) + addy, `${w} · ${VMn[w]}`, lab)}>${esc(st)}${add ? `<span class="gsr">${esc(add)}</span>` : ''}${V[i][2] === '3k' ? `<small>${esc(fy.slice(0, fy.length - cut.length))}</small>` : ''}</td>`; };
+  const A = [['미연형', '高かろ(う)', 'たかかろう', '静かだろ(う)', 'しずかだろう', 'う (추측 · 글말)'], ['연용형', '高く(なる) · 高かっ(た)', 'たかくなる', '静かで · 静かに · 静かだっ(た)', 'しずかで', 'なる · ない · た · て'],
+    ['종지형', '高い', 'たかい', '静かだ', 'しずかだ', '문장 끝 (。)'], ['연체형', '高い(山)', 'たかいやま', '静かな(町)', 'しずかなまち', '명사'], ['가정형', '高けれ(ば)', 'たかければ', '静かなら', 'しずかなら', 'ば'], ['명령형', '—', '', '—', '', '없음']];
+  const aj = (t, y, m, lab) => y ? `<td class="f jp" lang="ja"${gsD(y, m, lab)}>${esc(t).replace(/\(([^)]+)\)/g, '<span class="gsr">$1</span>')}</td>` : '<td class="rule">—</td>';
+  return `<div class="gshead"><h1>활용형 총정리 (미연형 · 연용형 …)</h1><p>교재의 활용 이름 = <b>뒤에 다른 말이 붙기 전의 앞부분</b> · 미연형 書か + ない = 書かない · 이 앱의 ない형 · ます형과 가리키는 것이 같음</p></div>
+  <h2>① 동사 활용형 지도 (작은 회색 = 뒤에 붙는 말)</h2>
+  <table><tr><th style="width:12%">교재 이름</th><th style="width:16%">뒤에 붙는 말</th><th>1그룹 書く</th><th style="width:6%">끝소리</th><th>2그룹 食べる</th><th>3그룹 する</th><th>3그룹 来る</th><th style="width:12%">한국어</th></tr>
+    ${F.map(([lab, add, k, cut, dan, ko]) => `<tr><td class="lab">${lab}</td><td class="rule" style="text-align:left">${add}</td>${cell(0, k, cut, lab)}<td class="tp" style="font-size:11px">${dan}</td>${[1, 2, 3].map(i => cell(i, k, cut, lab)).join('')}<td class="k">${ko}</td></tr>`).join('')}</table>
+  <p class="rule">1그룹은 끝소리가 <b>あ·い·う·う·え·え·お</b>단을 오가서 '5단 동사' · 2그룹은 る를 떼기만 · する는 미연형이 し(ない)·さ(れる·せる) 둘 · 来る는 こ·き·く로 읽기가 바뀜</p>
+  <h2>② 이 앱의 이름과 연결</h2>
+  <table>${gTh('교재 이름', '이 앱의 이름', '예 (書く)', '뜻')}
+    ${[['미연형 + ない', 'ない형', '書かない', 'かかない', '쓰지 않는다'], ['연용형 + ます', 'ます형', '書きます', 'かきます', '씁니다'], ['연용형(음편) + て · た', 'て형 · た형', '書いて · 書いた', 'かいて · かいた', '쓰고 · 썼다'],
+      ['종지형 · 연체형', '사전형 (= 기본형)', '書く', 'かく', '쓴다 · 쓰는'], ['가정형 + ば', 'ば형', '書けば', 'かけば', '쓰면']]
+      .map(([a, b, j, y, k]) => gTr(`<td class="lab">${a}</td>`, `<td>${b}</td>`, gX(j, y, k, b), `<td class="k">${k}</td>`)).join('')}</table>
+  <h2>③ 형용사의 활용형 (괄호 안 = 뒤에 붙는 말)</h2>
+  <table>${gTh(['교재 이름', '12%'], 'い형용사 高い', 'な형용사 静か(だ)', ['뒤에 붙는 말', '22%'])}
+    ${A.map(([lab, it, iy, nt, ny, add]) => gTr(`<td class="lab">${lab}</td>`, aj(it, iy, '高い · 높다·비싸다', lab), aj(nt, ny, '静か(だ) · 조용하다', lab), `<td class="k">${add}</td>`)).join('')}</table>
+  <p class="rule">형용사에는 <b>명령형이 없음</b> · 미연형(高かろう · 静かだろう)은 추측 · 글말 — 회화는 ${gJ('高いだろう', 'たかいだろう', '비싸겠지')} · ${gJ('静かでしょう', 'しずかでしょう', '조용하겠지요')}</p>
+  <h2>④ 연체형 — 동사로 명사 꾸미기 (보통형을 명사 앞에 그대로)</h2>
+  <table>${gTh(['동사 모양', '22%'], '예', ['뜻', '30%'])}
+    ${[['사전형 (현재 · 미래)', '毎日[読む]新聞', 'まいにちよむしんぶん', '매일 읽는 신문'], ['た형 (과거)', '昨日[買った]本', 'きのうかったほん', '어제 산 책'], ['ない형 (부정)', '肉を[食べない]人', 'にくをたべないひと', '고기를 먹지 않는 사람'],
+      ['～ている (상태)', '眼鏡を[かけている]人', 'めがねをかけているひと', '안경을 쓴 사람']]
+      .map(([a, j, y, k]) => gTr(`<td class="lab">${a}</td>`, gX(j, y, k, a), `<td class="k">${k}</td>`)).join('')}</table>
+  <p class="rule">명사 앞에는 <b>정중형을 쓰지 않음</b> (<span class="jp">買いました本</span> <span class="ng">✕</span> → ${gJ('買った本', 'かったほん', '산 책')}) · 꾸미는 부분의 주어는 が 대신 の도 씀: ${gJ('母の作った料理', 'ははのつくったりょうり', '어머니가 만든 요리')}</p>
+  ${gFoot('활용형 총정리')}`;
+}
+
 const GSHEETS = [
+  { id: 'noun', t: '명사 · です', d: '문장 끝 · の·で·なら 잇기 · 묻기·추측 · 명사 만들기', html: gsNoun },
+  { id: 'i', t: 'い형용사', d: '문장 끝 · い가 바뀌는 곳 · いい→よ · 大きな · 외울 목록', html: gsI },
   { id: 'na', t: 'な형용사', d: '문장 끝 · な·に·で 바뀌는 곳 · 특수한 경우 · い형용사와 비교', html: gsNa },
   { id: 'v1', t: '1그룹 동사', d: '구별법 · 6가지 종류 · 특수(존경어·ある) · 외울 목록', html: gsV1 },
+  { id: 'v2', t: '2그룹 동사', d: '구별법 · る 떼고 붙이기 · られる 세 뜻 · ら 빠진 말 · 외울 목록', html: gsV2 },
+  { id: 'v3', t: '3그룹 동사', d: 'する·来る 활용표 · こ·き·く 첫소리 · 명사+する', html: gsV3 },
+  { id: 'forms', t: '활용형 총정리', d: '미연·연용·종지·연체·가정·명령·의지형 · 형용사 활용형 · 연체형', html: gsForms },
 ];
 let GSV = { id: null, s: 1, x: 0, y: 0, fit: 1, blob: null };
 function renderGsheet(id) {
@@ -2828,7 +3048,7 @@ function renderGsheet(id) {
   if (!id) {
     sc.innerHTML = `<div class="card"><h2>📄 한 장 공략</h2><p class="muted" style="font-size:.88rem">품사·활용 규칙을 A4 한 장에 모았어요. 누르면 크게 열리고, 두 손가락으로 확대·이동할 수 있어요. ⬇️ 저장을 누르면 사진 앱에 저장돼 인쇄도 할 수 있어요.</p></div>
       <div class="gslist">${GSHEETS.map(g => `<button data-gs="${g.id}"><b>📄 ${esc(g.t)}</b><small>${esc(g.d)}</small></button>`).join('')}</div>
-      <p class="muted" style="text-align:center;font-size:.8rem;margin-top:10px">지금은 샘플 2장 — 검수 후 나머지(い형용사·2·3그룹 동사·ます형·です형·부사·접속조사·의문사…)를 추가해요</p>`;
+`;
     sc.querySelectorAll('[data-gs]').forEach(b => b.onclick = () => renderGsheet(b.dataset.gs));
     show('Gsheet', '📄 한 장 공략'); return;
   }
