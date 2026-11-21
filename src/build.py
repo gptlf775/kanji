@@ -149,7 +149,7 @@ def write_index():
     """data/index.js — 준비된 학년 목록 + 파일 내용 해시(=버전). 앱이 주소에 붙여 서버 캐시(최대 10분)의 옛 파일을 피함.
     활용어·단어장·가나 획순 자료(gram.js·vocab.js·kana.js)의 버전도 함께 기록 (build_gram.py·build_kana.py 도 이 함수를 씀)"""
     dd = os.path.join(ROOT, 'data')
-    avail = sorted(int(f[1:-3]) for f in os.listdir(dd) if re.match(r'^g\d\.js$', f))
+    avail = sorted(int(f[1:-3]) for f in os.listdir(dd) if re.match(r'^g\d+\.js$', f))   # 1~6 초등 · 7~10 중학·고등
     md5 = lambda p: hashlib.md5(open(p, 'rb').read()).hexdigest()[:8]
     ver = {str(g): md5(os.path.join(dd, f'g{g}.js')) for g in avail}
     fv = lambda name: md5(os.path.join(dd, name)) if os.path.exists(os.path.join(dd, name)) else ''

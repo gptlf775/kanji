@@ -31,8 +31,10 @@ def parts_of(ch):
 
 def main():
     errors, out, items = [], {}, []
-    for g in range(1, 7):
-        s = open(os.path.join(ROOT, 'data', f'g{g}.js'), encoding='utf-8').read()
+    for g in range(1, 11):                     # 초등 1~6 + 중학·고등 7~10 (있는 파일만)
+        fn = os.path.join(ROOT, 'data', f'g{g}.js')
+        if not os.path.exists(fn): continue
+        s = open(fn, encoding='utf-8').read()
         m = re.search(r'=\s*(\{.*\})\s*;?\s*$', s, re.S)
         items += json.loads(m.group(1))['items']
     for it in items:
@@ -46,8 +48,8 @@ def main():
     for k, ps in out.items():
         for p in ps: fam.setdefault(p[0], []).append(k)
     chu = set(fam.get('隹', []))
-    if chu != set('集進雑難権確観曜推準護奮'): errors.append('隹 포함 글자가 다름: ' + ''.join(sorted(chu)))
-    if len(items) != 1026: errors.append(f'글자 수 {len(items)}')
+    if not set('集進雑難権確観曜推準護奮') <= chu: errors.append('隹 포함 글자에 초등 12자가 빠짐: ' + ''.join(sorted(chu)))
+    if len(items) not in (1026, 2136): errors.append(f'글자 수 {len(items)} (1026 또는 2136이어야 함)')
     if errors:
         print('\n'.join('ERR ' + e for e in errors[:30])); return 1
     js = 'window.KPARTS=' + json.dumps(out, ensure_ascii=False, separators=(',', ':')) + ';\n'
