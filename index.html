@@ -949,6 +949,12 @@ function hwFeat(strokes) {
     const mx = (s[i][0] + s[i - 1][0]) / 2, my = (s[i][1] + s[i - 1][1]) / 2;
     put(mx, my, o, L * (1 - t)); put(mx, my, (o + 1) % 4, L * t);
   }
+  // 이웃 칸으로 조금 퍼뜨리기(1-2-1 흐리게): 손으로 쓴 선이 본보기보다 조금 밀리거나 모양이 달라도(사다리꼴·기울기) 비슷하게 보이도록
+  { const K = [1, 2, 1], g = new Float32Array(f.length);
+    for (let o = 0; o < HW_D; o++) for (let y = 0; y < G; y++) for (let x = 0; x < G; x++) {
+      let s = 0; for (let j = -1; j <= 1; j++) for (let i = -1; i <= 1; i++) { const xx = x + i, yy = y + j; if (xx < 0 || yy < 0 || xx >= G || yy >= G) continue; s += f[(yy * G + xx) * HW_D + o] * K[i + 1] * K[j + 1]; }
+      g[(y * G + x) * HW_D + o] = s; }
+    f.set(g); }
   let n = 0; for (let i = 0; i < f.length; i++) n += f[i] * f[i]; n = Math.sqrt(n) || 1;
   for (let i = 0; i < f.length; i++) f[i] /= n;
   return f;
@@ -983,6 +989,19 @@ function hwStrokeCost(q, t) {
   const s = hwAssign(A.map(a => B.map(b => hwStrokeDist(a, b))));
   return s / B.length;
 }
+// 획 길이에 비례해 고르게 뽑은 점들 (획 수·획순과 상관없는 '잉크 자리')
+function hwCloud(strokes, total = 40) {
+  const len = strokes.map(s => { let L = 0; for (let i = 1; i < s.length; i++) L += Math.hypot(s[i][0] - s[i - 1][0], s[i][1] - s[i - 1][1]); return L; });
+  const sum = len.reduce((a, b) => a + b, 0) || 1, out = [];
+  strokes.forEach((s, i) => { const n = Math.max(2, Math.round(len[i] / sum * total)); for (const p of hwResample(s, n)) out.push(p); });
+  return out;
+}
+// P의 점 중 Q의 어느 점에서도 th 넘게 떨어진 점의 비율 (본보기 선이 쓴 글씨로 덮이지 않은 정도)
+function hwUncovered(P, Q, th) {
+  const t2 = th * th; let u = 0;
+  for (const p of P) { let hit = false; for (const q of Q) { if ((p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 <= t2) { hit = true; break; } } if (!hit) u++; }
+  return u / P.length;
+}
 let HWT = null, HWR = null;
 // 글자별 획 점 목록 (글자 전체·부품 본보기가 함께 씀)
 function hwRaw(items) {
@@ -1000,7 +1019,7 @@ function hwTemplates(items) {
   });
   return HWT;
 }
-const HW_W = { top: 80, feat: 1.0, st: 1.0, more: 0.035, less: 0.05, gap: 0.03, open: 0.06, near: 0.15 };
+const HW_W = { top: 150, feat: 1.0, st: 1.0, more: 0.035, less: 0.05, gap: 0.03, open: 0.06, near: 0.15, segAng: 1.2, segMin: 0.12, segPen: 0.02, cov: 0.3, covTh: 0.2 };
 // 방향 분포로 추린 뒤 획 짝짓기로 점수 매김 → 좋은 순서 [{t, score}]
 function hwRank(q, T) {
   const f = hwFeat(q), n = q.length, W = HW_W, a = [];
@@ -1008,9 +1027,37 @@ function hwRank(q, T) {
   const b = a.sort((x, y) => x.d - y.d).slice(0, W.top);
   for (const x of b) {
     const dn = x.t.n - n;      // 본보기가 더 많음 = 이어 쓰거나 빠뜨림(흔함) · 더 적음 = 나눠 씀(드묾)
-    x.score = W.feat * x.d + W.st * hwStrokeCost(q, hwTplStrokes(x.t)) + (dn > 0 ? W.more * dn : W.less * -dn);
+    const ts = hwTplStrokes(x.t);
+    x.score = W.feat * x.d + W.st * hwStrokeCost(q, ts) + (dn > 0 ? W.more * dn : W.less * -dn);
+    // 본보기에는 있는데 쓴 글씨의 그 자리에는 없는 선의 비율만큼 깎음 (예: 口를 썼는데 囚·日처럼 안쪽 획까지 있는 글자가 이기지 않게)
+    const qc = q._c || (q._c = hwCloud(q)), tc = x.t.c || (x.t.c = hwCloud(ts)); x.cov = W.cov * hwUncovered(tc, qc, W.covTh); x.score += x.cov;
+    // 꺾인 획(ㄱ·ㄴ)을 나눠 쓰거나 이어 써도 찾도록: 꺾인 곳에서 자른 '선 조각'끼리도 비교해 더 잘 맞는 쪽을 씀
+    // (조각 쪽에는 작은 불리함 segPen — 흘려 쓴 선이 잘못 잘리는 경우를 줄임)
+    const qs = q._sg || (q._sg = hwSegs(q)), tg = x.t.sg || (x.t.sg = hwSegs(ts)), dm = tg.length - qs.length;
+    if (qs.length === q.length && tg.length === ts.length) continue;   // 양쪽 다 꺾인 획이 없으면 조각 비교 = 획 비교 → 생략 (속도)
+    const alt = W.feat * x.d + W.st * hwStrokeCost(qs, tg) + (dm > 0 ? W.more * dm : W.less * -dm) + W.segPen + x.cov;
+    if (alt < x.score) x.score = alt;
   }
   return b.sort((x, y) => x.score - y.score);
+}
+// 획을 꺾인 곳(방향이 segAng 라디안 넘게 바뀌는 곳)에서 잘라 선 조각 목록으로 — 아주 짧은 조각(segMin 미만)은 버림
+function hwSegs(strokes) {
+  const out = [], W = HW_W;
+  for (const s0 of strokes) {
+    const s = hwResample(s0, 32), cut = [0];
+    for (let i = 3; i < s.length - 3; i++) {
+      const a = Math.atan2(s[i][1] - s[i - 3][1], s[i][0] - s[i - 3][0]), b = Math.atan2(s[i + 3][1] - s[i][1], s[i + 3][0] - s[i][0]);
+      let d = Math.abs(a - b); if (d > Math.PI) d = 2 * Math.PI - d;
+      if (d > W.segAng && i - cut[cut.length - 1] >= 4) cut.push(i);
+    }
+    cut.push(s.length - 1);
+    for (let k = 0; k < cut.length - 1; k++) {
+      const part = s.slice(cut[k], cut[k + 1] + 1); let L = 0;
+      for (let i = 1; i < part.length; i++) L += Math.hypot(part[i][0] - part[i - 1][0], part[i][1] - part[i - 1][1]);
+      if (L >= W.segMin || cut.length === 2) out.push(hwResample(part, HW_N));
+    }
+  }
+  return out;
 }
 const hwTplStrokes = t => t.s || (t.s = hwNorm(t.i.map(x => HWR[t.k][x])));   // 부품 획은 쓸 때만 계산 → 메모리 절약
 const hwQuery = raw => { const u = raw.filter(p => p.length).map(p => hwResample(p, HW_N)); return u.length ? hwNorm(u) : null; };
