@@ -417,7 +417,8 @@ function defaultState() {
     kp: { m: 'see', grades: [1, 2, 3, 4, 5, 6] },                              // 한자 연습 옵션
     wp: { m: 'jk', cats: ['n', 'v', 'i', 'na', 'adv', 'etc'], lv: 0, top: 0 }, vocW: {},   // 단어 연습 옵션·약한 단어
     cp: { m: 'make', kinds: ['v'], set: 'basic', lv: 0 },
-    ui: { el: true, ms: false } };                                              // 초등·중고등 묶음 펼침 상태                     // 활용형 맞히기 옵션
+    scope: 'el',                                                                // 학습 범위: el 초등만 · el7 초등+중1 · m7 중1만
+    ui: { el: true, ms: false } };                                            // 초등·중고등 묶음 펼침 상태                     // 활용형 맞히기 옵션
 }
 let S;
 function load() {
@@ -559,7 +560,12 @@ const isUsable = k => lvOf(k) >= 3;                               // '쓸 수 �
 const isMast = k => { const s = st(k), it = D.byK[k]; return !!(s && it && s.lv >= maxLv(it) && s.b >= CFG.MASTER_BOX); };
 const isDue = k => S.review && !!st(k) && st(k).d <= dayNum();   // 설정에서 복습을 끄면 '오늘 복습'이 없음 (일정 자료는 그대로)
 function dueList() { return D.items.filter(it => !it.basic && isDue(it.k)).sort((a, b) => st(a.k).d - st(b.k).d || st(a.k).b - st(b.k).b); }
-function freshList() { return D.items.filter(it => !it.basic && !st(it.k)); }   // 중학·고등 기본 카드(basic)는 2단계 전까지 학습에서 제외
+// 학습 범위 (설정): 새 한자는 이 범위에서만 나옴. 이미 배운 한자의 복습은 범위와 상관없이 계속
+const SCOPES = { el: { lo: 1, hi: 6, name: '초등만' }, el7: { lo: 1, hi: 7, name: '초등+중1' }, m7: { lo: 7, hi: 7, name: '중1만' } };
+const scopeOf = () => SCOPES[S.scope] || SCOPES.el;
+const inScope = it => { const r = scopeOf(); return !it.basic && it.g >= r.lo && it.g <= r.hi; };
+const msReady = g => !!(D.grades[g] && D.grades[g].some(i => !i.basic));   // 중학·고등 코스에 학습용 완성 카드가 있는가
+function freshList() { return D.items.filter(it => inScope(it) && !st(it.k)); }   // 중학·고등 기본 카드(basic)는 2단계 전까지 학습에서 제외
 const newCap = () => Math.min(CFG.NEW_MAX, S.newPerDay + (S.today.bonus || 0));   // 하루 새 한자 상한 10자
 function todayPlan() {
   const due = dueList().slice(0, CFG.REVIEW_CAP);
@@ -572,7 +578,7 @@ function renderHome() {
   topbar();
   const { due, fresh } = todayPlan();
   const total = Object.values(CFG.GRADE_COUNTS).reduce((a, b) => a + b, 0);
-  const ks = Object.keys(S.srs);
+  const ks = Object.keys(S.srs).filter(k => D.byK[k] && D.byK[k].g <= 6);   // 초등 진도 (중학 한자는 중·고등 묶음에)
   const seen = ks.length, use = ks.filter(isUsable).length, mast = ks.filter(isMast).length;
   const iosTip = /iP(hone|ad|od)/.test(navigator.userAgent) && !navigator.standalone;
   const bar = (a, b, c, n) => `<div class="bar"><i class="seen" style="width:${a / n * 100}%"></i><i class="use" style="width:${b / n * 100}%"></i><i class="mast" style="width:${c / n * 100}%"></i></div>`;
@@ -650,7 +656,8 @@ function msHome(bar) {
   if (!S.ui.ms) return h;
   ms.forEach(g => { const items = D.grades[g], cnt = items.length, s1 = items.filter(i => st(i.k)).length, u1 = items.filter(i => isUsable(i.k)).length, m1 = items.filter(i => isMast(i.k)).length;
     h += `<div class="gbar"><div class="lab"><a href="#" data-ms="${g}" style="color:inherit">${GL(g)} · 漢検 ${({ 7: '4급', 8: '3급', 9: '준2급', 10: '2급' })[g]}</a><span>${s1}/${cnt} · 쓸 수 있음 ${u1} · 익힘 ${m1}</span></div>${bar(s1, u1, m1, cnt)}</div>`; });
-  return h + `<p class="muted" style="font-size:.8rem;margin-top:6px">지금은 <b>찾아보기용</b>(한자 목록·한자찾기) — 오늘의 공부에는 아직 안 나와요. 코스 이름을 누르면 목록이 열려요.</p>`;
+  const ready = ms.filter(msReady), wait = ms.filter(g => !msReady(g)), on = ready.filter(g => g <= scopeOf().hi && g >= scopeOf().lo);
+  return h + `<p class="muted" style="font-size:.8rem;margin-top:6px">${ready.length ? `${ready.map(GL).join('·')}: 학습용 카드 완성 — ${on.length ? `지금 오늘의 공부에 나와요 (학습 범위: ${scopeOf().name})` : `<b>⚙️ 설정 → 학습 범위</b>에서 켜면 오늘의 공부에 나와요`}<br>` : ''}${wait.length ? `${wait.map(GL).join('·')}: 지금은 <b>찾아보기용</b>(한자 목록·한자찾기) — 오늘의 공부에는 아직 안 나와요.<br>` : ''}코스 이름을 누르면 목록이 열려요.</p>`;
 }
 /* ═══════════════ 한자 목록 ═══════════════ */
 let listGrade = 1;
@@ -669,7 +676,7 @@ function renderList(g) {
     }).join('') + '</div>';
   });
   $('#scrList').innerHTML = `${tabs}
-    <p class="muted" style="font-size:.8rem">${g <= 6 ? '초N = 일본 초등학교 N학년에서 배우는 한자' : `${GL(g)} = 한자검정 ${({ 7: '4급(중학 재학)', 8: '3급(중학 졸업)', 9: '준2급(고교 재학)', 10: '2급(고교 졸업)' })[g]} 한자 · 음독 행(あ·か·さ…)으로 묶음 · 지금은 찾아보기용 기본 카드`}</p>
+    <p class="muted" style="font-size:.8rem">${g <= 6 ? '초N = 일본 초등학교 N학년에서 배우는 한자' : `${GL(g)} = 한자검정 ${({ 7: '4급(중학 재학)', 8: '3급(중학 졸업)', 9: '준2급(고교 재학)', 10: '2급(고교 졸업)' })[g]} 한자 · 음독 행(あ·か·さ…)으로 묶음 · ${msReady(g) ? '학습용 카드 (설정 → 학습 범위에서 오늘의 공부에 넣기)' : '지금은 찾아보기용 기본 카드'}`}</p>
     <div class="legend"><span><i></i>아직</span><span><i style="background:var(--accent-soft)"></i>배우는 중</span><span><i style="background:#DCEBFA"></i>쓸 수 있음</span><span><i style="background:var(--ok-soft)"></i>익힘</span>${S.review ? '<span>🟠 오늘 복습</span>' : ''}</div>${body}`;
   $('#scrList').querySelectorAll('.tabs button').forEach(b => b.onclick = () => renderList(+b.dataset.g));
   $('#scrList').querySelectorAll('[data-grp]').forEach(b => b.onclick = () => { S.ui[b.dataset.grp] = !S.ui[b.dataset.grp]; save(); renderList(g); });   // 펼치고 접기만
@@ -1840,13 +1847,13 @@ function nextKana() {
 
 /* ═══════════════ 한자 연습 (무한 · 학년 선택 · 복습 일정은 그대로) ═══════════════ */
 let KPS = null;   // { ok, ng, run, last }
-const kpPool = () => D.items.filter(it => S.kp.grades.includes(it.g));
+const kpPool = () => D.items.filter(it => !it.basic && S.kp.grades.includes(it.g));
 function renderKprac() {
   if (!KPS) KPS = { ok: 0, ng: 0, run: 0, last: '' };
   const o = S.kp;
   $('#scrKprac').innerHTML = `<div class="card">
     <div class="optrow"><span class="lab">풀이 방법</span><div class="seg"><button data-pm="see" class="${o.m === 'see' ? 'on' : ''}">👁️ 보고 맞히기</button><button data-pm="hear" class="${o.m === 'hear' ? 'on' : ''}">👂 듣고 맞히기</button></div></div>
-    <div class="optrow"><span class="lab">학년</span>${[1, 2, 3, 4, 5, 6].filter(g => D.grades[g]).map(g => `<button class="tog ${o.grades.includes(g) ? 'on' : ''}" data-pg="${g}">${o.grades.includes(g) ? '✓ ' : ''}초${g}</button>`).join('')}</div>
+    <div class="optrow"><span class="lab">학년</span>${[1, 2, 3, 4, 5, 6].filter(g => D.grades[g]).concat([7, 8, 9, 10].filter(msReady)).map(g => `<button class="tog ${o.grades.includes(g) ? 'on' : ''}" data-pg="${g}">${o.grades.includes(g) ? '✓ ' : ''}${GL(g)}</button>`).join('')}</div>
     <p class="muted" style="font-size:.8rem">연습은 복습 일정에 영향이 없어요. 틀린 한자는 <b>🔁 헷갈린 한자</b>에 모여요.</p>
     <div class="pstat" id="pStat"></div></div>
     <div class="card" id="pQ"></div>`;
@@ -1854,7 +1861,7 @@ function renderKprac() {
   $('#scrKprac').querySelectorAll('[data-pg]').forEach(b => b.onclick = () => {
     const g = +b.dataset.pg, has = o.grades.includes(g);
     if (has && o.grades.length === 1) { toast('학년을 하나 이상 골라야 해요'); return; }
-    o.grades = has ? o.grades.filter(x => x !== g) : [...o.grades, g].sort(); save(); renderKprac();
+    o.grades = has ? o.grades.filter(x => x !== g) : [...o.grades, g].sort((a, b) => a - b); save(); renderKprac();
   });
   kpStat(); nextKprac();
   show('Kprac', '✏️ 한자 연습');
@@ -2351,6 +2358,7 @@ function nextCprac() {
 function soundFamilies() {
   const fam = {};
   D.items.forEach(it => {
+    if (it.basic) return;   // 찾아보기용 기본 카드는 구성(p)이 없음
     // 소리 부품은 한자만 인정 (예: "売 모양(원래 …, 소리 ゾク)"의 '양' 같은 한글이 잡히지 않게)
     const m = (it.p || '').match(/(\p{Script=Han})\((?:[^()]*?[,，]\s*)?소리\s*([ァ-ヶー]+)/u);
     if (!m) return;
@@ -2372,9 +2380,9 @@ function renderRules() {
       <tr><td>ㄴ·ㅁ</td><td>ん</td><td class="jp" lang="ja">山 산→サン, 人 인→ジン, 音 음→オン</td></tr>
       <tr><td>받침 없음</td><td>대체로 그대로</td><td class="jp" lang="ja">火 화→カ, 水 수→スイ, 子 자→シ</td></tr></table></div>
     <div class="card"><h2>🧩 소리 가족 사전 (${fams.length}가족)</h2>
-      <p class="muted">'뜻 부분 + 소리 부분'으로 된 한자(형성자)는 소리 부분이 같으면 음독도 비슷해요. 초등 한자 1026자에서 자동으로 모았어요. 가족을 누르면 펼쳐져요.</p>
+      <p class="muted">'뜻 부분 + 소리 부분'으로 된 한자(형성자)는 소리 부분이 같으면 음독도 비슷해요. 초등 한자 1026자${[7, 8, 9, 10].filter(msReady).length ? '와 ' + [7, 8, 9, 10].filter(msReady).map(GL).join('·') + ' 한자' : ''}에서 자동으로 모았어요. 가족을 누르면 펼쳐져요.</p>
       ${fams.map(f => `<details class="cnt"><summary><span class="jp" lang="ja" style="font-size:1.4rem">${esc(f.part)}</span> <span class="jp" lang="ja">${esc(f.snd)}</span> 가족 · ${f.ks.length}자</summary>
-        <div class="grid" style="margin-top:8px">${f.ks.map(x => `<button class="tile" data-k="${x.k}"><div class="c jp" lang="ja">${x.k}</div><div class="h jp" lang="ja">${esc(x.on)} · ${x.g}학년</div></button>`).join('')}</div></details>`).join('')}</div>
+        <div class="grid" style="margin-top:8px">${f.ks.map(x => `<button class="tile" data-k="${x.k}"><div class="c jp" lang="ja">${x.k}</div><div class="h jp" lang="ja">${esc(x.on)} · ${GL(x.g)}</div></button>`).join('')}</div></details>`).join('')}</div>
     <div class="card"><p>📋 날짜·숫자·세는 말은 <b>한 장 정리</b>에 모았어요.</p><button class="btn sub" id="goSheet2" style="margin-top:8px">📋 한 장 정리로 가기</button></div>`;
   $('#scrRules').querySelectorAll('.tile').forEach(b => b.onclick = () => renderCard(b.dataset.k, 'browse'));
   $('#goSheet2').onclick = () => renderSheet();
@@ -2387,6 +2395,8 @@ function renderSet() {
     <div class="set"><span>이름</span><input type="text" id="sName" value="${esc(S.name)}" placeholder="(선택)" style="max-width:170px"></div>
     <div class="set"><span>모드</span><div class="seg"><button data-m="kid" class="${S.mode === 'kid' ? 'on' : ''}">🧒 어린이</button><button data-m="adult" class="${S.mode === 'adult' ? 'on' : ''}">🧑 어른</button></div></div>
     <div class="set"><span>하루 새 한자</span><div class="stepper"><button id="nMinus">−</button><b id="nVal">${S.newPerDay}</b><button id="nPlus">+</button></div></div>
+    ${msReady(7) ? `<div class="set" style="flex-wrap:wrap;gap:6px"><span style="white-space:nowrap">학습 범위 <small class="muted">새 한자가 나오는 곳</small></span><div class="seg" style="margin-left:auto">${Object.entries(SCOPES).map(([v, r]) => `<button data-sc="${v}" class="${(S.scope || 'el') === v ? 'on' : ''}">${r.name}</button>`).join('')}</div></div>
+    <p class="muted" style="margin:-2px 0 8px;font-size:.8rem">초등+중1은 초등 1,026자를 다 배운 다음 중1이 나와요. 이미 배운 한자의 복습은 범위를 바꿔도 계속돼요.</p>` : ''}
     <div class="set"><span>복습<br><small class="muted">오늘의 공부에 넣기</small></span><div class="seg"><button data-rv="1" class="${S.review ? 'on' : ''}">켜기</button><button data-rv="0" class="${!S.review ? 'on' : ''}">끄기</button></div></div>
     ${S.review ? '' : `<p class="tip" style="margin:4px 0 8px;font-size:.85rem">복습을 끄면 오늘의 공부에 <b>새 한자만</b> 나와요. 지금까지의 진도와 복습 일정은 지워지지 않아요.<br>· '쓸 수 있음'·'익힘'은 복습 문제를 풀어야 오르므로 꺼 둔 동안에는 오르지 않아요.<br>· 다시 켜면 밀린 복습이 하루 최대 ${CFG.REVIEW_CAP}개씩 나와요.</p>`}
     <div class="set"><span>한글 발음 표시<br><small class="muted">참고용 근사치</small></span><div class="seg"><button data-h="1" class="${S.hangul ? 'on' : ''}">켜기</button><button data-h="0" class="${!S.hangul ? 'on' : ''}">끄기</button></div></div>
@@ -2415,6 +2425,7 @@ function renderSet() {
   $('#nMinus').onclick = () => { S.newPerDay = Math.max(1, S.newPerDay - 1); save(); $('#nVal').textContent = S.newPerDay; };
   $('#nPlus').onclick = () => { S.newPerDay = Math.min(CFG.NEW_MAX, S.newPerDay + 1); save(); $('#nVal').textContent = S.newPerDay; };
   s.querySelectorAll('[data-rv]').forEach(b => b.onclick = () => { S.review = b.dataset.rv === '1'; save(); renderSet(); });
+  s.querySelectorAll('[data-sc]').forEach(b => b.onclick = () => { S.scope = b.dataset.sc; save(); renderSet(); toast(`학습 범위: ${scopeOf().name}`); });
   s.querySelectorAll('[data-h]').forEach(b => b.onclick = () => { S.hangul = b.dataset.h === '1'; save(); renderSet(); });
   s.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { S.rate = +b.dataset.r; save(); renderSet(); });
   $('#sTest').onclick = () => { speak('こんにちは'); $('#sVoice').textContent = !canSpeak() ? '이 기기는 음성 합성을 지원하지 않아요' : jaVoice ? `목소리: ${jaVoice.name}` : '일본어 목소리를 찾지 못했어요. 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성에서 일본어를 받아 주세요.'; };

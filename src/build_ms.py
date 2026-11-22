@@ -13,6 +13,7 @@
 import json, os, re, sys
 HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 from build import REF_DIR, ROOT, parse_readings, kata2hira, variants, kvg_paths, write_index
+# 2단계(학습용 완성 카드): src/content_g{7..10}_qN.json (작성 기준: src/AUTHORING_ms2.md) — 있으면 1단계 카드를 글자별로 대체
 sys.stdout.reconfigure(encoding='utf-8')
 
 COURSE = {'4級': 7, '3級': 8, '準2級': 9, '2級': 10}
@@ -48,6 +49,54 @@ def theme_of(rds):
         head = chr(ord(head) + 0x60) if 'ぁ' <= head <= 'ゖ' else head
     return next((n for n, ks in ROWS if head in ks), 'わ행')
 
+S2_FIELDS = ('e', 't', 'p', 'o', 'oc', 'mm', 'ad', 'tip', 'sent')   # 2단계(학습용 완성 카드) 필수 항목
+_CM = _TG = None
+
+def is_full(it):
+    """2단계 내용이 작성된 항목인가 (하나라도 있으면 2단계로 보고 전부 검사)"""
+    return any(f in it for f in ('mm', 'o', 'sent'))
+
+def common():
+    global _CM
+    if _CM is None:
+        p = os.path.join(REF_DIR, 'freq', 'common_words.json')
+        _CM = json.load(open(p, encoding='utf-8')) if os.path.exists(p) else {}
+    return _CM
+
+def tagger():
+    global _TG
+    if _TG is None:
+        from build import _tagger
+        _TG = _tagger() or False
+    return _TG or None
+
+def check_full(k, it, rds, errors, warns, infos):
+    """2단계 항목 검사 — 초등 build.py 와 같은 기준 (필수 항목·유형·형성자 소리·sp + check_v2)"""
+    from build import TYPES, check_v2
+    for f in S2_FIELDS:
+        if not it.get(f):
+            errors.append(f'{k}: 2단계 필수 항목 "{f}" 비어 있음')
+    if it.get('t') not in TYPES:
+        errors.append(f'{k}: 구성 유형 "{it.get("t")}" 은 허용값 {sorted(TYPES)} 이 아님')
+    if '형성' in (it.get('t') or '') and '소리' not in (it.get('p') or ''):
+        errors.append(f'{k}: 형성자인데 구성(p)에 "소리 ○○" 표시가 없음')
+    e = it.get('e', '')
+    if not e or re.search(r'[가-힣ぁ-ヶ一-鿿A-Za-z0-9]', e) or len(e) > 8:
+        errors.append(f'{k}: 이모지(e) "{e}" 는 이모지 1개')
+    for f in ('o', 'mm', 'ad', 'tip'):
+        if re.search(r'[ァ-ヶ]{2,}', it.get(f, '')) and f in ('mm',):
+            infos.append(f'{k}: {f} 에 가타카나 — 어린이용 이야기에 일본 글자가 꼭 필요한지 확인')
+    if len(it.get('mm', '')) > 90:
+        warns.append(f'{k}: 외우기 이야기(mm) {len(it["mm"])}자 — 1~2문장(90자 이내)로')
+    if len(it.get('o', '')) > 200:
+        warns.append(f'{k}: 유래(o) {len(it["o"])}자 — 1~3문장(200자 이내)로')
+    for s in it.get('sp', []):
+        if len(s) != 4 or k not in s[0] or re.search(r'[ァ-ヶ\s]', s[1]):
+            errors.append(f'{k}: 특별 읽기(sp) 형식 오류 {s} ([단어, 히라가나 읽기, 뜻, 설명])')
+    cm = common()
+    exs = [dict(w=e[0], y=e[1], cm=f'{e[0]}|{e[1]}' in cm) for e in it.get('ex', []) if len(e) >= 4]
+    check_v2(k, it, rds, exs, None, cm, tagger(), errors, warns, infos)
+
 def check_items(items, J, KD, HD, errors, warns, infos):
     for it in items:
         k = it.get('k', '?')
@@ -70,17 +119,29 @@ def check_items(items, J, KD, HD, errors, warns, infos):
             errors.append(f'{k}: 뜻(m) 비어 있거나 일본 글자 포함')
         rds = parse_readings(J[k]['rd']); rset = {r['r'] for r in rds}; rmap = {r['r']: r for r in rds}
         core = it.get('core', [])
-        if not (1 <= len(core) <= 2):
+        full = is_full(it)
+        if full:
+            check_full(k, it, rds, errors, warns, infos)   # core 1~3개·sent 등은 여기서
+            for s in it.get('sent', []):
+                tw = s[3] if len(s) > 3 else ''   # 대상 단어 안의 글자(脂肪의 脂 등)는 단어째 배우므로 제외
+                hard = [c for c in (s[0] if s else '') if '一' <= c <= '鿿' and c != k and c not in tw and J.get(c, {}).get('g') not in tuple('123456')]
+                if hard:
+                    warns.append(f'{k}: 예문에 초등 밖 한자 {"".join(hard)} — 히라가나로')
+        elif not (1 <= len(core) <= 2):
             errors.append(f'{k}: 핵심 읽기(core) 1~2개 (현재 {len(core)})')
         for c in core:
-            if c not in rset:
+            if c not in rset and not full:
                 errors.append(f'{k}: 핵심 읽기 "{c}" 가 상용한자표 음훈 {sorted(rset)} 에 없음')
         exs = it.get('ex', [])
-        if not (1 <= len(exs) <= 5):
-            errors.append(f'{k}: 예시 단어 {len(exs)}개 (1~5개, 보통 3~4개)')
+        if not (1 <= len(exs) <= (6 if full else 5)):
+            errors.append(f'{k}: 예시 단어 {len(exs)}개 (1~{6 if full else 5}개, 보통 3~4개)')
         elif len(exs) < 2:
             infos.append(f'{k}: 예시 단어 1개')
+        if full and core and not any(len(e) >= 3 and e[2] in core for e in exs):
+            errors.append(f'{k}: 핵심 읽기 {core} 로 읽는 예시 단어가 하나도 없음')
         for e in exs:
+            if len(e) == 5 and full and e[4] in (0, 1):
+                e = e[:4]
             if len(e) != 4:
                 errors.append(f'{k}: 예시 형식 오류 {e} ([단어, 히라가나 읽기, 상용 읽기 표기, 한국어 뜻])'); continue
             w, y, r, m = e
@@ -99,12 +160,31 @@ def check_items(items, J, KD, HD, errors, warns, infos):
             if not r['rare'] and r['r'] not in used:
                 infos.append(f'{k}: 읽기 "{r["r"]}" 의 예시 없음')
 
-def load_parts(g):
+def load_parts(g, stage2=True):
+    """1단계 content_g{g}_pN.json 에 2단계 content_g{g}_qN.json 을 글자별로 덮어씀 (2단계가 있는 글자만)"""
     items = []
     for f in sorted(os.listdir(HERE)):
         if re.match(rf'^content_g{g}_p\d+\.json$', f):
             items += json.load(open(os.path.join(HERE, f), encoding='utf-8'))['items']
+    if stage2:
+        full = {}
+        for f in sorted(os.listdir(HERE)):
+            if re.match(rf'^content_g{g}_q\d+\.json$', f):
+                full.update({it['k']: it for it in json.load(open(os.path.join(HERE, f), encoding='utf-8-sig'))['items']})
+        items = [full.get(it['k'], it) for it in items] + [it for k, it in full.items() if k not in {x['k'] for x in items}]
     return items
+
+def diff_stage1(items, infos):
+    """2단계에서 1단계 값(hun·m·core)을 바꾼 글자 — 보고용"""
+    base = {}
+    for g in (7, 8, 9, 10):
+        base.update({it['k']: it for it in load_parts(g, stage2=False)})
+    for it in items:
+        b = base.get(it['k'])
+        if b:
+            for f in ('hun', 'm', 'core'):
+                if b.get(f) != it.get(f):
+                    infos.append(f'{it["k"]}: 1단계 {f} 변경 {b.get(f)} → {it.get(f)}')
 
 def main(argv):
     from prep_ms import kanjidic, hangul_dict
@@ -113,9 +193,13 @@ def main(argv):
     lv = json.load(open(os.path.join(HERE, 'kanken_ms.json'), encoding='utf-8'))['levels']
     errors, warns, infos = [], [], []
     if argv[0] == '--check':
-        items = json.load(open(argv[1], encoding='utf-8'))['items']
+        items = json.load(open(argv[1], encoding='utf-8-sig'))['items']
         check_items(items, J, KD, HD, errors, warns, infos)
-        print(f'{argv[1]}: {len(items)}자 · 오류 {len(errors)} · 경고 {len(warns)} · 참고 {len(infos)}')
+        ks = [it.get('k') for it in items]
+        if len(set(ks)) != len(ks):
+            errors.append('중복 항목: ' + ''.join(k for k in set(ks) if ks.count(k) > 1))
+        diff_stage1(items, infos)
+        print(f'{argv[1]}: {len(items)}자 (2단계 {sum(map(is_full, items))}자) · 오류 {len(errors)} · 경고 {len(warns)} · 참고 {len(infos)}')
         for x in errors: print('ERR', x)
         for x in warns: print('WARN', x)
         for x in infos: print('INFO', x)
@@ -140,20 +224,31 @@ def main(argv):
         if len(paths) != J[k]['sc']:
             errors.append(f'{k}: 획순 {len(paths)}획 ≠ 상용한자표 {J[k]["sc"]}획')
         exs = []
-        for w, y, r, m in it['ex']:
+        krs = dict((w, n) for w, n in it.get('kr', []))
+        for w, y, r, m, *rest in it['ex']:
             stem = kata2hira(next(x for x in rds if x['r'] == r)['stem'])
             cand = [(y.find(f), len(f), ch) for f, ch in variants(stem) if f in y]
             hs, hl, ch = min(cand, key=lambda c: abs(c[0] - w.find(k) / max(1, len(w)) * len(y))) if cand else (0, 0, False)
             info = jm().get((w, y))
-            exs.append(dict(w=w, y=y, r=r, m=m, hs=hs, hl=hl, ch=ch, rare=next(x for x in rds if x['r'] == r)['rare'], cm=bool(info and info[0])))
+            ex = dict(w=w, y=y, r=r, m=m, hs=hs, hl=hl, ch=ch, rare=next(x for x in rds if x['r'] == r)['rare'], cm=bool(info and info[0]))
+            if rest and rest[0]: ex['amb'] = True        # 다른 읽기도 맞는 단어 → 읽기 문제에서 제외
+            if w in krs: ex['kr'] = krs[w]               # 한국어와 뜻이 다른 한자어
+            exs.append(ex)
         o = dict(k=k, g=g, sc=J[k]['sc'], rad=J[k]['rad'], theme=th, hun=it['hun'], m=it['m'], rd=rds, ex=exs, sp=[], st=paths,
                  core=it['core'], kk=KNAME[lv[k]], basic=True)
         if it.get('t'): o['t'] = it['t']
+        if is_full(it):     # 2단계 완성 카드 → 학습(오늘의 공부)에 나옴 (basic 없음)
+            del o['basic']
+            o.update(e=it['e'], t=it['t'], p=it['p'], o=it['o'], oc=it['oc'], mm=it['mm'], ad=it['ad'], tip=it.get('tip', ''),
+                     sp=[dict(w=a, y=b, m=c, n=d) for a, b, c, d in it.get('sp', [])],
+                     caution=[dict(w=a, y=b, n=c) for a, b, c in it.get('caution', [])],
+                     sent=[dict(j=a, y=b, ko=c, w=d) for a, b, c, d in it.get('sent', [])],
+                     confuse=[dict(k=a, n=b) for a, b in it.get('confuse', [])])
         out.append(o)
     rows = [n for n, _ in ROWS if n in themes]
     data = dict(grade=g, themes=[dict(name=n, e='', ks=''.join(themes[n])) for n in rows], items=sorted(out, key=lambda o: (rows.index(o['theme']), order.index(o['k']))))
     js = f'window.KANJI_GRADES=window.KANJI_GRADES||{{}};window.KANJI_GRADES[{g}]=' + json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n'
-    rep = [f'[{CNAME[g]} 코스] 공식 {len(official)}자 / 작성 {len(authored)}자 / 예시 {sum(len(o["ex"]) for o in out)}개',
+    rep = [f'[{CNAME[g]} 코스] 공식 {len(official)}자 / 작성 {len(authored)}자 (학습용 완성 {sum(1 for o in out if not o.get("basic"))}자) / 예시 {sum(len(o["ex"]) for o in out)}개',
            f'오류 {len(errors)}건, 경고 {len(warns)}건, 참고 {len(infos)}건']
     rep += ['ERR ' + e for e in errors] + ['WARN ' + w for w in warns] + ['INFO ' + i for i in infos]
     open(os.path.join(HERE, f'verify_g{g}.txt'), 'w', encoding='utf-8').write('\n'.join(rep) + '\n')
