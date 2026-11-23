@@ -561,8 +561,14 @@ const isMast = k => { const s = st(k), it = D.byK[k]; return !!(s && it && s.lv 
 const isDue = k => S.review && !!st(k) && st(k).d <= dayNum();   // 설정에서 복습을 끄면 '오늘 복습'이 없음 (일정 자료는 그대로)
 function dueList() { return D.items.filter(it => !it.basic && isDue(it.k)).sort((a, b) => st(a.k).d - st(b.k).d || st(a.k).b - st(b.k).b); }
 // 학습 범위 (설정): 새 한자는 이 범위에서만 나옴. 이미 배운 한자의 복습은 범위와 상관없이 계속
-const SCOPES = { el: { lo: 1, hi: 6, name: '초등만' }, el7: { lo: 1, hi: 7, name: '초등+중1' }, m7: { lo: 7, hi: 7, name: '중1만' } };
-const scopeOf = () => SCOPES[S.scope] || SCOPES.el;
+// S.scope = '시작-끝' 학년 (1-6 초등만 · 1-7 초등~중1 · 7-8 중1~중2 …). 예전 값 el·el7·m7 도 읽음
+const SCOPE_OLD = { el: '1-6', el7: '1-7', m7: '7-7' };
+const stopName = g => g <= 6 ? '초등' : GL(g);
+function scopeOf() {
+  const m = /^(\d+)-(\d+)$/.exec(SCOPE_OLD[S.scope] || S.scope || '') || [0, 1, 6];
+  const lo = +m[1], hi = +m[2];
+  return { lo, hi, name: stopName(lo) === stopName(hi) ? stopName(lo) + '만' : `${stopName(lo)}~${stopName(hi)}` };
+}
 const inScope = it => { const r = scopeOf(); return !it.basic && it.g >= r.lo && it.g <= r.hi; };
 const msReady = g => !!(D.grades[g] && D.grades[g].some(i => !i.basic));   // 중학·고등 코스에 학습용 완성 카드가 있는가
 function freshList() { return D.items.filter(it => inScope(it) && !st(it.k)); }   // 중학·고등 기본 카드(basic)는 2단계 전까지 학습에서 제외
@@ -2395,8 +2401,11 @@ function renderSet() {
     <div class="set"><span>이름</span><input type="text" id="sName" value="${esc(S.name)}" placeholder="(선택)" style="max-width:170px"></div>
     <div class="set"><span>모드</span><div class="seg"><button data-m="kid" class="${S.mode === 'kid' ? 'on' : ''}">🧒 어린이</button><button data-m="adult" class="${S.mode === 'adult' ? 'on' : ''}">🧑 어른</button></div></div>
     <div class="set"><span>하루 새 한자</span><div class="stepper"><button id="nMinus">−</button><b id="nVal">${S.newPerDay}</b><button id="nPlus">+</button></div></div>
-    ${msReady(7) ? `<div class="set" style="flex-wrap:wrap;gap:6px"><span style="white-space:nowrap">학습 범위 <small class="muted">새 한자가 나오는 곳</small></span><div class="seg" style="margin-left:auto">${Object.entries(SCOPES).map(([v, r]) => `<button data-sc="${v}" class="${(S.scope || 'el') === v ? 'on' : ''}">${r.name}</button>`).join('')}</div></div>
-    <p class="muted" style="margin:-2px 0 8px;font-size:.8rem">초등+중1은 초등 1,026자를 다 배운 다음 중1이 나와요. 이미 배운 한자의 복습은 범위를 바꿔도 계속돼요.</p>` : ''}
+    ${msReady(7) ? (() => { const r = scopeOf(), stops = [1, ...[7, 8, 9, 10].filter(msReady)];
+      const row = (lab, key, cur) => `<div class="set" style="border:none;padding-top:0"><span>${lab}</span><div class="seg">${stops.map(g => `<button data-sc${key}="${g}" class="${(key === 'lo' ? g : (g === 1 ? 6 : g)) === cur ? 'on' : ''}">${stopName(g)}</button>`).join('')}</div></div>`;
+      return `<div class="set" style="border-bottom:none"><span>학습 범위 <small class="muted">새 한자가 나오는 곳 · 지금 <b style="white-space:nowrap">${r.name}</b></small></span></div>
+    ${row('부터', 'lo', r.lo)}${row('까지', 'hi', r.hi)}
+    <p class="muted" style="margin:-2px 0 8px;font-size:.8rem">범위가 여러 단계면 앞 단계를 다 배운 다음 다음 단계가 나와요(초등~중1이면 초등 1,026자 다음에 중1). 이미 배운 한자의 복습은 범위를 바꿔도 계속돼요.</p>`; })() : ''}
     <div class="set"><span>복습<br><small class="muted">오늘의 공부에 넣기</small></span><div class="seg"><button data-rv="1" class="${S.review ? 'on' : ''}">켜기</button><button data-rv="0" class="${!S.review ? 'on' : ''}">끄기</button></div></div>
     ${S.review ? '' : `<p class="tip" style="margin:4px 0 8px;font-size:.85rem">복습을 끄면 오늘의 공부에 <b>새 한자만</b> 나와요. 지금까지의 진도와 복습 일정은 지워지지 않아요.<br>· '쓸 수 있음'·'익힘'은 복습 문제를 풀어야 오르므로 꺼 둔 동안에는 오르지 않아요.<br>· 다시 켜면 밀린 복습이 하루 최대 ${CFG.REVIEW_CAP}개씩 나와요.</p>`}
     <div class="set"><span>한글 발음 표시<br><small class="muted">참고용 근사치</small></span><div class="seg"><button data-h="1" class="${S.hangul ? 'on' : ''}">켜기</button><button data-h="0" class="${!S.hangul ? 'on' : ''}">끄기</button></div></div>
@@ -2425,7 +2434,10 @@ function renderSet() {
   $('#nMinus').onclick = () => { S.newPerDay = Math.max(1, S.newPerDay - 1); save(); $('#nVal').textContent = S.newPerDay; };
   $('#nPlus').onclick = () => { S.newPerDay = Math.min(CFG.NEW_MAX, S.newPerDay + 1); save(); $('#nVal').textContent = S.newPerDay; };
   s.querySelectorAll('[data-rv]').forEach(b => b.onclick = () => { S.review = b.dataset.rv === '1'; save(); renderSet(); });
-  s.querySelectorAll('[data-sc]').forEach(b => b.onclick = () => { S.scope = b.dataset.sc; save(); renderSet(); toast(`학습 범위: ${scopeOf().name}`); });
+  // 학습 범위: 시작이 끝보다 뒤로 가면 끝을 따라 옮김 (반대도 같음)
+  const setScope = (lo, hi) => { S.scope = `${lo}-${hi}`; save(); renderSet(); toast(`학습 범위: ${scopeOf().name}`); };
+  s.querySelectorAll('[data-sclo]').forEach(b => b.onclick = () => { const lo = +b.dataset.sclo, hi = scopeOf().hi; setScope(lo, Math.max(hi, lo === 1 ? 6 : lo)); });
+  s.querySelectorAll('[data-schi]').forEach(b => b.onclick = () => { const g = +b.dataset.schi, hi = g === 1 ? 6 : g, lo = scopeOf().lo; setScope(Math.min(lo, g), hi); });
   s.querySelectorAll('[data-h]').forEach(b => b.onclick = () => { S.hangul = b.dataset.h === '1'; save(); renderSet(); });
   s.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { S.rate = +b.dataset.r; save(); renderSet(); });
   $('#sTest').onclick = () => { speak('こんにちは'); $('#sVoice').textContent = !canSpeak() ? '이 기기는 음성 합성을 지원하지 않아요' : jaVoice ? `목소리: ${jaVoice.name}` : '일본어 목소리를 찾지 못했어요. 설정 → 손쉬운 사용 → 읽기 및 말하기 → 음성에서 일본어를 받아 주세요.'; };

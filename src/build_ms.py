@@ -63,6 +63,16 @@ def common():
         _CM = json.load(open(p, encoding='utf-8')) if os.path.exists(p) else {}
     return _CM
 
+LV = json.load(open(os.path.join(HERE, 'kanken_ms.json'), encoding='utf-8'))['levels']   # 글자 → 급 (코스 배정)
+_FH = None
+def fuhyo():
+    """상용한자표 부표 127어 [(단어, 읽기)] — src/fuhyo.txt"""
+    global _FH
+    if _FH is None:
+        lines = [l for l in open(os.path.join(HERE, 'fuhyo.txt'), encoding='utf-8-sig') if not l.startswith('#')]
+        _FH = [tuple(x.split(':')) for x in ' '.join(lines).split()]
+    return _FH
+
 def tagger():
     global _TG
     if _TG is None:
@@ -93,6 +103,13 @@ def check_full(k, it, rds, errors, warns, infos):
     for s in it.get('sp', []):
         if len(s) != 4 or k not in s[0] or re.search(r'[ァ-ヶ\s]', s[1]):
             errors.append(f'{k}: 특별 읽기(sp) 형식 오류 {s} ([단어, 히라가나 읽기, 뜻, 설명])')
+    # 상용한자표 부표(src/fuhyo.txt)와 대조: 이 글자가 든 부표 단어가 sp에 빠졌거나 읽기가 다르면 오류
+    sp = {s[0]: s[1] for s in it.get('sp', []) if len(s) == 4}
+    for w, y in fuhyo():
+        if k in w and w not in sp and not (w + '歳' in sp):
+            errors.append(f'{k}: 부표 특별 읽기 "{w}({y})" 가 sp에 없음')
+        elif k in w and sp.get(w) != y:
+            errors.append(f'{k}: 부표 "{w}" 읽기는 {y} (sp: {sp.get(w)})')
     cm = common()
     exs = [dict(w=e[0], y=e[1], cm=f'{e[0]}|{e[1]}' in cm) for e in it.get('ex', []) if len(e) >= 4]
     check_v2(k, it, rds, exs, None, cm, tagger(), errors, warns, infos)
@@ -124,9 +141,11 @@ def check_items(items, J, KD, HD, errors, warns, infos):
             check_full(k, it, rds, errors, warns, infos)   # core 1~3개·sent 등은 여기서
             for s in it.get('sent', []):
                 tw = s[3] if len(s) > 3 else ''   # 대상 단어 안의 글자(脂肪의 脂 등)는 단어째 배우므로 제외
-                hard = [c for c in (s[0] if s else '') if '一' <= c <= '鿿' and c != k and c not in tw and J.get(c, {}).get('g') not in tuple('123456')]
+                # 예문 속 다른 한자는 초등 + 이 글자보다 앞 코스(중2 카드면 중1까지)만
+                hard = [c for c in (s[0] if s else '') if '一' <= c <= '鿿' and c != k and c not in tw
+                        and J.get(c, {}).get('g') not in tuple('123456') and not (c in LV and k in LV and COURSE[LV[c]] < COURSE[LV[k]])]
                 if hard:
-                    warns.append(f'{k}: 예문에 초등 밖 한자 {"".join(hard)} — 히라가나로')
+                    warns.append(f'{k}: 예문에 아직 안 배운 한자 {"".join(hard)} — 히라가나로')
         elif not (1 <= len(core) <= 2):
             errors.append(f'{k}: 핵심 읽기(core) 1~2개 (현재 {len(core)})')
         for c in core:
