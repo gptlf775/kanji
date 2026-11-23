@@ -294,6 +294,12 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .gpat .pt{font-size:1.25rem;font-weight:bold;} .gpat .cn{font-size:.85rem;color:var(--on);background:var(--on-soft);border-radius:8px;padding:1px 8px;display:inline-block;margin:2px 0;}
 .lvb{font-size:.72rem;border-radius:6px;padding:0 6px;margin-left:4px;vertical-align:2px;font-weight:bold;}
 .lvb.n5{background:#DDF2E5;color:#2F7A52;} .lvb.n4{background:#E4ECFC;color:#3A63B8;}
+/* 📗 문법장 */
+.bptag{font-size:.7rem;border-radius:6px;padding:0 6px;margin-left:4px;vertical-align:2px;font-weight:bold;background:#FFF0D6;color:#9A6A12;}
+.bptag.sup{background:#F1E8FB;color:#6E4BA6;}
+.bpgrp>summary{display:flex;justify-content:space-between;align-items:center;font-weight:bold;cursor:pointer;padding:4px 0;list-style:none;}
+.bpgrp>summary::-webkit-details-marker{display:none;} .bpgrp>summary>small{white-space:nowrap;margin-left:8px;} .bpgrp>summary>span::before{content:'▸ ';color:var(--sub);} .bpgrp[open]>summary>span::before{content:'▾ ';}
+.bpcmp{font-size:.85rem;background:#FFF8EC;border-radius:10px;padding:6px 10px;margin:6px 0;}
 table.cj td{vertical-align:top;} .gform{display:block;text-align:left;padding:2px;} table.cj small.kx{color:#B4541F;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
 .gl{border-bottom:1.5px dotted var(--on);cursor:pointer;} table.cj .f{font-size:1.1rem;} table.cj small{display:block;color:var(--sub);font-size:.75rem;}
 .vbox{border-bottom:1px dashed var(--line);} .vbox .vrow{border-bottom:none;} details.vcj{margin:0 0 6px 34px;} details.vcj summary{cursor:pointer;}
@@ -340,6 +346,7 @@ textarea{height:90px;font-size:12px;}
   <section class="screen" id="scrKana"></section>
   <section class="screen" id="scrKprac"></section>
   <section class="screen" id="scrGram"></section>
+  <section class="screen" id="scrBunpo"></section>
   <section class="screen" id="scrVocab"></section>
   <section class="screen" id="scrWprac"></section>
   <section class="screen" id="scrCprac"></section>
@@ -620,8 +627,9 @@ function renderHome() {
       <button id="goListen"><span>🎧</span>문장 듣기 <small class="muted" style="display:block;font-weight:normal">회화·품사별·단어 듣기</small></button>
       <button id="goGsheet"><span>📄</span>한 장 공략 <small class="muted" style="display:block;font-weight:normal">품사·활용 규칙 20장</small></button>
       <button id="goDraw"><span>✍️</span>한자찾기 <small class="muted" style="display:block;font-weight:normal">손글씨·뜻·발음으로</small></button>
-      <button id="goGram"><span>🔀</span>활용어 <small class="muted" style="display:block;font-weight:normal">문법 · 동사·형용사 활용</small></button>
+      <button id="goBunpo"><span>📗</span>문법장 <small class="muted" style="display:block;font-weight:normal">N5·N4 문형 240개</small></button>
       <button id="goVocab"><span>📒</span>단어장 <small class="muted" style="display:block;font-weight:normal">N5·N4 많이 쓰는 순</small></button>
+      <button id="goGram"><span>🔀</span>활용어 <small class="muted" style="display:block;font-weight:normal">활용 · 조사 · 경어</small></button>
       <button id="goKprac"><span>✏️</span>한자 연습</button>
       <button id="goList"><span>📚</span>한자 목록</button>
       <button id="goRules"><span>🧩</span>읽기 규칙</button>
@@ -639,6 +647,7 @@ function renderHome() {
   on('goRules', () => renderRules());
   on('goSheet', () => renderSheet());
   on('goGram', () => renderGram());
+  on('goBunpo', () => renderBunpo());
   on('goKprac', () => renderKprac());
   on('goVocab', () => renderVocab());
   on('goListen', () => renderListen());
@@ -2038,7 +2047,7 @@ function renderGram(tab) {
   if (tb.id === 'verbs') body += wordList(G, 'v');
   if (tb.id === 'iadj') body += wordList(G, 'i');
   if (tb.id === 'naadj') body += wordList(G, 'na');
-  if (tb.pat) body += patList(G.pat.filter(p => p.lv === tb.pat));
+  if (tb.pat) body += `<div class="card" style="text-align:center"><p>N${tb.pat} 문법은 <b>📗 문법장</b>으로 옮겼어요 — 기능별로 묶고 예문을 2개씩 넣었어요.</p><button class="btn main" id="goBunpoG" style="margin-top:10px">📗 문법장 N${tb.pat} 열기</button></div>`;
   if (['vform', 'te', 'verbs', 'iadj', 'naadj'].includes(tb.id)) body = `<div class="card" style="text-align:center"><button class="btn main" id="goCprac">✏️ 활용형 맞히기 연습 (무한 문제)</button>
     <p class="muted" style="font-size:.8rem;margin-top:6px">書く → て형은? · 書かなかった는 무슨 모양? · 원형만 뜻 맞히기(食べる = ?) — 동사·형용사 무한 연습</p></div>` + body;
   $('#scrGram').innerHTML = `<div class="tabs">${tabs}</div><div class="gram">${body}</div>`;
@@ -2059,6 +2068,7 @@ function renderGram(tab) {
     fx.querySelectorAll('.kl').forEach(b => b.onclick = e => { e.stopPropagation(); renderCard(b.dataset.k, 'browse'); });
   }));
   if ($('#goCprac')) $('#goCprac').onclick = () => renderCprac();
+  if ($('#goBunpoG')) $('#goBunpoG').onclick = () => { bpF.lv = tb.pat; bpF.q = ''; renderBunpo(); };
   sc.querySelectorAll('[data-fl]').forEach(b => b.onclick = () => { gramFilter.lv = +b.dataset.fl; renderGram(); });
   sc.querySelectorAll('[data-fg]').forEach(b => b.onclick = () => { gramFilter.g = b.dataset.fg; renderGram(); });
   show('Gram', '🔀 활용어');
@@ -2115,8 +2125,68 @@ function patList(ps) {
 }
 
 
+/* ═══════════════ 📗 문법장 (N5·N4 문형 — data/bunpo.js, src/build_bunpo.py) ═══════════════ */
+// 등급(N5/N4) → 기능별 묶음(접고 펴기) → 문형 카드(뜻·접속·설명·비슷한 문형·예문 2개). 찾기는 두 등급 전체에서
+let bpF = { lv: 5, q: '', open: {} };
+const bpItem = p => { const seen = new Set();
+  return `<div class="gpat"><div class="pt jp" lang="ja">${linkK(p.p)}<span class="lvb n${p.lv}">N${p.lv}</span>${p.tag === 'r5' ? '<span class="bptag">N5 복습</span>' : p.tag === 'sup' ? '<span class="bptag sup">보충</span>' : ''}</div>
+    <div>${esc(p.m)}</div><div class="cn">접속: ${rich(p.c, seen)}</div><p class="muted" style="font-size:.88rem">${rich(p.d, seen)}</p>
+    ${(p.cmp || []).map(([a, b]) => `<div class="bpcmp">🔀 <b class="jp" lang="ja">${esc(a)}</b>와 비교 — ${rich(b, seen)}</div>`).join('')}
+    ${p.ex.map(gex).join('')}</div>`; };
+// 찾기 점수: 문형 이름 > 묶음 이름(경어·추측) > 뜻 > 접속·설명 > 예문  (0 = 안 맞음)
+function bpScore(p, q) {
+  const nq = kata2hira(q).replace(/[～~\s]/g, ''), has = s => kata2hira(s || '').replace(/[～~\s]/g, '').includes(nq);
+  const pp = kata2hira(p.p).replace(/[～~\s]/g, '');
+  if (pp === nq || pp.startsWith(nq)) return 100;
+  if (has(p.p)) return 80;
+  const g = BUNPO.groups.find(x => x.id === p.g);
+  if (p.m.split(/[·,/()]/).some(t => t.replace(/[～~\s]/g, '') === nq)) return 90;   // 뜻이 딱 맞음 (하면 → ～たら '~하면')
+  if (g && has(g.name)) return 70;
+  if (has(p.m)) return 60;
+  if (has(p.c) || has(p.d)) return 30;
+  return p.ex.some(e => has(e[0]) || has(e[2])) ? 10 : 0;
+}
+const bpMatch = (p, q) => bpScore(p, q) > 0;
+function bpBody() {
+  const B = window.BUNPO, f = bpF, q = f.q.trim();
+  let body;
+  if (q) {
+    const hit = B.items.map(p => [p, bpScore(p, q)]).filter(x => x[1]).sort((a, b) => b[1] - a[1] || a[0].lv - b[0].lv).map(x => x[0]);
+    body = `<div class="card"><p class="muted">'${esc(q)}' — ${hit.length}개</p>${hit.map(bpItem).join('') || '<p class="muted">찾는 문형이 없어요.</p>'}</div>`;
+  } else {
+    body = B.groups.filter(g => g.lv === f.lv).map(g => { const ps = B.items.filter(p => p.g === g.id), r5 = ps.filter(p => p.tag === 'r5').length;
+      return `<div class="card"><details class="bpgrp" data-bg="${g.id}" ${f.open[g.id] ? 'open' : ''}><summary><span>${esc(g.name)}</span><small class="muted">${ps.length}개${r5 ? ` · N5 복습 ${r5}` : ''}</small></summary><div class="bpbody">${f.open[g.id] ? ps.map(bpItem).join('') : ''}</div></details></div>`; }).join('');
+  }
+  const box = $('#bplist'); box.innerHTML = body;
+  const wire = el => {
+    el.querySelectorAll('[data-say]').forEach(b => b.onclick = e => { if (e.target.closest('.kl,.gl')) return; speak(b.dataset.say); });
+    el.querySelectorAll('.kl').forEach(b => b.onclick = e => { e.stopPropagation(); renderCard(b.dataset.k, 'browse'); });
+    el.querySelectorAll('.gl').forEach(b => b.onclick = e => { e.stopPropagation(); e.preventDefault(); showGloss(b.dataset.gl); });
+  };
+  wire(box);
+  box.querySelectorAll('details[data-bg]').forEach(d => d.addEventListener('toggle', () => {   // 펼칠 때만 그 묶음을 그림 (폰에서 가볍게)
+    f.open[d.dataset.bg] = d.open; const bd = d.querySelector('.bpbody');
+    if (d.open && !bd.innerHTML) { bd.innerHTML = B.items.filter(p => p.g === d.dataset.bg).map(bpItem).join(''); wire(bd); }
+  }));
+  $('#scrBunpo').querySelectorAll('[data-bl]').forEach(b => b.classList.toggle('on', +b.dataset.bl === f.lv && !q));
+}
+function renderBunpo() {
+  if (!ensureData(['BUNPO', 'GRAM'], 'Bunpo', '📗 문법장', renderBunpo)) return;
+  const B = window.BUNPO, f = bpF, n = lv => B.items.filter(p => p.lv === lv).length;
+  $('#scrBunpo').innerHTML = `<div class="card">
+    <div class="seg" style="margin-bottom:10px">${[5, 4].map(lv => `<button data-bl="${lv}" class="grow">N${lv} · ${n(lv)}개</button>`).join('')}</div>
+    <input type="text" id="bq" placeholder="찾기: ～たら · 하면 · 추측 · ために" value="${esc(f.q)}" autocomplete="off">
+    <p class="muted" style="font-size:.8rem;margin-top:6px">${f.lv === 4 ? 'N4는 시험 범위 문법을 기능별로 모았어요. <span class="bptag">N5 복습</span> = 시험에선 N5지만 N4 문제에도 자주 나오는 것, <span class="bptag sup">보충</span> = 그 밖에 알아 두면 좋은 N4.' : 'N5는 처음 문장을 만들 때 꼭 필요한 기본 문형이에요.'} 묶음을 누르면 펼쳐지고, 예문을 누르면 읽어 줘요.</p></div>
+    <div id="bplist"></div>`;
+  $('#scrBunpo').querySelectorAll('[data-bl]').forEach(b => b.onclick = () => { f.lv = +b.dataset.bl; f.q = ''; renderBunpo(); });
+  // 찾기: 입력칸은 그대로 두고 결과만 다시 그림 (한글 조합 중에 입력이 끊기지 않게)
+  $('#bq').oninput = () => { clearTimeout(renderBunpo._t); renderBunpo._t = setTimeout(() => { f.q = $('#bq').value; bpBody(); }, 250); };
+  bpBody();
+  show('Bunpo', '📗 문법장');
+}
+
 /* ═══════════════ 자료 불러오기 (활용어·단어장은 처음 열 때만) ═══════════════ */
-const DATA_FILE = { GRAM: ['gram', 'GRAM_VER'], VOCAB: ['vocab', 'VOCAB_VER'], LISTEN: ['listen', 'LISTEN_VER'], POSD: ['pos', 'POS_VER'], VOCD: ['vocd', 'VOCD_VER'] };
+const DATA_FILE = { BUNPO: ['bunpo', 'BUNPO_VER'], GRAM: ['gram', 'GRAM_VER'], VOCAB: ['vocab', 'VOCAB_VER'], LISTEN: ['listen', 'LISTEN_VER'], POSD: ['pos', 'POS_VER'], VOCD: ['vocd', 'VOCD_VER'] };
 function ensureData(names, screen, title, again) {
   const miss = names.filter(n => !window[n]);
   if (!miss.length) return true;
