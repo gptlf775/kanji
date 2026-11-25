@@ -177,7 +177,7 @@ def check_items(items, J, KD, HD, errors, warns, infos):
                 errors.append(f'{k}: 예시 "{w}({y})" 안에 읽기 "{stem}" 이 없음')
             if (w, y) not in jm():
                 errors.append(f'{k}: 예시 "{w}({y})" 가 JMdict 사전에 없음 (표기·읽기 확인)')
-        used = {e[2] for e in exs if len(e) == 4}
+        used = {e[2] for e in exs if len(e) >= 4}   # 5번째 값(다른 읽기도 맞음)이 붙은 예시도 그 읽기의 예시로 셈
         for r in rds:
             if not r['rare'] and r['r'] not in used:
                 infos.append(f'{k}: 읽기 "{r["r"]}" 의 예시 없음')
