@@ -112,7 +112,10 @@ def check_full(k, it, rds, errors, warns, infos):
             errors.append(f'{k}: 부표 "{w}" 읽기는 {y} (sp: {sp.get(w)})')
     cm = common()
     exs = [dict(w=e[0], y=e[1], cm=f'{e[0]}|{e[1]}' in cm) for e in it.get('ex', []) if len(e) >= 4]
-    check_v2(k, it, rds, exs, None, cm, tagger(), errors, warns, infos)
+    # '흔한 말이 몇 개인가'는 상용 읽기로 읽는 말만 셈 (危虞 きぐ처럼 상용표 밖 읽기는 예시로 못 쓰므로)
+    forms = {f for r in rds for f, _ in variants(kata2hira(r['stem']))}
+    cm_k = {key: v for key, v in cm.items() if k in key.split('|')[0] and any(f in key.split('|')[-1] for f in forms)}
+    check_v2(k, it, rds, exs, None, cm_k, tagger(), errors, warns, infos)
 
 def check_items(items, J, KD, HD, errors, warns, infos):
     for it in items:
