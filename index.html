@@ -347,6 +347,7 @@ textarea{height:90px;font-size:12px;}
   <section class="screen" id="scrKprac"></section>
   <section class="screen" id="scrGram"></section>
   <section class="screen" id="scrBunpo"></section>
+  <section class="screen" id="scrBprac"></section>
   <section class="screen" id="scrVocab"></section>
   <section class="screen" id="scrWprac"></section>
   <section class="screen" id="scrCprac"></section>
@@ -424,7 +425,8 @@ function defaultState() {
     kp: { m: 'see', grades: [1, 2, 3, 4, 5, 6] },                              // 한자 연습 옵션
     wp: { m: 'jk', cats: ['n', 'v', 'i', 'na', 'adv', 'etc'], lv: 0, top: 0 }, vocW: {},   // 단어 연습 옵션·약한 단어
     cp: { m: 'make', kinds: ['v'], set: 'basic', lv: 0 },
-    scope: 'el',                                                                // 학습 범위: el 초등만 · el7 초등+중1 · m7 중1만
+    bpq: { lv: 0 }, bpw: {},                                                    // 문법 빈칸 연습 범위 · 틀린 문형
+    scope: 'el',                                                               // 학습 범위: el 초등만 · el7 초등+중1 · m7 중1만
     ui: { el: true, ms: false } };                                            // 초등·중고등 묶음 펼침 상태                     // 활용형 맞히기 옵션
 }
 let S;
@@ -440,7 +442,7 @@ function load() {
   const D0 = defaultState();   // 새로 생긴 옵션 항목 채우기 (이전 버전 진도 호환)
   const sets0 = D0.kana.sets;
   S.kana = Object.assign(D0.kana, S.kana); S.kana.sets = Object.assign(sets0, S.kana.sets);
-  S.kp = Object.assign(D0.kp, S.kp); S.wp = Object.assign(D0.wp, S.wp); S.cp = Object.assign(D0.cp, S.cp); S.ui = Object.assign(D0.ui, S.ui);
+  S.kp = Object.assign(D0.kp, S.kp); S.wp = Object.assign(D0.wp, S.wp); S.cp = Object.assign(D0.cp, S.cp); S.ui = Object.assign(D0.ui, S.ui); S.bpq = Object.assign(D0.bpq, S.bpq);
   const d = dayNum();
   if (S.today.day !== d) S.today = { day: d, newDone: 0, revDone: 0, bonus: 0 };
 }
@@ -1773,7 +1775,7 @@ function practiceQ(box, Q, { onResult, next, cardK }) {
     if (box.querySelector('#pCard')) box.querySelector('#pCard').onclick = () => renderCard(cardK, 'browse');
     let t = 0;
     box.querySelector('#pNext').onclick = () => { clearTimeout(t); next(); };
-    if (ok) t = setTimeout(next, Q.sayAfter ? 1400 : 900);   // 맞히면 저절로 다음 문제
+    if (ok && !Q.stay) t = setTimeout(next, Q.sayAfter ? 1400 : 900);   // 맞히면 저절로 다음 문제 (stay = 해설을 읽도록 머무름)
   });
 }
 const wpick = (arr, wf) => { const ws = arr.map(wf), tot = ws.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < arr.length; i++) { r -= ws[i]; if (r <= 0) return arr[i]; } return arr[arr.length - 1]; };
@@ -2173,16 +2175,68 @@ function bpBody() {
 function renderBunpo() {
   if (!ensureData(['BUNPO', 'GRAM'], 'Bunpo', '📗 문법장', renderBunpo)) return;
   const B = window.BUNPO, f = bpF, n = lv => B.items.filter(p => p.lv === lv).length;
+  const nq = B.items.filter(p => p.qz).length;
   $('#scrBunpo').innerHTML = `<div class="card">
+    ${nq ? `<button class="btn main" id="goBprac" style="margin-bottom:10px">✏️ 빈칸 연습 (무한 문제 · ${nq}문제)</button>` : ''}
     <div class="seg" style="margin-bottom:10px">${[5, 4].map(lv => `<button data-bl="${lv}" class="grow">N${lv} · ${n(lv)}개</button>`).join('')}</div>
     <input type="text" id="bq" placeholder="찾기: ～たら · 하면 · 추측 · ために" value="${esc(f.q)}" autocomplete="off">
     <p class="muted" style="font-size:.8rem;margin-top:6px">${f.lv === 4 ? 'N4는 시험 범위 문법을 기능별로 모았어요. <span class="bptag">N5 복습</span> = 시험에선 N5지만 N4 문제에도 자주 나오는 것, <span class="bptag sup">보충</span> = 그 밖에 알아 두면 좋은 N4.' : 'N5는 처음 문장을 만들 때 꼭 필요한 기본 문형이에요.'} 묶음을 누르면 펼쳐지고, 예문을 누르면 읽어 줘요.</p></div>
     <div id="bplist"></div>`;
   $('#scrBunpo').querySelectorAll('[data-bl]').forEach(b => b.onclick = () => { f.lv = +b.dataset.bl; f.q = ''; renderBunpo(); });
+  if ($('#goBprac')) $('#goBprac').onclick = () => renderBprac();
   // 찾기: 입력칸은 그대로 두고 결과만 다시 그림 (한글 조합 중에 입력이 끊기지 않게)
   $('#bq').oninput = () => { clearTimeout(renderBunpo._t); renderBunpo._t = setTimeout(() => { f.q = $('#bq').value; bpBody(); }, 250); };
   bpBody();
   show('Bunpo', '📗 문법장');
+}
+
+/* ═══════════════ ✏️ 문법 빈칸 연습 (문법장 문형마다 1문제 · 4지선다 · 무한) ═══════════════ */
+// 문제 = 문법장 항목의 qz [문장(（　　）), 정답, 오답3, 읽기, 번역, 해설] · 틀린 문형은 더 자주 (S.bpw) · 복습 일정과는 별개
+let BPS = null;
+const bpPool = () => { const lv = S.bpq.lv; return BUNPO.items.filter(p => p.qz && (!lv || p.lv === lv)); };
+function renderBprac() {
+  if (!ensureData(['BUNPO', 'GRAM'], 'Bprac', '✏️ 빈칸 연습', renderBprac)) return;
+  if (!BPS) BPS = { ok: 0, ng: 0, run: 0, last: '' };
+  const o = S.bpq;
+  $('#scrBprac').innerHTML = `<div class="card">
+    <div class="optrow"><span class="lab">범위</span>${[[0, '전체'], [5, 'N5'], [4, 'N4']].map(([v, t]) => `<button class="tog ${o.lv === v ? 'on' : ''}" data-bq="${v}">${t}</button>`).join('')}</div>
+    <p class="muted" style="font-size:.8rem">JLPT 문법 문제처럼 빈칸에 알맞은 말을 골라요. 답을 고르면 해설이 나오고, 틀린 문형은 더 자주 나와요.</p>
+    <div class="pstat" id="bpStat"></div></div>
+    <div class="card" id="bpQ"></div>`;
+  $('#scrBprac').querySelectorAll('[data-bq]').forEach(b => b.onclick = () => { S.bpq.lv = +b.dataset.bq; save(); renderBprac(); });
+  bpStat(); nextBprac();
+  show('Bprac', '✏️ 빈칸 연습');
+}
+function bpStat() { $('#bpStat').innerHTML = `<span style="color:var(--ok)">⭕ ${BPS.ok}</span><span style="color:var(--ng)">❌ ${BPS.ng}</span><span>🔥 연속 ${BPS.run}</span>`; }
+function nextBprac() {
+  const pool = bpPool(); if (!pool.length) { $('#bpQ').innerHTML = '<p class="muted">문제가 없어요.</p>'; return; }
+  const cand = pool.length > 1 ? pool.filter(p => p.id !== BPS.last) : pool;
+  const p = wpick(cand, x => 1 + 2 * (S.bpw[x.id] || 0)); BPS.last = p.id;
+  const [s, a, ch, y, ko, why] = p.qz;
+  const blank = '<span style="display:inline-block;min-width:3.2em;border-bottom:2px solid var(--accent);margin:0 2px">&nbsp;</span>';
+  const Q = {
+    ask: `N${p.lv} · 빈칸에 알맞은 말은?`,
+    body: `<div class="jp" lang="ja" style="font-size:1.25rem;line-height:1.9;margin:10px 0 4px">${esc(s).replace('（　　）', blank)}</div>`,
+    choices: shuffle([{ html: `<span class="jp" lang="ja">${esc(a)}</span>`, ok: true }, ...ch.map(c => ({ html: `<span class="jp" lang="ja">${esc(c)}</span>` }))]), say: y, sayAfter: true, stay: true,
+    after: `<button class="gex" data-say="${esc(y)}"><div class="j jp" lang="ja">${linkK(s.replace('（　　）', a))}</div><div class="y jp" lang="ja">${esc(y)}</div><div class="k">${esc(ko)} 🔊</div></button>
+      <div class="tip" style="margin-top:6px">💡 ${esc(why)}</div>
+      <button class="btn ghost" id="bpOpen" style="margin-top:8px">📗 문형 보기: <span class="jp" lang="ja">${esc(p.p)}</span></button>`
+  };
+  practiceQ($('#bpQ'), Q, {
+    onResult: ok => {
+      ok ? (BPS.ok++, BPS.run++) : (BPS.ng++, BPS.run = 0);
+      if (!ok) S.bpw[p.id] = Math.min(5, (S.bpw[p.id] || 0) + 1); else if (S.bpw[p.id]) { S.bpw[p.id]--; if (!S.bpw[p.id]) delete S.bpw[p.id]; }
+      save(); bpStat();
+    },
+    next: () => { if (cur === 'Bprac') nextBprac(); }
+  });
+  // 해설 칸(#pafter)은 답한 뒤에 그려지므로 클릭은 위임으로 처리 — 한자 → 카드, 예문 → 읽기, 문형 보기 → 문법장 찾기
+  $('#bpQ').onclick = e => {
+    const k = e.target.closest('#pafter .kl'), sy = e.target.closest('#pafter [data-say]'), op = e.target.closest('#bpOpen');
+    if (k) { e.stopPropagation(); renderCard(k.dataset.k, 'browse'); }
+    else if (op) { bpF.q = p.p.replace(/[（(].*$/, ''); bpF.lv = p.lv; renderBunpo(); }
+    else if (sy) speak(sy.dataset.say);
+  };
 }
 
 /* ═══════════════ 자료 불러오기 (활용어·단어장은 처음 열 때만) ═══════════════ */

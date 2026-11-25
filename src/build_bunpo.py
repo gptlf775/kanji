@@ -60,6 +60,38 @@ def check(items, P, errors, warns, infos, tg):
                         hard.append(w.surface)
                 if hard: infos.append(f'{i}: 단어장 밖 단어(참고) {"·".join(hard)} — "{jp}"')
 
+BLANK = '（　　）'
+def check_q(qs, P, errors, warns, infos, tg):
+    """빈칸 연습 문제 검사 (AUTHORING_bpq.md)"""
+    pid = {x['id']: x for x in P['items']}
+    cards = {x['id']: x for x in load_parts()}
+    for q in qs:
+        i = q.get('id', '?'); z = q.get('qz') or {}
+        if i not in pid: errors.append(f'{i}: 뼈대에 없는 id'); continue
+        s, a, ch, y, ko, why = (z.get(k) for k in ('s', 'a', 'ch', 'y', 'ko', 'why'))
+        if not all([s, a, ch, y, ko, why]): errors.append(f'{i} {pid[i]["p"]}: 필드 비어 있음'); continue
+        if s.count(BLANK) != 1: errors.append(f'{i}: 빈칸 {BLANK} 이 정확히 한 번이어야 함 — "{s}"'); continue
+        if not isinstance(ch, list) or len(ch) != 3 or len(set(ch)) != 3 or a in ch or not all(ch):
+            errors.append(f'{i}: 오답 ch는 서로 다른 3개, 정답과 달라야 함 {ch} / 정답 {a}')
+        full = s.replace(BLANK, a)
+        if re.search(r'[一-鿿]', y): errors.append(f'{i}: 읽기에 한자 "{y}"')
+        if re.search(r'[ァ-ヺ]', y) and not re.search(r'[ァ-ヺ]', full): errors.append(f'{i}: 읽기에 가타카나 "{y}"')
+        if re.search(r'[ぁ-ゖァ-ヺ]', ko): errors.append(f'{i}: 번역에 일본 글자 "{ko}"')
+        if len(why) > 140: warns.append(f'{i}: 해설 {len(why)}자 — 짧게')
+        c = cards.get(i)
+        if c and any(full.replace('、', '').replace('。', '') == e[0].replace('、', '').replace('。', '') for e in c['ex']):
+            warns.append(f'{i}: 문제 문장이 카드 예문과 같음 — 새로 만들기')
+        if tg:
+            ar = kata2hira(analyzer_reading(tg, full)); mine = kata2hira(y.replace(' ', '').replace('　', ''))
+            if ar != mine: infos.append(f'{i}: 읽기 확인 필요 — 작성 "{mine}" / 분석기 "{ar}"')
+
+def load_q():
+    qs = {}
+    for f in sorted(os.listdir(HERE)):
+        if re.match(r'^bpq_q\d+\.json$', f):
+            for q in json.load(open(os.path.join(HERE, f), encoding='utf-8-sig'))['items']: qs[q['id']] = q['qz']
+    return qs
+
 def load_parts():
     items = []
     for f in sorted(os.listdir(HERE)):
@@ -69,6 +101,14 @@ def load_parts():
 
 def main(argv):
     P = plan(); tg = _tagger(); errors, warns, infos = [], [], []
+    if argv and argv[0] == '--checkq':
+        qs = json.load(open(argv[1], encoding='utf-8-sig'))['items']
+        check_q(qs, P, errors, warns, infos, tg)
+        print(f'{argv[1]}: {len(qs)}문제 · 오류 {len(errors)} · 경고 {len(warns)} · 참고 {len(infos)}')
+        for x in errors: print('ERR', x)
+        for x in warns: print('WARN', x)
+        for x in infos: print('INFO', x)
+        return 1 if errors else 0
     if argv and argv[0] == '--check':
         items = json.load(open(argv[1], encoding='utf-8-sig'))['items']
         check(items, P, errors, warns, infos, tg)
@@ -81,6 +121,9 @@ def main(argv):
     miss = [x['id'] + ' ' + x['p'] for x in P['items'] if x['id'] not in by]
     if miss: errors.append(f'작성 안 된 항목 {len(miss)}개: ' + ' / '.join(miss[:20]))
     check(items, P, errors, warns, infos, tg)
+    QZ = load_q()   # 빈칸 연습 문제 (있는 것만 붙임)
+    if QZ:
+        check_q([dict(id=k, qz=v) for k, v in QZ.items()], P, errors, warns, infos, tg)
     out = []
     for pl in P['items']:
         it = by.get(pl['id'])
@@ -88,8 +131,10 @@ def main(argv):
         o = dict(id=pl['id'], g=pl['g'], lv=pl['lv'], p=pl['p'], m=it['m'], c=it['c'], d=it['d'], ex=it['ex'])
         if pl['tag']: o['tag'] = pl['tag']
         if it.get('cmp'): o['cmp'] = it['cmp']
+        z = QZ.get(pl['id'])
+        if z: o['qz'] = [z['s'], z['a'], z['ch'], z['y'], z['ko'], z['why']]   # [문장, 정답, 오답3, 읽기, 번역, 해설]
         out.append(o)
-    rep = [f'[문법장] 뼈대 {len(P["items"])} · 작성 {len(out)} · 오류 {len(errors)} · 경고 {len(warns)} · 참고 {len(infos)}']
+    rep = [f'[문법장] 뼈대 {len(P["items"])} · 작성 {len(out)} · 연습 문제 {sum(1 for o in out if o.get("qz"))} · 오류 {len(errors)} · 경고 {len(warns)} · 참고 {len(infos)}']
     rep += ['ERR ' + x for x in errors] + ['WARN ' + x for x in warns] + ['INFO ' + x for x in infos]
     open(os.path.join(HERE, 'verify_bunpo.txt'), 'w', encoding='utf-8').write('\n'.join(rep) + '\n')
     print('\n'.join(rep[:1 + len(errors) + len(warns)]))
