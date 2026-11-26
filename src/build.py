@@ -157,7 +157,7 @@ def write_index():
     sheets_ver = hashlib.md5(b''.join(open(os.path.join(sd, f), 'rb').read() for f in sorted(os.listdir(sd)) if f.endswith('.png') or f == 'say.json')).hexdigest()[:8] if os.path.isdir(sd) else ''
     open(os.path.join(dd, 'index.js'), 'w', encoding='utf-8').write(
         f'window.KANJI_AVAILABLE={json.dumps(avail)};window.KANJI_VER={json.dumps(ver)};'
-        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};window.LISTEN_VER={json.dumps(fv("listen.js"))};window.POS_VER={json.dumps(fv("pos.js"))};window.VOCD_VER={json.dumps(fv("vocd.js"))};window.PARTS_VER={json.dumps(fv("parts.js"))};window.BUNPO_VER={json.dumps(fv("bunpo.js"))};'
+        f'window.GRAM_VER={json.dumps(fv("gram.js"))};window.VOCAB_VER={json.dumps(fv("vocab.js"))};window.KANA_VER={json.dumps(fv("kana.js"))};window.LISTEN_VER={json.dumps(fv("listen.js"))};window.POS_VER={json.dumps(fv("pos.js"))};window.VOCD_VER={json.dumps(fv("vocd.js"))};window.PARTS_VER={json.dumps(fv("parts.js"))};window.BUNPO_VER={json.dumps(fv("bunpo.js"))};window.CLIPS_VER={json.dumps(fv("clips.js"))};window.ACC_VER={json.dumps(fv("accent.js"))};'
         f'window.SHEETS_VER={json.dumps(sheets_ver)};\n')
 
 def main(grade):

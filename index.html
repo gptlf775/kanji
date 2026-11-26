@@ -299,6 +299,10 @@ table.t th{color:var(--sub);font-size:.8rem;}
 .bptag.sup{background:#F1E8FB;color:#6E4BA6;}
 .bpgrp>summary{display:flex;justify-content:space-between;align-items:center;font-weight:bold;cursor:pointer;padding:4px 0;list-style:none;}
 .bpgrp>summary::-webkit-details-marker{display:none;} .bpgrp>summary>small{white-space:nowrap;margin-left:8px;} .bpgrp>summary>span::before{content:'▸ ';color:var(--sub);} .bpgrp[open]>summary>span::before{content:'▾ ';}
+/* 🎵 강세·장단음 */
+.acc{display:inline-block;letter-spacing:0;padding-top:3px;} .acc>span{display:inline-block;padding:0 1px;border-top:2px solid transparent;line-height:1.25;}
+.acc>.h{border-top-color:#E86F4A;} .acc>.up{box-shadow:inset 2px 0 0 #E86F4A;} .acc>.dn{box-shadow:inset -2px 0 0 #E86F4A;} .acc>.up.dn{box-shadow:inset 2px 0 0 #E86F4A,inset -2px 0 0 #E86F4A;}
+.acc>.lg{background:#FFE6A8;border-radius:3px;} .acc>.sk,.acc>.hn{background:#DCE8FB;border-radius:3px;}
 .bpcmp{font-size:.85rem;background:#FFF8EC;border-radius:10px;padding:6px 10px;margin:6px 0;}
 table.cj td{vertical-align:top;} .gform{display:block;text-align:left;padding:2px;} table.cj small.kx{color:#B4541F;font-family:'Apple SD Gothic Neo','Malgun Gothic',sans-serif;}
 .gl{border-bottom:1.5px dotted var(--on);cursor:pointer;} table.cj .f{font-size:1.1rem;} table.cj small{display:block;color:var(--sub);font-size:.75rem;}
@@ -470,6 +474,9 @@ function loadGrades() {
       D.grades[g] = G[g].items; D.themes[g] = G[g].themes;
       G[g].items.forEach(it => { D.items.push(it); D.byK[it.k] = it; });
     });
+    // 녹음 음성 구간 색인·단어 강세 (작은 파일 — 기다리지 않고 뒤에서 받음. 없으면 기본 음성·강세 없이 동작)
+    loadScript('data/clips.js' + (window.CLIPS_VER ? '?v=' + window.CLIPS_VER : '?t=' + Date.now()));
+    loadScript('data/accent.js' + (window.ACC_VER ? '?v=' + window.ACC_VER : '?t=' + Date.now()));
   });
 }
 
@@ -485,15 +492,65 @@ const canSpeak = () => 'speechSynthesis' in window;
 // 가나로만 된 단어(はつか·へや·はな)는 음성 엔진이 첫 は·へ를 조사로 보고 '와·에'로 읽는 일이 있음 → 가타카나로 바꿔 읽힘.
 // 단, 끝의 は를 실제로 '와'로 읽는 말(こんにちは·こんばんは·では·じつは·または·もしくは)은 그대로 둠
 const ttsText = t => /^[ぁ-ゖー]+$/.test(t) && !/(こんにちは|こんばんは|では|じつは|または|もしくは)$/.test(t) ? t.replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)) : t;
-function speak(text, rate) {
-  if (!canSpeak() || !text) return;
-  if (window.LA && !window.LA.paused) window.LA.pause();
+// 녹음 음성(신경망 음성) 구간 재생: data/clips.js 의 색인에 있으면 그 파일의 그 구간만 — 강세·장단음이 정확하고
+// 아이폰 무음 스위치와 상관없이 들림. 단어장 단어(voc01.mp3) · 문법장 예문·빈칸 정답 문장(bun01.mp3)
+const CA = new Audio(); CA.preload = 'none'; let caEnd = 0, caTick = 0;
+// 구간 끝에서 정확히 멈춤 (timeupdate 는 0.25초 간격이라 늦음 → 재생 중 40ms 마다 확인 — 다음 단어 소리가 섞이지 않게)
+const caStop = () => { if (caEnd && CA.currentTime >= caEnd - 0.03) { CA.pause(); caEnd = 0; } };
+CA.addEventListener('timeupdate', caStop);
+CA.addEventListener('playing', () => { clearInterval(caTick); caTick = setInterval(() => { caStop(); if (CA.paused) clearInterval(caTick); }, 40); });
+const clipOf = t => { const M = window.CLIPS && CLIPS.m; if (!M || !t) return null; return M[t] || M[t.replace(/[\s　]/g, '')] || null; };
+function playClip(seg, fallback) {
+  const [fi, s, e] = seg;
   try {
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(ttsText(text));
-    u.lang = 'ja-JP'; u.rate = rate || S.rate; if (jaVoice) u.voice = jaVoice;
-    speechSynthesis.speak(u);
-  } catch (e) { toast('발음을 재생하지 못했어요'); }
+    if (canSpeak()) speechSynthesis.cancel();
+    if (window.LA && !window.LA.paused) window.LA.pause();
+    CA.pause(); CA.src = CLIPS.f[fi] + `#t=${s},${e}`; caEnd = e;
+    CA.playbackRate = Math.min(1, S.rate >= 0.9 ? 1 : S.rate + 0.1);   // '느리게'를 골랐으면 조금 천천히 (녹음은 원래 자연스러운 빠르기)
+    const p = CA.play(); if (p && p.catch) p.catch(() => fallback());   // 인터넷이 안 되는 등 재생 실패 → 휴대폰 기본 음성
+  } catch (err) { fallback(); }
+}
+// text: 일본어 글 또는 '표기|읽기'(단어 — 소리가 같은 雨·飴를 구별해 녹음 구간을 찾음, 녹음이 없으면 읽기를 기본 음성으로)
+function speak(text, rate) {
+  if (!text) return;
+  const bar = text.indexOf('|'), plain = bar > 0 ? text.slice(bar + 1) : text;
+  // '표기|읽기'는 그 단어의 녹음만 — 읽기만으로는 찾지 않음 (카드의 橋(はし)가 단어장 箸(はし) 녹음으로 잘못 나오지 않게, 강세가 다름)
+  // 다만 가나로만 쓰는 말(표기 = 읽기)과 읽기만 넘긴 경우는 읽기 열쇠로 (같은 읽기의 단어가 하나뿐일 때만 있음 — build_clips.py)
+  const seg = clipOf(text) || ((bar < 0 || text.slice(0, bar) === plain) ? clipOf(plain) : null);
+  const tts = () => {
+    if (!canSpeak()) return;
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(ttsText(plain));
+      u.lang = 'ja-JP'; u.rate = rate || S.rate; if (jaVoice) u.voice = jaVoice;
+      speechSynthesis.speak(u);
+    } catch (e) { toast('발음을 재생하지 못했어요'); }
+  };
+  if (seg && !rate) { playClip(seg, tts); return; }
+  CA.pause(); caEnd = 0;
+  if (window.LA && !window.LA.paused) window.LA.pause();
+  tts();
+}
+// 🎵 강세(고저 악센트)·장단음 표시: data/accent.js (Kanjium, CC BY-SA 4.0) — 번호 n = 높은 소리가 끝나는 박
+//   0(평판) = 첫 박만 낮고 끝까지 높음 · 1(두고형) = 첫 박만 높음 · n≥2 = 둘째 박부터 n번째 박까지 높고 그다음 내려감
+//   박 칸 위 선 = 높게, 선이 꺾여 내려가는 곳 = 여기서 내려감 · 노란 칸 = 장음(길게) · 파란 칸 = っ(촉음)·ん(발음)
+const A_SMALL = 'ゃゅょぁぃぅぇぉゎャュョァィゥェォヮ';
+const A_VOW = { a: 'あかさたなはまやらわがざだばぱぁゃゎアカサタナハマヤラワガザダバパァャヮ', i: 'いきしちにひみりぎじぢびぴぃイキシチニヒミリギジヂビピィ',
+  u: 'うくすつぬふむゆるぐずづぶぷぅゅウクスツヌフムユルグズヅブプゥュヴ', e: 'えけせてねへめれげぜでべぺぇエケセテネヘメレゲゼデベペェ', o: 'おこそとのほもよろをごぞどぼぽぉょオコソトノホモヨロヲゴゾドボポォョ' };
+const aVowel = m => { const c = m[m.length - 1]; for (const v in A_VOW) if (A_VOW[v].includes(c)) return v; return ''; };
+function morae(y) { const out = []; for (const c of y) { if (A_SMALL.includes(c) && out.length) out[out.length - 1] += c; else out.push(c); } return out; }
+// w: 표기, y: 읽기 → 읽기 HTML (강세 자료가 없으면 장단음 칸만)
+function accHTML(w, y, cat) {
+  const acc = window.ACC && ACC[w + '|' + y], ms = morae(y), n = acc ? parseInt(acc, 10) : -1;
+  const LONG = { a: 'あア', i: 'いイ', u: 'うウ', e: 'いえイエ', o: 'うおウオ' };
+  return `<span class="acc">${ms.map((m, i) => {
+    const pos = i + 1, prev = i ? aVowel(ms[i - 1]) : '';
+    const hi = n < 0 ? false : n === 0 ? pos >= 2 || ms.length === 1 : n === 1 ? pos === 1 : pos >= 2 && pos <= n;
+    const prevHi = n < 0 || i === 0 ? false : n === 0 ? pos - 1 >= 2 : n === 1 ? pos - 1 === 1 : pos - 1 >= 2 && pos - 1 <= n;
+    const endVerbU = cat === 'v' && pos === ms.length && /[うウ]/.test(m);        // 동사 끝 う(思う)는 장음이 아님
+    const lg = m === 'ー' || (prev && m.length === 1 && LONG[prev] && LONG[prev].includes(m) && !endVerbU);
+    const cls = [hi ? 'h' : '', hi && !prevHi && i ? 'up' : '', n >= 1 && pos === n && pos < ms.length + 1 ? 'dn' : '', lg ? 'lg' : /^[っッ]$/.test(m) ? 'sk' : /^[んン]$/.test(m) ? 'hn' : ''].filter(Boolean).join(' ');
+    return `<span class="${cls}">${esc(m)}</span>`; }).join('')}</span>`;
 }
 // 가나 한 글자는 음성 엔진이 '아!'처럼 짧게 끊으므로 장음(ー)을 붙여 '아~'로 늘이고 조금 천천히
 const isKanaUnit = s => /^[ぁ-ゖァ-ヺ][ぁぃぅぇぉゃゅょァィゥェォャュョ]?$/.test(s);
@@ -778,7 +835,7 @@ function renderCard(k, mode, onDone) {
   const others = it.rd.filter(r => !coreSet.has(r.r));
   const exs = it.ex.slice().sort((a, b) => (coreSet.has(b.r) ? 1 : 0) - (coreSet.has(a.r) ? 1 : 0));
   const exHTML = exs.map(e => { const { w, y } = exWord(it, e);
-    return `<div class="exrow"><button class="ex" data-say="${esc(e.y)}"><span class="w jp" lang="ja">${w}</span><span class="y jp" lang="ja">${y}${e.ch ? '<span class="chg">소리 변화</span>' : ''}${S.hangul ? `<small>${KH(e.y)}</small>` : ''}</span><span class="m">${esc(e.m)} 🔊</span></button>
+    return `<div class="exrow"><button class="ex" data-say="${esc(e.w + '|' + e.y)}"><span class="w jp" lang="ja">${w}</span><span class="y jp" lang="ja">${y}${e.ch ? '<span class="chg">소리 변화</span>' : ''}${S.hangul ? `<small>${KH(e.y)}</small>` : ''}</span><span class="m">${esc(e.m)} 🔊</span></button>
       ${e.kr ? `<div class="krnote">⚠️ 한국어와 뜻이 달라요 — ${esc(e.kr)}</div>` : ''}</div>`; }).join('');
   const spW = new Set(it.sp.map(s => s.w));   // 부표(sp)와 겹치는 주의 읽기는 한 번만
   const cautions = [...(it.caution || []).filter(c => !spW.has(c.w)).map(c => ({ w: c.w, y: c.y, n: c.n })), ...it.sp.map(s => ({ w: s.w, y: s.y, n: `${s.m} — ${s.n}`, star: 1 }))];
@@ -1321,18 +1378,18 @@ function makeQuiz(it, level) {
     const fill = distinct(pool.flatMap(x => x.ex).filter(x => x.y !== e.y), x => x.w, 3 - same.length, [e.w, ...same.map(x => x.w)]);
     return { t: 'listen', lv, ask: '잘 듣고 알맞은 단어를 고르세요', body: `<button class="speaker" id="qSpk">🔊</button><div class="qsub"><button class="btn ghost" id="qPeek" style="display:inline-block;width:auto;padding:6px 14px;font-size:.85rem">👀 글자로 보기</button> <span class="jp" lang="ja" id="qPeekT" style="display:none">${esc(e.y)}</span></div>`,
       choices: shuffle([{ html: esc(e.w), ok: true }, ...[...same, ...fill].map(x => ({ html: esc(x.w) }))]).map(c => ({ ...c, html: `<span class="jp" lang="ja">${c.html}</span>` })),
-      cls: '', say: e.y, sayFirst: true, after: `<p class="qsub">${esc(e.w)} = ${esc(e.m)}</p>` };
+      cls: '', say: e.w + '|' + e.y, sayFirst: true, after: `<p class="qsub">${esc(e.w)} = ${esc(e.m)}</p>` };
   }
   if (lv === 3) {                                            // 3 단어 전체 읽기 4지선다 / 어른은 가끔 단어 → 뜻
     const e = pickEx(it);
     if (S.mode === 'adult' && Math.random() < 0.25) {
       const ds = distinct(pool.flatMap(x => x.ex), x => x.m, 3, [e.m]);
       return { t: 'wordMean', lv, ask: '이 단어의 뜻은?', body: `<div class="qword jp" lang="ja">${esc(e.w)}</div>`,
-        choices: shuffle([{ html: esc(e.m), ok: true }, ...ds.map(x => ({ html: esc(x.m) }))]), cls: '', say: e.y, sayAfter: true, after: `<p class="qsub jp" lang="ja">${esc(e.w)} = ${esc(e.y)}</p>` };
+        choices: shuffle([{ html: esc(e.m), ok: true }, ...ds.map(x => ({ html: esc(x.m) }))]), cls: '', say: e.w + '|' + e.y, sayAfter: true, after: `<p class="qsub jp" lang="ja">${esc(e.w)} = ${esc(e.y)}</p>` };
     }
     const opts = readingOptions(it, e);
     return { t: 'wordRead', lv, ask: '이 단어는 어떻게 읽을까요?', body: `<div class="qword jp" lang="ja">${esc(e.w)}</div><div class="qsub">${esc(e.m)}</div>`,
-      choices: shuffle([{ html: kanaChoice(e.y), ok: true }, ...opts.map(y => ({ html: kanaChoice(y) }))]), cls: '', say: e.y, sayAfter: true,
+      choices: shuffle([{ html: kanaChoice(e.y), ok: true }, ...opts.map(y => ({ html: kanaChoice(y) }))]), cls: '', say: e.w + '|' + e.y, sayAfter: true,
       after: e.kr ? `<p class="krnote">⚠️ ${esc(e.kr)}</p>` : '' };
   }
   if (lv === 2) {                                            // 2 핵심 읽기
@@ -1925,7 +1982,7 @@ function kpracQ(it) {
     const e = pickEx(it) || pick(it.ex);
     const ds = distinct(kpPool().filter(x => !e.w.includes(x.k)), x => x.k, 3, [it.k]);
     return { t: 'hearKanji', ask: '잘 듣고, 이 단어에 들어 있는 한자를 고르세요', body: speakerHTML(esc(e.y)),
-      choices: shuffle([{ html: it.k, ok: true }, ...ds.map(x => ({ html: x.k }))]), cls: 'kan', say: e.y, sayFirst: true,
+      choices: shuffle([{ html: it.k, ok: true }, ...ds.map(x => ({ html: x.k }))]), cls: 'kan', say: e.w + '|' + e.y, sayFirst: true,
       after: `<p class="qsub"><span class="jp" lang="ja">${esc(e.w)}（${esc(e.y)}）</span> = ${esc(e.m)}</p>` };
   }
   const lvs = [1, 1, 2, 2, 3, 3]; if (maxLv(it) >= 5) lvs.push(5, 5);
@@ -2336,8 +2393,8 @@ function vocabRows() {
 }
 function vrowHTML({ x: [w, y, c, k, lv, g], r }) {
   const conj = c === 'v' || c === 'i' || c === 'na';
-  return `<div class="vbox"><button class="vrow" data-say="${esc(y)}"><span class="muted" style="min-width:30px;font-size:.72rem">${r}</span>
-    <span class="w jp" lang="ja">${linkK(w)}${w !== y ? `<small class="jp" lang="ja" style="display:block;font-size:.72rem;color:var(--sub)">${esc(y)}</small>` : ''}</span>
+  return `<div class="vbox"><button class="vrow" data-say="${esc(w + '|' + y)}"><span class="muted" style="min-width:30px;font-size:.72rem">${r}</span>
+    <span class="w jp" lang="ja">${linkK(w)}<small class="jp" lang="ja" style="display:block;font-size:.78rem;color:var(--sub)">${accHTML(w, y, c)}</small></span>
     <span class="m">${esc(k)}</span><span class="g">${VCATN[c]}</span><span class="lvb n${lv}">N${lv}</span></button>
     ${conj ? `<details class="vcj" data-w="${esc(w)}" data-y="${esc(y)}" data-g="${c === 'v' ? g : c}"><summary class="muted" style="font-size:.82rem">🔀 활용형 보기</summary><div class="fx"></div></details>` : ''}</div>`;
 }
@@ -2350,7 +2407,7 @@ function renderVocab() {
     <div style="margin-top:10px">${togRow('품사', VCAT, VCATN, f.cats, 'vc')}</div>
     <div class="optrow"><span class="lab">급수</span>${[[0, '전체'], [5, 'N5'], [4, 'N4']].map(([v, t]) => `<button class="tog ${f.lv === v ? 'on' : ''}" data-vl="${v}">${t}</button>`).join('')}</div>
     <input type="text" id="vq" placeholder="찾기: 기쁘다 · 우레시 · うれしい · ureshii · 嬉" value="${esc(f.q)}" autocomplete="off" style="margin-top:6px">
-    <p class="muted" style="font-size:.8rem;margin-top:6px">한국어 뜻(기쁨·먹어 같은 꼴도), 일본어 발음을 한글로(우·우레·우레시이), 히라가나·가타카나, 로마자, 한자 어느 것으로든 찾아요. 앞부분만 써도 돼요.<br>위쪽일수록 많이 쓰는 단어예요 (번호 = 순위). 단어를 누르면 읽어 주고, 동사·형용사는 🔀로 활용형을 볼 수 있어요. 품사는 하나만 눌러 그것만 보거나, 여러 개를 켜서 함께 볼 수 있어요.</p></div>
+    <p class="muted" style="font-size:.8rem;margin-top:6px">🔊 단어를 누르면 원어민 음성으로 읽어 줘요. 🎵 읽기 위 <span style="border-top:2px solid #E86F4A">선</span> = 높게, 선이 꺾여 내려가는 곳 = 여기서 내려감 · <span style="background:#FFE6A8;border-radius:3px">노란 칸</span> = 길게(장음) · <span style="background:#DCE8FB;border-radius:3px">파란 칸</span> = っ·ん (한 박)<br>한국어 뜻(기쁨·먹어 같은 꼴도), 일본어 발음을 한글로(우·우레·우레시이), 히라가나·가타카나, 로마자, 한자 어느 것으로든 찾아요. 앞부분만 써도 돼요.<br>위쪽일수록 많이 쓰는 단어예요 (번호 = 순위). 단어를 누르면 읽어 주고, 동사·형용사는 🔀로 활용형을 볼 수 있어요. 품사는 하나만 눌러 그것만 보거나, 여러 개를 켜서 함께 볼 수 있어요.</p></div>
     <div class="card" id="vlist"></div>
     <p class="muted" style="font-size:.72rem;text-align:center;margin-bottom:10px">${esc(VOCAB.src)}</p>`;
   const sc = $('#scrVocab');
@@ -2425,14 +2482,15 @@ function wordDistract(x, n) {   // 같은 품사에서, 뜻이 겹치지 않고 
   return out;
 }
 function wordQ(x, m) {
-  const [w, y, c, k] = x, ds = wordDistract(x, 3), opts = shuffle([x, ...ds]);
-  const after = `<p class="qsub"><span class="jp" lang="ja" style="font-size:1.2rem">${linkK(w)}</span>${w !== y ? ` <span class="jp" lang="ja">（${esc(y)}）</span>` : ''} = ${esc(k)} <span class="lvb" style="background:#F5EEE5">${VCATN[c]}</span></p>`;
-  if (m === 'kj') return { ask: '이 뜻의 일본어는?', body: `<div class="qhun">${esc(k)}</div><div class="qsub">${VCATN[c]}</div>`, say: y, sayAfter: true, after,
+  const [w, y, c, k] = x, ds = wordDistract(x, 3), opts = shuffle([x, ...ds]), wy = w + '|' + y;
+  const after = `<p class="qsub"><span class="jp" lang="ja" style="font-size:1.2rem">${linkK(w)}</span> <span class="jp" lang="ja">（${accHTML(w, y, c)}）</span> = ${esc(k)} <span class="lvb" style="background:#F5EEE5">${VCATN[c]}</span></p>
+    <button class="btn ghost" data-say="${esc(wy)}" style="margin-top:4px">🔊 다시 듣기</button>`;
+  if (m === 'kj') return { ask: '이 뜻의 일본어는?', body: `<div class="qhun">${esc(k)}</div><div class="qsub">${VCATN[c]}</div>`, say: wy, sayAfter: true, after,
     choices: opts.map(o => ({ html: `<span class="jp" lang="ja" style="font-size:1.3rem">${esc(o[0])}</span>${o[0] !== o[1] ? `<small class="jp" lang="ja">${esc(o[1])}</small>` : ''}`, ok: o === x })) };
   const ch = opts.map(o => ({ html: esc(o[3]), ok: o === x }));
-  if (m === 'hear') return { ask: '잘 듣고 알맞은 뜻을 고르세요', body: speakerHTML(esc(w + (w !== y ? '（' + y + '）' : ''))), say: y, sayFirst: true, after, choices: ch };
+  if (m === 'hear') return { ask: '잘 듣고 알맞은 뜻을 고르세요', body: speakerHTML(esc(w + (w !== y ? '（' + y + '）' : ''))), say: wy, sayFirst: true, after, choices: ch };
   return { ask: '이 단어의 뜻은?', body: `<div class="pword jp" lang="ja">${linkK(w)}</div>${w !== y ? `<div class="qsub"><button class="btn ghost" id="qPeek" style="display:inline-block;width:auto;padding:6px 14px;font-size:.85rem">👀 읽기 보기</button> <span class="jp" lang="ja" id="qPeekT" style="display:none">${esc(y)}</span></div>` : ''}`,
-    say: y, sayAfter: true, after, choices: ch };
+    say: wy, sayAfter: true, after, choices: ch };
 }
 function nextWprac() {
   const pool = wpPool(), m = S.wp.m;
@@ -2451,6 +2509,8 @@ function nextWprac() {
     next: () => { if (cur === 'Wprac') nextWprac(); }
   });
   const sc = $('#wQ'); sc.querySelectorAll('.kl').forEach(b => b.onclick = e => { e.stopPropagation(); renderCard(b.dataset.k, 'browse'); });
+  // 답한 뒤 나오는 '다시 듣기'(#pafter 는 답한 뒤에 그려짐) → 위임
+  sc.onclick = e => { const b = e.target.closest('#pafter [data-say]'); if (b) speak(b.dataset.say); };
 }
 
 /* ═══════════════ 활용형 맞히기 (무한 · 모양 만들기 / 모양 알아보기) ═══════════════ */
@@ -2646,6 +2706,7 @@ function renderSet() {
       <h2 style="color:var(--ink)">📖 출처</h2>
       한자 목록·학년: 文部科学省 「学年別漢字配当表」(2020 시행) · 음훈: 文化庁 「常用漢字表」(2010)<br>
       한자·가나 획순: <b>KanjiVG</b> © Ulrich Apel, CC BY-SA 3.0 · 일본어 글꼴: <b>Klee One</b> © Fontworks, SIL OFL 1.1 · 한국 한자음 대조: <b>KANJIDIC2</b> © EDRDG, CC BY-SA 4.0<br>
+      단어 강세(고저 악센트): "The pitch accent notation … were provided by Uros O. through his free database." — <b>Kanjium</b> (CC BY-SA 4.0) · 녹음 음성: Microsoft Edge 신경망 음성으로 만듦<br>
       단어장 N5·N4 목록: Jonathan Waller, <b>tanos.co.uk</b> (CC BY) · 품사·빈도·동사 그룹 확인: <b>JMdict</b> © EDRDG, CC BY-SA 4.0 · 한국어 뜻·문법 설명: 이 앱에서 작성<br>
       이 앱의 한자 데이터도 같은 조건(CC BY-SA)으로 공개됩니다.<br><br>
       <b>한계</b>: 한글 발음은 참고용 근사치 · 음성은 기기의 음성 합성 · 글자 풀이의 '외우기 이야기'는 학습용 이야기이며 실제 어원은 '진짜 유래'를 보세요.</div>`;

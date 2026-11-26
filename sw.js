@@ -1,9 +1,9 @@
 // 오프라인 동작용 서비스 워커
 // 전략: 캐시에서 즉시 보여주고(오프라인 OK), 인터넷이 되면 뒤에서 새 버전으로 갱신
-const CACHE = 'kanji1026-v17';
+const CACHE = 'kanji1026-v18';
 const CORE = ['./', './index.html', './guide.html', './manifest.webmanifest',
   './icons/icon-180.png', './icons/icon-192.png', './icons/icon-512.png'];
-const DATA = ['./data/index.js', './data/gram.js', './data/vocab.js', './data/kana.js', './data/listen.js', './data/pos.js', './data/vocd.js', './data/parts.js', './data/bunpo.js', ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(g => `./data/g${g}.js`)];  // 없는 파일은 건너뜀 · 11 = 상용 밖(단어장) 찾아보기
+const DATA = ['./data/index.js', './data/gram.js', './data/vocab.js', './data/kana.js', './data/listen.js', './data/pos.js', './data/vocd.js', './data/parts.js', './data/bunpo.js', './data/clips.js', './data/accent.js', ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(g => `./data/g${g}.js`)];  // 없는 파일은 건너뜀 · 11 = 상용 밖(단어장) 찾아보기
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(async c => {
